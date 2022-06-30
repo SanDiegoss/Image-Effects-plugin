@@ -7,23 +7,18 @@
 using namespace emscripten;
 #endif // __EMSCRIPTEN__
 
-
-#ifdef __cplusplus
-extern "C"
+class MyClass
 {
-#endif // __cplusplus
-
-int add(int a, int b) 
-{
-    return a + b;
-}
-
-#ifdef __cplusplus
-}
-#endif // __cplusplus
+public:
+    static int add(int a, int b) { return a + b;}
+    MyClass() = default;
+};
 
 #ifdef __EMSCRIPTEN__
-EMSCRIPTEN_BINDINGS(my_module) {
-    function("add", &add);
+// Binding code
+EMSCRIPTEN_BINDINGS(my_class_example) {
+  class_<MyClass>("MyClass")
+    .constructor()
+    .class_function("add", &MyClass::add);
 }
 #endif // __EMSCRIPTEN__
