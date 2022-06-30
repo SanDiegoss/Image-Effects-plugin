@@ -13,9 +13,6 @@ extern "C"
 {
 #endif // __cplusplus
 
-#ifdef __EMSCRIPTEN__
-EMSCRIPTEN_KEEPALIVE
-#endif // __EMSCRIPTEN__
 int add(int a, int b) 
 {
     return a + b;
@@ -24,3 +21,9 @@ int add(int a, int b)
 #ifdef __cplusplus
 }
 #endif // __cplusplus
+
+#ifdef __EMSCRIPTEN__
+EMSCRIPTEN_BINDINGS(my_module) {
+    function("add", &add);
+}
+#endif // __EMSCRIPTEN__
