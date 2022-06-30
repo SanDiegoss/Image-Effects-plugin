@@ -11,14 +11,16 @@ class MyClass
 {
 public:
     static int add(int a, int b) { return a + b;}
-    MyClass() = default;
+    MyClass(int _c) : c(_c) {}
+private:
+    int c;
 };
 
 #ifdef __EMSCRIPTEN__
 // Binding code
 EMSCRIPTEN_BINDINGS(my_class_example) {
   class_<MyClass>("MyClass")
-    .constructor()
+    .constructor<int>()
     .class_function("add", &MyClass::add);
 }
 #endif // __EMSCRIPTEN__
