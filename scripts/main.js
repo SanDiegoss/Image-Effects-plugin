@@ -28,7 +28,8 @@ let lulz = async function lul(){
     let module = await Module();
 
     // fu - наш "указатель" на JS функцию
-    const fu = module.addFunction(function() {console.log(123)}, 'v');
+    const fu = module.addFunction(function() {console.log('gg')}, 'v');
+    module._foo(fu);
     module._foo(fu);
     module.removeFunction(fu);
     return 123;
