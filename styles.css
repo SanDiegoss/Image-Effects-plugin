@@ -1,0 +1,28 @@
+body{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    
+}
+
+#drop-area{
+    flex-basis: 500px;
+    display: flex;
+    align-items:flex-end;
+    border-width: 2px;
+    border-color: black;
+    border-style: solid;
+}
+
+#drop-area.highlight{
+    border-color: aqua;
+}
+
+canvas{
+    margin-right: 5px;
+    border-width: 2px;
+    border-color: black;
+    border-style: solid;
+}
+
+
