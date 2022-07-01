@@ -30,8 +30,6 @@ let lulz = async function lul(){
     const fu = module.addFunction(function() {console.log('gg')}, 'v');
     module._foo(fu);
     module._foo(fu);
-    module._foo(fu);
-    module._foo(fu);
     module.removeFunction(fu);
     return 123;
 }();
