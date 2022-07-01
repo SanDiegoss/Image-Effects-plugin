@@ -1,0 +1,19 @@
+body{
+    display: flex;
+    flex-direction: row;
+}
+
+#drop-area{
+    display: flex;
+    align-items:flex-end;
+    border-width: 2px;
+    border-color: black;
+    border-style: solid;
+}
+
+canvas{
+    border-width: 2px;
+    border-color: black;
+    border-style: solid;
+    border-right-width: 0px;
+}
