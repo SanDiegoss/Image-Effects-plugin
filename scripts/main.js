@@ -1,11 +1,12 @@
+import {createEvents} from './drop.js'
+/* Drag n Drop */
 
-/*
-Module['onRuntimeInitialized'] = function(){
-    var instance = new Module.MyClass(1);
-    console.log(Module.MyClass.add(1,2));
-    instance.delete(); 
-}
-*/
+let dropArea = document.getElementById("drop-area");
+
+createEvents(dropArea);
+
+/*--------- */
+
 let add = async function add(a, b){
     let module = await Module();
     return module.MyClass.add(a,b);
