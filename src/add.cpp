@@ -10,7 +10,7 @@ class MyClass
 {
 public:
     static int add(int a, int b) { return a + b;}
-    static std::vector<int> someData() { return {1, 2, 3};}
+    static std::vector<int> someData() { return std::vector<int>(); }
     static std::vector<int> addData(std::vector<int> vec) { vec.push_back(4); return vec; }
     MyClass() = default;
 };
