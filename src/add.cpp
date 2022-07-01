@@ -14,11 +14,13 @@ std::vector<int> MyClass::addData(std::vector<int> vec)
     return vec;
 }
 
+static int value = 1;
 
 #ifdef __EMSCRIPTEN__
 EMSCRIPTEN_KEEPALIVE
 #endif // __EMSCRIPTEN__
 void foo(action func)
 {
+    std::cout << value++ << '\n';
     func();
 }

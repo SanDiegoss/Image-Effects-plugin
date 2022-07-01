@@ -1,4 +1,5 @@
 #include <vector>
+#include <iostream>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten/bind.h>
