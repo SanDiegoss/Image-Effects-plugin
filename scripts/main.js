@@ -13,3 +13,12 @@ let add = async function add(a, b){
 
 let result = add(1,2);
 result.then((result)=>console.log(result));
+
+let keka = async function lol(){
+    let module = await Module();
+    let a = module.MyClass.someData();
+    a.push_back(2);
+    let b = module.MyClass.addData(a)
+    console.log(b.get(1))
+    return a;
+}();
