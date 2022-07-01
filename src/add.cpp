@@ -1,29 +1,24 @@
-#include <vector>
+#include "add.h"
 
-#ifdef __EMSCRIPTEN__
-#include <emscripten/bind.h>
-#include <emscripten.h>
-using namespace emscripten;
-#endif // __EMSCRIPTEN__
-
-class MyClass
+int MyClass::add(int a, int b)
 {
-public:
-    static int add(int a, int b) { return a + b;}
-    static std::vector<int> someData() { return std::vector<int>(); }
-    static std::vector<int> addData(std::vector<int> vec) { vec.push_back(4); return vec; }
-    MyClass() = default;
-};
+    return a + b;
+}
+std::vector<int> MyClass::someData()
+{
+    return std::vector<int>();
+}
+std::vector<int> MyClass::addData(std::vector<int> vec)
+{
+    vec.push_back(4); 
+    return vec;
+}
+
 
 #ifdef __EMSCRIPTEN__
-// Binding code 
-EMSCRIPTEN_BINDINGS(my_class_example) {
-    class_<MyClass>("MyClass")
-        .constructor()
-        .class_function("add", &MyClass::add)
-        .class_function("someData", &MyClass::someData)
-        .class_function("addData", &MyClass::addData);
-
-    register_vector<int>("vector<int>");
-}
+EMSCRIPTEN_KEEPALIVE
 #endif // __EMSCRIPTEN__
+void foo(action func)
+{
+    func();
+}
