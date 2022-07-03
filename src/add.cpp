@@ -1,26 +1,23 @@
 #include "add.h"
 
-int MyClass::add(int a, int b)
+#ifdef __EMSCRIPTEN__
+EMSCRIPTEN_KEEPALIVE
+#endif // __EMSCRIPTEN__
+void print(int* data, int n)
 {
-    return a + b;
+    std::cout << "print" << std::endl;
+    for(int i = 0; i < n; i++)
+            std::cout << data[i] << std::endl;
 }
-std::vector<int> MyClass::someData()
-{
-    return std::vector<int>();
-}
-std::vector<int> MyClass::addData(std::vector<int> vec)
-{
-    vec.push_back(4); 
-    return vec;
-}
-
-static int value = 1;
 
 #ifdef __EMSCRIPTEN__
 EMSCRIPTEN_KEEPALIVE
 #endif // __EMSCRIPTEN__
 void foo(action func)
 {
-    std::cout << value++ << '\n';
     func();
+}
+
+int main()
+{
 }
