@@ -42,26 +42,25 @@ dropArea.addEventListener('drop', handleFiles, false);
 
 let lulz = async function lul(){
     let module = await Module();
-    // fu - наш "указатель" на JS функцию
-    const fu = module.addFunction(function() {console.log('gg')}, 'v');
-    module._foo(fu);
-    module.removeFunction(fu);
 
-    var mem = allocateMemory(module, 4, 4);
-    setMemory(module, [1, 2, 3, 4], mem, 4)
-    module._print(mem, 4);
-    freeMemory(module, mem);
+    // ptr для JS, ptr_ для wasm
+    let [ptr, ptr_] = allocateMemory(module, 4);
+
+    setMemory(module, [1, 2, 3, 4], ptr_)
+    ptr
+    module._print(ptr_, 4);
+    for(let i = 0; i < 4; i++) console.log(ptr[i]);
+
+
+    freeMemory(module, ptr_);
     return 123;
 }();
 
-// int - 4
-// short - 2
-// char - 1
-
 // allocate memory for wasm, returns pointer
-function allocateMemory(module, length, bytesPerElement)
+function allocateMemory(module, length)
 {
-    return module._malloc(length * bytesPerElement);
+    var ptr = module._malloc(length);
+    return [new Uint8ClampedArray(module.HEAP8.buffer, ptr, length), ptr];
 }
 
 // free memory
@@ -71,7 +70,7 @@ function freeMemory(module, ptr)
 }
 
 // fill memory
-function setMemory(module, data, ptr, bytesPerElement)
+function setMemory(module, data, ptr)
 {
-    module.HEAP32.set(data, (ptr / bytesPerElement));
+    module.HEAP8.set(data, ptr);
 }
