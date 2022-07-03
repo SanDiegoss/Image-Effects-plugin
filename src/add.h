@@ -9,23 +9,17 @@ using namespace emscripten;
 
 typedef void(*action)(void);
 
-class MyClass
-{
-public:
-    MyClass() = default;
-    static int add(int a, int b);
-
-    static std::vector<int> someData();
-    static std::vector<int> addData(std::vector<int> vec);
-};
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif // __cplusplus
+
 void foo(action func);
+void print(int* data, int n);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
 
-// emcc -lembind add.cpp bindings.cpp -o add.js -sMODULARIZE -sEXPORTED_RUNTIME_METHODS='addFunction','removeFunction','ccall' -sRESERVED_FUNCTION_POINTERS=1 -sEXPORTED_FUNCTIONS='_malloc','_free'
+// emcc -lembind add.cpp -o add.js -sMODULARIZE -sEXPORTED_RUNTIME_METHODS='addFunction','removeFunction','ccall' -sRESERVED_FUNCTION_POINTERS=1 -sEXPORTED_FUNCTIONS='_malloc','_free','_main'
