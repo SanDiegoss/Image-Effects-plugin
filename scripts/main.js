@@ -13,9 +13,7 @@ const CANVAS = document.getElementById('canvas')
 const context = CANVAS.getContext('2d');
 
 createEvents(dropArea);
-/**
- * @param {HTMLImageElement} image 
- */
+
 let imagePreview = function drawImageOnDisplay(){
     context.clearRect(0, 0, CANVAS.width, CANVAS.height);
     context.drawImage(this, 0, 0, CANVAS.width, CANVAS.height);
