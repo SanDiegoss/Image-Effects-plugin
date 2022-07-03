@@ -1,7 +1,13 @@
-import {createEvents} from './visualEvents.js'
+import {createEvents, createSliderEvents} from './visualEvents.js'
 
 let image = document.createElement('img');
-
+let slider = document.getElementById('brightness');
+createSliderEvents(slider, document.getElementById('brightnessValue'));
+/**
+ * @type {ImageData}
+ */
+let imageData;
+// TODO - Обработчик формы эффектов
 /* Drag n Drop */
 
 let dropArea = document.getElementById("drop-area");
@@ -35,6 +41,8 @@ let handleFiles = function handleFilesFromForm(event){
     reader.onload = () => {
         image.src = reader.result;
         image.onload = imagePreview;
+        imageData = context.getImageData(0, 0, CANVAS.width, CANVAS.height);
+        imageData.data
     }
 }
 

@@ -2,7 +2,7 @@
 /**
  * @param {HTMLElement} element 
  */
-let createEvents = function CreateVisualEvents(element){
+let createEvents = function createVisualEvents(element){
     
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName)=>{
         element.addEventListener(eventName, preventDefaults, false);
@@ -13,6 +13,12 @@ let createEvents = function CreateVisualEvents(element){
     ['dragleave', 'drop'].forEach(eventName => {
         element.addEventListener(eventName, unhighlight, false);
     });
+}
+/**
+ * @param {HTMLInputElement} slider 
+ */
+let createSliderEvents = function createSliderEvents(slider, output){
+    slider.addEventListener('input',()=>{output.innerHTML = `Value: ${slider.value}`;}, false);
 }
 
 /**
@@ -37,4 +43,4 @@ function preventDefaults (event) {
     event.stopPropagation()
 }
 
-export {createEvents};
+export {createEvents, createSliderEvents};

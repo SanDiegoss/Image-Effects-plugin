@@ -9,9 +9,23 @@
 	<link rel="stylesheet" href="styles.css">
 </head>
 	<body>
-		<canvas width="500" height="500" id="canvas"></canvas>
-		<div id="drop-area">
-			<span>Загрузите изображение</span>
+		<div id="mainContent">
+			<canvas width="500" height="500" id="canvas"></canvas>
+			<div id="drop-area">
+				<span>Загрузите изображение</span>
+			</div>
+		</div>
+		<div id="effectsPanel">
+			<div class="EffectForm" id="brightness">
+				<h2>Brightness</h2>
+				<form>
+					Value:<input type="text" value="50" class="effectTextInput">
+					<div class="sliderContainer">
+						<input type="range" min="0" max="100" value="50">
+					</div>
+					<button type="submit" class="submitButton">Отправить</button>
+				</form>
+			</div>
 		</div>
 		<script src="src/add.js"></script>
 		<script src="scripts/main.js" type="module"></script>
