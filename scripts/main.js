@@ -120,10 +120,10 @@ let lulz = async function lul(){
     let [ptr, ptr_] = allocateMemory(module, size);
     setMemory(module, data, ptr_)
 
-    console.log('JS print:')
-    for(let i = 0; i < size; i++) console.log(ptr[i]);
+    //console.log('JS print:')
+    //for(let i = 0; i < size; i++) console.log(ptr[i]);
 
-    module._print(ptr_, h, w);
+    //module._print(ptr_, h, w);
 
     freeMemory(module, ptr_);
     return 123;

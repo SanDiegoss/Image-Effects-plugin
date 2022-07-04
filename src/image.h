@@ -4,6 +4,10 @@
 #include <emscripten.h>
 #endif // __EMSCRIPTEN__
 
+struct PixelRGB;
+struct PixelHSV;
+class Pixel;
+
 class Pixel
 {
 private:
@@ -18,9 +22,6 @@ public:
     PixelRGB RGB();
     void setRGB(const PixelRGB& rgb);
 
-    PixelHSV HSV();
-    void setHSV(const PixelHSV& hsv);
-
     unsigned char R() const; // 0
     unsigned char G() const; // 1
     unsigned char B() const; // 2
@@ -34,22 +35,27 @@ public:
 
 struct PixelRGB
 {
-    float R;
-    float G;
-    float B;
+    double R;
+    double G;
+    double B;
 
+    PixelRGB() = default;
     PixelRGB(const Pixel& pixel);
-    PixelRGB(const PixelHSV& pixelHSV);
+
+    void fromPixel(const Pixel& pixel);
 };
 
 struct PixelHSV
 {
     short H;
-    float S;
-    float V;
+    double S;
+    double V;
 
-    PixelHSV(const Pixel& pixel);
-    PixelHSV(const PixelRGB& pixelRGB);
+    PixelHSV() = default;
+    PixelHSV(const PixelRGB& rgb);
+
+    void fromRGB(const PixelRGB& rgb);
+    PixelRGB RGB();
 };
 
 class Image
