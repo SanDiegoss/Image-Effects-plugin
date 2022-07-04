@@ -72,7 +72,13 @@ let createFormEvents = function createFormsEvents(forms){
  */
 function confirmEffect(event){
     preventDefaults(event);
-    effect[`${event.target.parentElement.id}`](event.target.firstElementChild.value);
+    if(imageData){
+        effect[`${event.target.parentElement.id}`](event.target.firstElementChild.value);
+    }
+    else{
+        throw new Error('No Image!');
+    }
+    
 }
 
 /* Drag n Drop */
@@ -99,7 +105,6 @@ let handleFiles = function handleFilesFromForm(event){
         image.src = reader.result;
         image.onload = imagePreview;
         imageData = context.getImageData(0, 0, CANVAS.width, CANVAS.height);
-        imageData.data
     }
 }
 
