@@ -146,14 +146,14 @@ Image::Image(const Image& other) : pixels_(other.pixels_), height_(other.height_
 
 Image::Image(unsigned char* raw, int height, int width) :  height_(height), width_(width)
 {
-    // needs memory for pointers
+    // выделяем память под указатели, но не под саму картинку
     pixels_ = new Pixel*[height];
     for(int i = 0; i < height; i++) pixels_[i] = new Pixel[width];
 
     for(int i = 0; i < height; i++)
         for(int j = 0; j < width; j++)
         {
-            // maths magic
+            // указатели ссылаются на нашу картинку
             int offset = i * width * 4;
             pixels_[i][j] = Pixel(&raw[offset + j * 4]);
         }
