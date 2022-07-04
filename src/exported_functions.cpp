@@ -6,8 +6,6 @@ EMSCRIPTEN_KEEPALIVE
 void print(unsigned char* data, int n, int m)
 {
     Image* img = new Image(data, n, m);
-    img->at(0, 0).R() = 100;
-    img->at(1, 1).G() = 101;
 
     std::cout << "print wasm raw" << std::endl;
     for(int i = 0; i < n * m * 4; i++) std::cout << (int)data[i] << std::endl;

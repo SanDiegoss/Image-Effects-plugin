@@ -3,7 +3,7 @@
 class IEffect
 {
 public:
-    virtual bool Apply(const Image& img);
+    virtual bool Apply(Image* img);
 };
 
 class ConcreteEffect : public IEffect

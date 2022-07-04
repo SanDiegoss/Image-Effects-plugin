@@ -1,5 +1,4 @@
-#include <vector>
-#include <iostream>
+#include <algorithm>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -16,10 +15,41 @@ public:
     Pixel() = default;
     Pixel(unsigned char* raw);
 
-    unsigned char& R(); // 0
-    unsigned char& G(); // 1
-    unsigned char& B(); // 2
-    unsigned char& A(); // 3
+    PixelRGB RGB();
+    void setRGB(const PixelRGB& rgb);
+
+    PixelHSV HSV();
+    void setHSV(const PixelHSV& hsv);
+
+    unsigned char R() const; // 0
+    unsigned char G() const; // 1
+    unsigned char B() const; // 2
+    unsigned char A() const; // 3
+
+    void setR(unsigned char R);
+    void setG(unsigned char G);
+    void setB(unsigned char B);
+    void setA(unsigned char A);
+};
+
+struct PixelRGB
+{
+    float R;
+    float G;
+    float B;
+
+    PixelRGB(const Pixel& pixel);
+    PixelRGB(const PixelHSV& pixelHSV);
+};
+
+struct PixelHSV
+{
+    short H;
+    float S;
+    float V;
+
+    PixelHSV(const Pixel& pixel);
+    PixelHSV(const PixelRGB& pixelRGB);
 };
 
 class Image
