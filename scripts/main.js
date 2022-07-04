@@ -45,8 +45,6 @@ let createFormEvents = function createFormsEvents(forms){
 
         slider = element.firstElementChild.nextElementSibling.firstElementChild;
         valueText = element.firstElementChild;
-        console.log(slider)
-        console.log(valueText)
 
         slider.addEventListener('input', changeValue, false);
         valueText.addEventListener('input', changeValue, false);
