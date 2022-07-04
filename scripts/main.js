@@ -72,8 +72,8 @@ let createFormEvents = function createFormsEvents(forms){
         if(valueText.value > 100) {
             valueText.value = 100
         }
-        if(valueText.value < 0) {
-            valueText.value = 0;
+        if(valueText.value < -100) {
+            valueText.value = -100;
         }
     }
 
