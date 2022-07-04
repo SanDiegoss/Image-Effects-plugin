@@ -14,12 +14,6 @@ let createEvents = function createVisualEvents(element){
         element.addEventListener(eventName, unhighlight, false);
     });
 }
-/**
- * @param {HTMLInputElement} slider 
- */
-let createSliderEvents = function createSliderEvents(slider, output){
-    slider.addEventListener('input',()=>{output.innerHTML = `Value: ${slider.value}`;}, false);
-}
 
 /**
  * @param {Event} event 
@@ -43,4 +37,4 @@ function preventDefaults (event) {
     event.stopPropagation()
 }
 
-export {createEvents, createSliderEvents};
+export {createEvents, preventDefaults};

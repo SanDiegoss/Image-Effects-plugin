@@ -1,14 +1,8 @@
-import {createEvents, createSliderEvents} from './visualEvents.js'
+import {createEvents, preventDefaults} from './visualEvents.js'
 
 let image = document.createElement('img');
-let slider = document.getElementById('brightness');
-createSliderEvents(slider, document.getElementById('brightnessValue'));
-/**
- * @type {ImageData}
- */
-let imageData;
-// TODO - Обработчик формы эффектов
-/* Drag n Drop */
+
+let forms = document.querySelectorAll('.effectForm > form');
 
 let dropArea = document.getElementById("drop-area");
 /**
@@ -19,6 +13,71 @@ const CANVAS = document.getElementById('canvas')
 const context = CANVAS.getContext('2d');
 
 createEvents(dropArea);
+
+/**
+ * @type {ImageData}
+ */
+let imageData;
+
+let effect = {
+    brightness: function(value){
+        //TODO: вызов Module.... 
+        console.log(value);
+    }
+    /* все эффекты, которые могут быть, будут перечислены тут */
+}
+
+/* Slider Events */
+/**
+ * @param {NodeListOf<Element>} forms 
+ */
+let createFormEvents = function createFormsEvents(forms){
+    /**
+     * @type {HTMLInputElement}
+     */
+    let slider;
+    /**
+     * @type {HTMLInputElement}
+     */
+    let valueText;
+
+    forms.forEach((element) => {
+
+        slider = element.firstElementChild.nextElementSibling.firstElementChild;
+        valueText = element.firstElementChild;
+        console.log(slider)
+        console.log(valueText)
+
+        slider.addEventListener('input', changeValue, false);
+        valueText.addEventListener('input', changeValue, false);
+        element.addEventListener('submit', confirmEffect, false);
+    });
+
+    /**
+     * @param {Event} event 
+     */
+    function changeValue(event){
+        preventDefaults(event);
+        event.target === slider ? valueText.value = slider.value : slider.value = valueText.value;
+        if(valueText.value > 100) {
+            valueText.value = 100
+        }
+        if(valueText.value < 0) {
+            valueText.value = 0;
+        }
+    }
+
+}(forms);
+
+/**
+ * @param {Event} event 
+ */
+function confirmEffect(event){
+    preventDefaults(event);
+    effect[`${event.target.parentElement.id}`](event.target.firstElementChild.value);
+}
+
+/* Drag n Drop */
 
 let imagePreview = function drawImageOnDisplay(){
     context.clearRect(0, 0, CANVAS.width, CANVAS.height);
