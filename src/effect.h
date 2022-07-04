@@ -3,9 +3,19 @@
 class IEffect
 {
 public:
-    virtual bool Apply(const Image& img);
+    virtual bool Apply(Image* img);
 };
 
-class ConcreteEffect : public IEffect
+class AddBrightnessEffect : public IEffect
 {
+private:
+    int brightness_;
+public:
+    virtual bool Apply(Image *img);
+
+    AddBrightnessEffect();
+    AddBrightnessEffect(int brightness);
+
+    int brightness();
+    void setBrightness(int brightness);
 };
