@@ -54,7 +54,8 @@ struct PixelHSV
     PixelHSV() = default;
     PixelHSV(const PixelRGB& rgb);
 
-    void fromRGB(const PixelRGB& rgb);
+    // не всегда можно из rgb получить hsv
+    bool fromRGB(const PixelRGB& rgb);
     PixelRGB RGB();
 };
 

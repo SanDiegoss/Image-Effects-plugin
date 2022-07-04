@@ -65,12 +65,12 @@ PixelHSV::PixelHSV(const PixelRGB& rgb) : PixelHSV()
     this->fromRGB(rgb);
 }
 
-void PixelHSV::fromRGB(const PixelRGB& rgb)
+bool PixelHSV::fromRGB(const PixelRGB& rgb)
 {
     // RGB -> HSV
     double max = std::max({rgb.R, rgb.G, rgb.B});
     double min = std::min({rgb.R, rgb.G, rgb.B});
-    if(max == min) return;
+    if(max == min) return false;
 
     // H setup
     if(max == rgb.R && rgb.G >= rgb.B) H = 60 * ((rgb.G - rgb.B) / (max - min));
@@ -84,6 +84,8 @@ void PixelHSV::fromRGB(const PixelRGB& rgb)
 
     // V setup
     V = max;
+    
+    return true;
 }
 PixelRGB PixelHSV::RGB()
 {
