@@ -22,9 +22,10 @@ let imageData;
 let effect = {
     brightness: async function(value){
         let module = await Module();
-        let [ptr, ptr_] = allocateMemory(module, image.width * image.height * 4);
+        console.log(imageData.data);
+        let [ptr, ptr_] = allocateMemory(module, imageData.data.length);
         setMemory(module, imageData.data, ptr_);
-        module._print(ptr_, image.height, image.width);
+        module._print(ptr_, CANVAS.height, CANVAS.width);
         freeMemory(module, ptr_);
         console.log(value);
     }
@@ -87,9 +88,9 @@ function confirmEffect(event){
 
 /* Drag n Drop */
 
-let imagePreview = function drawImageOnDisplay(){
+let imagePreview = function drawImageOnDisplay(image){
     context.clearRect(0, 0, CANVAS.width, CANVAS.height);
-    context.drawImage(this, 0, 0, CANVAS.width, CANVAS.height);
+    context.drawImage(image, 0, 0, CANVAS.width, CANVAS.height);
 };
 
 /**
@@ -107,8 +108,10 @@ let handleFiles = function handleFilesFromForm(event){
     reader.readAsDataURL(file);
     reader.onload = () => {
         image.src = reader.result;
-        image.onload = imagePreview;
-        imageData = context.getImageData(0, 0, CANVAS.width, CANVAS.height);
+        image.onload = () => {
+            imagePreview(image);
+            imageData = context.getImageData(0, 0, CANVAS.width, CANVAS.height);
+        }
     }
 }
 
