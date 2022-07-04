@@ -1,8 +1,55 @@
+/* Element styles */
+
 body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+canvas{
+    margin-right: 5px;
+    border-width: 2px;
+    border-color: black;
+    border-style: solid;
+}
+
+form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+/* Class styles */
+
+.sliderContainer{
+    display: inline-block;
+    width: fit-content;
+}
+
+.submitButton{
+    display: block;
+    margin: 10px;
+    width: fit-content;
+    height: fit-content;
+}
+
+.effectTextInput{
+    width: 2em;
+    margin: 1em;
+}
+
+/* Id styles */
+
+#mainContent{
     display: flex;
     flex-direction: row;
     justify-content: center;
-    
+}
+
+#effectsPanel{
+    margin-top: 5px;
+    width: 992px;
+    height: 100px;
 }
 
 #drop-area{
@@ -18,11 +65,8 @@ body{
     border-color: aqua;
 }
 
-canvas{
-    margin-right: 5px;
-    border-width: 2px;
-    border-color: black;
-    border-style: solid;
+/* Typography */
+
+h2{
+    margin: 5px;
 }
-
-
