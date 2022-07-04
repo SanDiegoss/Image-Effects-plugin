@@ -20,10 +20,14 @@ void print(unsigned char* data, int n, int m)
     delete img;
 }
 
+#ifdef __EMSCRIPTEN__
+EMSCRIPTEN_KEEPALIVE
+#endif // __EMSCRIPTEN__
 void add_brightness(unsigned char* data, int h, int w, int brightness)
 {
     Image* img = new Image(data, h, w);
-    AddBrightnessEffect effect(brightness);
-    effect.Apply(img);
+    AddBrightnessEffect* effect = new AddBrightnessEffect(brightness);
+    effect->Apply(img);
+    delete effect;
     delete img;
 }

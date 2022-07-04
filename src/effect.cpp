@@ -1,5 +1,9 @@
 #include "effect.h"
 
+bool IEffect::Apply(Image* img)
+{
+    return true;
+}
 
 bool AddBrightnessEffect::Apply(Image *img)
 {
