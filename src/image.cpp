@@ -1,5 +1,5 @@
 #include "image.h"
-#include <iostream>
+
 unsigned char Pixel::R() const
 {
     return raw_[0];

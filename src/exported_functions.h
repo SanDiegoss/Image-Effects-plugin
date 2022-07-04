@@ -1,5 +1,5 @@
 #include <iostream>
-#include "image.h"
+#include "effect.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -7,6 +7,7 @@ extern "C"
 #endif // __cplusplus
 
 void print(unsigned char* data, int n, int m);
+void add_brightness(unsigned char* data, int h, int w, int brightness);
 
 #ifdef __cplusplus
 }

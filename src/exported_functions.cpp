@@ -7,9 +7,6 @@ void print(unsigned char* data, int n, int m)
 {
     Image* img = new Image(data, n, m);
 
-    std::cout << "print wasm raw" << std::endl;
-    for(int i = 0; i < n * m * 4; i++) std::cout << (int)data[i] << std::endl;
-    
     std::cout << "print" << std::endl;
     for(int i = 0; i < img->height(); i++)
         for(int j = 0; j < img->width(); j++)
@@ -20,5 +17,13 @@ void print(unsigned char* data, int n, int m)
                 std::cout << (int)img->at(i, j).A() << std::endl;
             }
     
+    delete img;
+}
+
+void add_brightness(unsigned char* data, int h, int w, int brightness)
+{
+    Image* img = new Image(data, h, w);
+    AddBrightnessEffect effect(brightness);
+    effect.Apply(img);
     delete img;
 }
