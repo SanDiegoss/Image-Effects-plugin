@@ -21,13 +21,20 @@ let imageData;
 
 let effect = {
     brightness: async function(value){
+
         let module = await Module();
-        console.log(imageData.data);
+
         let [ptr, ptr_] = allocateMemory(module, imageData.data.length);
         setMemory(module, imageData.data, ptr_);
-        module._print(ptr_, CANVAS.height, CANVAS.width);
+        
+        module._add_brightness(ptr_, CANVAS.height, CANVAS.width, value);
+
+        for (let i = 0; i < imageData.data.length; i++){
+            imageData.data[i] = ptr[i];
+        }
+
+        context.putImageData(imageData, 0, 0);
         freeMemory(module, ptr_);
-        console.log(value);
     }
     /* все эффекты, которые могут быть, будут перечислены тут */
 }
