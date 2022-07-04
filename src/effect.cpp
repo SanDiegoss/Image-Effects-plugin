@@ -12,6 +12,7 @@ bool AddBrightnessEffect::Apply(Image *img)
             PixelHSV hsv = img->at(i, j).RGB();
             hsv.V += (double)brightness_ / 100;
             if(hsv.V > 1.0) hsv.V = 1;
+            img->at(i, j).setRGB(hsv.RGB());
         }
     return true;
 }
