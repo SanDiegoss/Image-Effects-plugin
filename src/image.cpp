@@ -91,10 +91,10 @@ PixelRGB PixelHSV::RGB()
     PixelRGB rgb;
 
     short hi = (H / 60) % 6;
-    short vmin = (100 - S * 100) * V;
-    short a = (V * 100 - vmin) * (H % 60) / 60;
-    short vinc = vmin + a;
-    short vdec = V * 100 - a;
+    double vmin = (100 - S * 100) * V;
+    double a = (V * 100 - vmin) * (H % 60) / 60;
+    double vinc = vmin + a;
+    double vdec = V * 100 - a;
 
     switch (hi)
     {

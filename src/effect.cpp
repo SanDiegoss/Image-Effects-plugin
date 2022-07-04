@@ -1,5 +1,6 @@
 #include "effect.h"
 
+// "заглушка" для emcc, без этого не компилирует
 bool IEffect::Apply(Image* img)
 {
     return true;
@@ -14,7 +15,8 @@ bool AddBrightnessEffect::Apply(Image *img)
         for(int j = 0; j < w; j++)
         {
             PixelHSV hsv = img->at(i, j).RGB();
-            hsv.V += (double)brightness_ / 100;
+            hsv.V += (double)(brightness_ / 100);
+            
             if(hsv.V > 1.0) hsv.V = 1;
             img->at(i, j).setRGB(hsv.RGB());
         }

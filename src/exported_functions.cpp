@@ -26,8 +26,8 @@ EMSCRIPTEN_KEEPALIVE
 void add_brightness(unsigned char* data, int h, int w, int brightness)
 {
     Image* img = new Image(data, h, w);
-    AddBrightnessEffect* effect = new AddBrightnessEffect(brightness);
-    effect->Apply(img);
-    delete effect;
+    AddBrightnessEffect effect(brightness);
+    
+    effect.Apply(img);
     delete img;
 }
