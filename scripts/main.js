@@ -29,6 +29,11 @@ const image = document.createElement('img');
 const forms = document.querySelectorAll('.effectForm > form');
 const dropArea = document.getElementById('drop-area');
 /**
+ * @type {ImageData}
+ */
+let imageData;
+
+/**
  * @type {HTMLCanvasElement}
  */
 const CANVAS = document.getElementById('canvas');
@@ -36,11 +41,6 @@ const CANVAS = document.getElementById('canvas');
 const context = CANVAS.getContext('2d');
 
 createEvents(dropArea);
-
-/**
- * @type {ImageData}
- */
-let imageData;
 
 const effect = {
     async brightness(value){
