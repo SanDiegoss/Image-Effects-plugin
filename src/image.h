@@ -8,6 +8,9 @@ struct PixelRGB;
 struct PixelHSV;
 class Pixel;
 
+
+// основной класс для хранения информации о картинке, хранит "указатель" на нее
+// при изменении чего-то тут, меняется и сама картинка
 class Pixel
 {
 private:
@@ -33,6 +36,8 @@ public:
     void setA(unsigned char A);
 };
 
+// структура для хранения одного пикселя в формате RGB
+// 0 <= R, G, B <= 1
 struct PixelRGB
 {
     double R;
@@ -45,6 +50,9 @@ struct PixelRGB
     void fromPixel(const Pixel& pixel);
 };
 
+// структура для хранения одного пикселя в формате HSV
+// 0 <= H <= 360
+// 0 <= S, V <= 1
 struct PixelHSV
 {
     short H;
@@ -54,14 +62,17 @@ struct PixelHSV
     PixelHSV() = default;
     PixelHSV(const PixelRGB& rgb);
 
-    // не всегда можно из rgb получить hsv
+    // не всегда можно из rgb получить hsv, false - если это невозможно
     bool fromRGB(const PixelRGB& rgb);
     PixelRGB RGB();
 };
 
+// основной класс для хранения картинки
 class Image
 {
 private:
+
+    // тут хранятся "указатели" на картинку в удобном формате
     Pixel** pixels_;
     int height_;
     int width_;
@@ -73,6 +84,7 @@ public:
 
     ~Image();
 
+    // вернет ссылку на один пикель
     Pixel& at(int i, int j);
 
     int height() const;
