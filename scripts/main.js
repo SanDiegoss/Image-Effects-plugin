@@ -7,7 +7,8 @@
 /* eslint-disable padded-blocks */
 /* eslint-disable space-before-blocks */
 
-import { createEvents, preventDefaults } from './visualEvents';
+// eslint-disable-next-line import/extensions
+import { createEvents, preventDefaults } from './visualEvents.js';
 
 // allocate memory for wasm, returns pointer
 function allocateMemory(module, length) {
