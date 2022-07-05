@@ -1,27 +1,38 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-undef */
-/* eslint-disable no-trailing-spaces */
 /* eslint-disable indent */
-/* eslint-disable padded-blocks */
-/* eslint-disable space-before-blocks */
+/* eslint-disable new-cap */
+/* eslint-disable max-len */
 
-// eslint-disable-next-line import/extensions
-import { createEvents, preventDefaults } from './visualEvents.js';
+
+import {createEvents, preventDefaults} from './visualEvents.js';
 
 // allocate memory for wasm, returns pointer
+/**
+ * @param {Module} module
+ * @param {Number} length
+ * @return {Uint8ClampedArray}
+ */
 function allocateMemory(module, length) {
     const ptr = module._malloc(length);
     return [new Uint8ClampedArray(module.HEAP8.buffer, ptr, length), ptr];
 }
 
 // free memory
+/**
+ * @param {Module} module
+ * @param {Number} ptr
+ */
 function freeMemory(module, ptr) {
     module._free(ptr);
 }
 
 // fill memory
+/**
+ * @param {Module} module
+ * @param {Number[]} data
+ * @param {Number} ptr
+ */
 function setMemory(module, data, ptr) {
     module.HEAP8.set(data, ptr);
 }
@@ -44,16 +55,15 @@ const context = CANVAS.getContext('2d');
 createEvents(dropArea);
 
 const effect = {
-    async brightness(value){
-
+    async brightness(value) {
         const module = await Module();
 
         const [ptr, ptr_] = allocateMemory(module, imageData.data.length);
         setMemory(module, imageData.data, ptr_);
-        
+
         module._add_brightness(ptr_, CANVAS.height, CANVAS.width, value);
 
-        for (let i = 0; i < imageData.data.length; i += 1){
+        for (let i = 0; i < imageData.data.length; i += 1) {
             imageData.data[i] = ptr[i];
         }
 
@@ -66,11 +76,11 @@ const effect = {
 /* Slider Events */
 
 /**
- * @param {Event} event 
+ * @param {Event} event
  */
- function confirmEffect(event){
+ function confirmEffect(event) {
     preventDefaults(event);
-    if (imageData){
+    if (imageData) {
         effect[`${event.target.parentElement.id}`](event.target.firstElementChild.value);
     } else {
         throw new Error('No Image!');
@@ -78,10 +88,9 @@ const effect = {
 }
 
 /**
- * @param {NodeListOf<Element>} forms 
+ * @param {NodeListOf<Element>} forms
  */
-const createFormEvents = (function createFormsEvents(inputForms){
-
+const createFormEvents = (function createFormsEvents(inputForms) {
     /**
     * @type {HTMLInputElement}
     */
@@ -92,9 +101,9 @@ const createFormEvents = (function createFormsEvents(inputForms){
     let valueText;
 
     /**
-    * @param {Event} event 
+    * @param {Event} event
     */
-    function changeValue(event){
+    function changeValue(event) {
         preventDefaults(event);
         if (event.target === slider) {
             valueText.value = slider.value;
@@ -109,7 +118,6 @@ const createFormEvents = (function createFormsEvents(inputForms){
         }
     }
     inputForms.forEach((element) => {
-
         slider = element.firstElementChild.nextElementSibling.firstElementChild;
         valueText = element.firstElementChild;
 
@@ -117,21 +125,20 @@ const createFormEvents = (function createFormsEvents(inputForms){
         valueText.addEventListener('input', changeValue, false);
         element.addEventListener('submit', confirmEffect, false);
     });
-
 }(forms));
 
 /* Drag n Drop */
 
-const imagePreview = function drawImageOnDisplay(preImage){
+const imagePreview = function drawImageOnDisplay(preImage) {
     context.clearRect(0, 0, CANVAS.width, CANVAS.height);
     context.drawImage(preImage, 0, 0, CANVAS.width, CANVAS.height);
 };
 
 /**
- * @param {DragEvent} event 
+ * @param {DragEvent} event
  */
-const handleFiles = function handleFilesFromForm(event){
-    const { files } = event.dataTransfer;
+const handleFiles = function handleFilesFromForm(event) {
+    const {files} = event.dataTransfer;
     if (files.length > 1) {
         throw new Error('Only 1 file, please.');
     }
@@ -150,15 +157,15 @@ const handleFiles = function handleFilesFromForm(event){
 
 dropArea.addEventListener('drop', handleFiles, false);
 
-const lulz = (async function lul(){
+const lulz = (async function lul() {
     const module = await Module();
 
     const h = 2;
     const w = 3;
     const size = h * w * 4;
     const data = new Uint8ClampedArray(size);
-    for (let i = 0; i < size; i += 4){
-        for (let j = 0; j < 4; j += 1){
+    for (let i = 0; i < size; i += 4) {
+        for (let j = 0; j < 4; j += 1) {
             data[i + j] = j + 1;
         }
     }
