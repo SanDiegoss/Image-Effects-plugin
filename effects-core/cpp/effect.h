@@ -4,7 +4,7 @@
 class IEffect
 {
 public:
-    virtual bool Apply(Image* img);
+    virtual bool Apply(Image* img) = 0;
 };
 
 // добавляет яркость (V в HSV)

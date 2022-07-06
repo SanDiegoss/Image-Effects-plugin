@@ -1,11 +1,5 @@
 #include "effect.h"
 
-// "заглушка" для emcc, без этого не компилирует
-bool IEffect::Apply(Image* img)
-{
-    return true;
-}
-
 bool AddBrightnessEffect::Apply(Image *img)
 {
     int h = img->height();
