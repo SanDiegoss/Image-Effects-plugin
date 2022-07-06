@@ -72,8 +72,8 @@ class Image
 {
 private:
 
-    // тут хранятся "указатели" на картинку в удобном формате
-    Pixel** pixels_;
+    // указатель на картинку
+    unsigned char* raw_;
     int height_;
     int width_;
 
@@ -84,8 +84,8 @@ public:
 
     ~Image();
 
-    // вернет ссылку на один пикель
-    Pixel& at(int i, int j);
+    // вернет пиксель
+    Pixel at(int i, int j);
 
     int height() const;
     int width() const;

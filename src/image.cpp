@@ -140,32 +140,21 @@ PixelRGB PixelHSV::RGB()
     return rgb;
 }
 
-Image::Image(const Image& other) : pixels_(other.pixels_), height_(other.height_), width_(other.width_)
+Image::Image(const Image& other) : raw_(other.raw_), height_(other.height_), width_(other.width_)
 {
 }
 
-Image::Image(unsigned char* raw, int height, int width) :  height_(height), width_(width)
+Image::Image(unsigned char* raw, int height, int width) :  raw_(raw), height_(height), width_(width)
 {
-    // выделяем память под указатели, но не под саму картинку
-    pixels_ = new Pixel*[height];
-    for(int i = 0; i < height; i++) pixels_[i] = new Pixel[width];
-
-    for(int i = 0; i < height; i++)
-        for(int j = 0; j < width; j++)
-        {
-            // указатели ссылаются на нашу картинку
-            int offset = i * width * 4;
-            pixels_[i][j] = Pixel(&raw[offset + j * 4]);
-        }
 }
 Image::~Image()
 {
-    for(int i = 0; i < height_; i++) delete[] pixels_[i];
-    delete[] pixels_;
 }
-Pixel& Image::at(int i, int j)
+Pixel Image::at(int i, int j)
 {
-    return pixels_[i][j];
+    // ищем нужный нам пиксель
+    int offset = i * width_ * 4;
+    return Pixel(&raw_[offset + j * 4]);
 }
 int Image::height() const
 {
