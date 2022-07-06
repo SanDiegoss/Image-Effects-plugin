@@ -1,8 +1,5 @@
 #include "exported_functions.h"
 
-#ifdef __EMSCRIPTEN__
-EMSCRIPTEN_KEEPALIVE
-#endif // __EMSCRIPTEN__
 void print(unsigned char* data, int n, int m)
 {
     Image* img = new Image(data, n, m);
@@ -20,9 +17,6 @@ void print(unsigned char* data, int n, int m)
     delete img;
 }
 
-#ifdef __EMSCRIPTEN__
-EMSCRIPTEN_KEEPALIVE
-#endif // __EMSCRIPTEN__
 void add_brightness(unsigned char* data, int h, int w, int brightness)
 {
     Image* img = new Image(data, h, w);
