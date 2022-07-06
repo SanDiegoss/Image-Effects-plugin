@@ -4,6 +4,7 @@ node_modules
 package.json
 package-lock.json
 
-src/*.wasm
-src/*.js
+
+**/effects.js
+*.wasm
 
