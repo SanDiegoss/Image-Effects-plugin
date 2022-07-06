@@ -28,10 +28,10 @@ createEvents(dropArea);
 /**
  * @param {Event} event
  */
-async function confirmEffect(event) {
+function confirmEffect(event) {
     preventDefaults(event);
     if (imageData) {
-        await window.ApplyEffect({
+        window.ApplyEffect({
             type: event.target.parentElement.id,
             level: event.target.firstElementChild.value},
             imageData);

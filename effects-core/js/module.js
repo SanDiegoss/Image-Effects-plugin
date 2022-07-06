@@ -50,7 +50,7 @@ const effect = {
      * @param {ImageData} imageData 
      */
     async brightness(value, imageData) {
-        const module = await Module();
+        const module = Module;
         const ptr_ = allocateMemory(module, imageData.data.length);
         setMemory(module, imageData.data, ptr_);
 
@@ -71,6 +71,6 @@ const effect = {
  * @param {Effect} effect 
  * @param {Uint8ClampedArray} data 
  */
-async function ApplyEffect({type, level}, data) {
-    await effect[`${type}`](level, data);
+function ApplyEffect({type, level}, data) {
+    effect[`${type}`](level, data);
 }
