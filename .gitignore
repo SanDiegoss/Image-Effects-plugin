@@ -5,5 +5,5 @@ package.json
 package-lock.json
 
 *.wasm
-effects.js
+src/*.js
 
