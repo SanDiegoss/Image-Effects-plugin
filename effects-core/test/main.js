@@ -4,38 +4,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable max-len */
 
-
 import {createEvents, preventDefaults} from './visualEvents.js';
-
-// allocate memory for wasm, returns pointer
-/**
- * @param {Module} module
- * @param {Number} length
- * @return {Uint8ClampedArray}
- */
-function allocateMemory(module, length) {
-    const ptr = module._malloc(length);
-    return [new Uint8ClampedArray(module.HEAP8.buffer, ptr, length), ptr];
-}
-
-// free memory
-/**
- * @param {Module} module
- * @param {Number} ptr
- */
-function freeMemory(module, ptr) {
-    module._free(ptr);
-}
-
-// fill memory
-/**
- * @param {Module} module
- * @param {Number[]} data
- * @param {Number} ptr
- */
-function setMemory(module, data, ptr) {
-    module.HEAP8.set(data, ptr);
-}
 
 const image = document.createElement('img');
 const forms = document.querySelectorAll('.effectForm > form');
@@ -54,32 +23,20 @@ const context = CANVAS.getContext('2d');
 
 createEvents(dropArea);
 
-const effect = {
-    async brightness(value) {
-        const module = await Module();
-
-        const [ptr, ptr_] = allocateMemory(module, imageData.data.length);
-        setMemory(module, imageData.data, ptr_);
-
-        module._add_brightness(ptr_, CANVAS.height, CANVAS.width, value);
-
-        imageData.data.set(ptr);
-
-        context.putImageData(imageData, 0, 0);
-        freeMemory(module, ptr_);
-    },
-    /* все эффекты, которые могут быть, будут перечислены тут */
-};
-
 /* Slider Events */
 
 /**
  * @param {Event} event
  */
- function confirmEffect(event) {
+async function confirmEffect(event) {
     preventDefaults(event);
     if (imageData) {
-        effect[`${event.target.parentElement.id}`](event.target.firstElementChild.value);
+        await window.ApplyEffect({
+            type: event.target.parentElement.id,
+            level: event.target.firstElementChild.value},
+            imageData);
+        context.putImageData(imageData, 0, 0);
+        console.log(imageData);
     } else {
         throw new Error('No Image!');
     }
@@ -155,27 +112,3 @@ const handleFiles = function handleFilesFromForm(event) {
 
 dropArea.addEventListener('drop', handleFiles, false);
 
-const lulz = (async function lul() {
-    const module = await Module();
-
-    const h = 2;
-    const w = 3;
-    const size = h * w * 4;
-    const data = new Uint8ClampedArray(size);
-    for (let i = 0; i < size; i += 4) {
-        for (let j = 0; j < 4; j += 1) {
-            data[i + j] = j + 1;
-        }
-    }
-    // ptr для JS, ptr_ для wasm
-    const [ptr, ptr_] = allocateMemory(module, size);
-    setMemory(module, data, ptr_);
-
-    // console.log('JS print:')
-    // for(let i = 0; i < size; i++) console.log(ptr[i]);
-
-    // module._print(ptr_, h, w);
-
-    freeMemory(module, ptr_);
-    return 123;
-}());
