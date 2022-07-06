@@ -15,7 +15,7 @@
 /**
  * @param {Module} module
  * @param {Number} length
- * @return {Uint8ClampedArray}
+ * @return {Number}
  * Allocate memory for wasm, returns pointer
  */
  function allocateMemory(module, length) {
@@ -35,7 +35,7 @@ function freeMemory(module, ptr) {
 
 /**
  * @param {Module} module
- * @param {ArrayLike} data
+ * @param {Uint8Array} data
  * @param {Number} ptr
  * @return {void}
  * Fill memory
