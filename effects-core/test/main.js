@@ -63,9 +63,7 @@ const effect = {
 
         module._add_brightness(ptr_, CANVAS.height, CANVAS.width, value);
 
-        for (let i = 0; i < imageData.data.length; i += 1) {
-            imageData.data[i] = ptr[i];
-        }
+        imageData.data.set(ptr);
 
         context.putImageData(imageData, 0, 0);
         freeMemory(module, ptr_);
