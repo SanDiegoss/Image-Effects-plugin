@@ -1,4 +1,5 @@
 /* eslint-disable linebreak-style */
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable new-cap */
 /* eslint-disable indent */
@@ -19,7 +20,7 @@
  */
  function allocateMemory(module, length) {
     const ptr = module._malloc(length);
-    return [new Uint8ClampedArray(module.HEAP8.buffer, ptr, length), ptr];
+    return ptr;
 }
 
 /**
@@ -50,13 +51,14 @@ const effect = {
      */
     async brightness(value, imageData) {
         const module = await Module();
-        const [ptr, ptr_] = allocateMemory(module, imageData.data.length);
+        const ptr_ = allocateMemory(module, imageData.data.length);
         setMemory(module, imageData.data, ptr_);
 
         module._add_brightness(ptr_, imageData.height, imageData.width, value);
-
+        const ptr = new Uint8ClampedArray(module.HEAP8.buffer, ptr_, imageData.data.length);
+        
         imageData.data.set(ptr);
-        console.log(ptr);
+
         freeMemory(module, ptr_);
     },
 /* все эффекты, которые могут быть, будут перечислены тут */

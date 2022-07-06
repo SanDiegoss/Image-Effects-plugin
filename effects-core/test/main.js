@@ -36,7 +36,6 @@ async function confirmEffect(event) {
             level: event.target.firstElementChild.value},
             imageData);
         context.putImageData(imageData, 0, 0);
-        console.log(imageData);
     } else {
         throw new Error('No Image!');
     }
