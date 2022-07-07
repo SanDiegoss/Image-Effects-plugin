@@ -61,6 +61,18 @@ const effect = {
 
         freeMemory(module, ptr_);
     },
+    saturation(value, imageData) {
+        const module = Module;
+        const ptr_ = allocateMemory(module, imageData.data.length);
+        setMemory(module, imageData.data, ptr_);
+
+        module._change_saturation(ptr_, imageData.height, imageData.width, value);
+        const ptr = new Uint8ClampedArray(module.HEAP8.buffer, ptr_, imageData.data.length);
+
+        imageData.data.set(ptr);
+
+        freeMemory(module, ptr_);
+    },
 /* все эффекты, которые могут быть, будут перечислены тут */
 };
 
