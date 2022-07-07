@@ -15,36 +15,27 @@ effects plugin
 
 УСТАНОВКА
 ---------
-Для компиляции C++ кода в WebAssembly используется компилятор [emscripten](https://emscripten.org/index.html).
-
-      # скачиваем emsdk:
-      git clone https://github.com/emscripten-core/emsdk.git
-
-      # переходим в директорию:
-      cd emsdk
+Для установки и теста плагина просто склонируйте репозиторий:
       
-      # Получаем последнюю версию emsdk (не нужно, если клонировали только что)
-      git pull
-
-      # Скачиваем и устанавливаем инструменты emsdk.
-      ./emsdk install latest (emsdk install latest в Windows)
-
-      # Делаем последнюю версию emsk активной
-      ./emsdk activate latest  (emsdk activate latest в Windows)
-
-      # Настраиваем переменные среды окружения
-      source ./emsdk_env.sh (emsdk_env.bat в Windows)
-
+      git clone https://github.com/SanDiegoss/plugin.git
+      
 СБОРКА
 ------
-Для сборки воспользуемся emcc:
+Для сборки нам потребуется python(скачать и установить можно [тут](https://www.python.org/)), а также два репозитория, которые следует склонировать
+рядом с текущим:
       
-      # использование:
-      emcc [options] file..
+      # скрипт для сборки
+      git clone https://github.com/ONLYOFFICE/core.git
       
-Для данного репозитория используем следующую команду:
+      # необходимые инструменты для скрипта
+      git clone https://github.com/ONLYOFFICE/build_tools.git
 
-      emcc image.cpp effect.cpp exported_functions.cpp main.cpp -o ../deploy/effects.js -sMODULARIZE -sEXPORTED_FUNCTIONS='_malloc','_free','_main','_print','_add_brightness'
+Открываем командную строку (терминал в Linux) и переходим в каталог: <папка с репозиториями>\core\Common\js\
+Для компиляции и сборки используется скрипт make.py, вводим команду:
+      
+      python make.py <папка с репозиториями>\plugin\effects-build\effects.json
+      
+Скрипт автоматически скачает все необходимые инструменты и компоненты.
 
 ЗАПУСК
 ------
