@@ -85,8 +85,12 @@ const createFormEvents = (function createFormsEvents(inputForms) {
 }(forms));
 
 /* Drag n Drop */
-
+/**
+ * @param {HTMLImageElement} preImage
+ */
 const imagePreview = function drawImageOnDisplay(preImage) {
+    CANVAS.width = preImage.width;
+    CANVAS.height = preImage.height;
     context.clearRect(0, 0, CANVAS.width, CANVAS.height);
     context.drawImage(preImage, 0, 0, CANVAS.width, CANVAS.height);
 };

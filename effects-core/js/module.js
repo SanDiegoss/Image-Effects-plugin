@@ -46,7 +46,7 @@ function setMemory(module, data, ptr) {
 }
 
 const effect = {
-    /* Одна картинка - один параметр */
+    /* One Image - One Value */
     oIoV: function oneImageOneValue(value, imageData, effect) {
         const module = Module;
         const ptr_ = allocateMemory(module, imageData.data.length);

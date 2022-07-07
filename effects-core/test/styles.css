@@ -6,13 +6,6 @@ body{
     justify-content: center;
 }
 
-canvas{
-    margin-right: 5px;
-    border-width: 2px;
-    border-color: black;
-    border-style: solid;
-}
-
 form{
     display: flex;
     flex-direction: row;
@@ -41,21 +34,19 @@ form{
 /* Id styles */
 
 #mainContent{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+    height: fit-content;
+    width: fit-content;
 }
 
 #effectsPanel{
-    margin-top: 5px;
     width: 992px;
     height: fit-content;
 }
 
 #drop-area{
-    flex-basis: 500px;
     display: flex;
-    align-items:flex-end;
+    height: fit-content;
+    width: fit-content;
     border-width: 2px;
     border-color: black;
     border-style: solid;
