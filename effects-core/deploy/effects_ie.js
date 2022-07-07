@@ -1,9 +1,4 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
-/* eslint-disable new-cap */
-/* eslint-disable indent */
-/* eslint-disable no-trailing-spaces */
+/* eslint-disable  */
 
 
 /* Working with Module */
@@ -153,8 +148,8 @@ function setMemory(module, data, ptr) {
 }
 
 const effect = {
-    // TODO: decorator for module memory functions
-    do(value, imageData, effect) {
+    /* Одна картинка - один параметр */
+    oIoV: function oneImageOneValue(value, imageData, effect) {
         const module = Module;
         const ptr_ = allocateMemory(module, imageData.data.length);
         setMemory(module, imageData.data, ptr_);
@@ -163,16 +158,16 @@ const effect = {
         const ptr = new Uint8ClampedArray(module.HEAP8.buffer, ptr_, imageData.data.length);
 
         imageData.data.set(ptr);
-        
         freeMemory(module, ptr_);
     },
-    brightness(value, imageData) {
-        this.do(value, imageData, 'brightness');
+    /* --------------------------------------------------------- */
+    brightness(level, data) {
+        this.oIoV(level, data, 'brightness');
     },
-    saturation(value, imageData) {
-        this.do(value, imageData, 'saturation');
+    saturation(level, data) {
+        this.oIoV(level, data, 'saturation');
     },
-/* все эффекты, которые могут быть, будут перечислены тут */
+    /* все эффекты, которые могут быть, будут перечислены тут */
 };
 
 /**

@@ -46,8 +46,8 @@ function setMemory(module, data, ptr) {
 }
 
 const effect = {
-    // TODO: decorator for module memory functions
-    do(value, imageData, effect) {
+    /* Одна картинка - один параметр */
+    oIoV: function oneImageOneValue(value, imageData, effect) {
         const module = Module;
         const ptr_ = allocateMemory(module, imageData.data.length);
         setMemory(module, imageData.data, ptr_);
@@ -56,10 +56,16 @@ const effect = {
         const ptr = new Uint8ClampedArray(module.HEAP8.buffer, ptr_, imageData.data.length);
 
         imageData.data.set(ptr);
-        
         freeMemory(module, ptr_);
     },
-/* все эффекты, которые могут быть, будут перечислены тут */
+    /* --------------------------------------------------------- */
+    brightness(level, data) {
+        this.oIoV(level, data, 'brightness');
+    },
+    saturation(level, data) {
+        this.oIoV(level, data, 'saturation');
+    },
+    /* все эффекты, которые могут быть, будут перечислены тут */
 };
 
 /**
@@ -70,5 +76,5 @@ const effect = {
  * @param {Uint8ClampedArray} data 
  */
 function ApplyEffect({type, level}, data) {
-    effect.do(level, data, type);
+    effect[`${type}`](level, data);
 }
