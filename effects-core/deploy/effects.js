@@ -1893,10 +1893,10 @@ var asm = createWasm();
 var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__wasm_call_ctors");
 
 /** @type {function(...*):?} */
-var _brightness = Module["_brightness"] = createExportWrapper("brightness");
+var _change_brightness = Module["_change_brightness"] = createExportWrapper("change_brightness");
 
 /** @type {function(...*):?} */
-var _saturation = Module["_saturation"] = createExportWrapper("saturation");
+var _change_saturation = Module["_change_saturation"] = createExportWrapper("change_saturation");
 
 /** @type {function(...*):?} */
 var _main = Module["_main"] = createExportWrapper("__main_argc_argv");
