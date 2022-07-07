@@ -49,7 +49,7 @@ form{
 #effectsPanel{
     margin-top: 5px;
     width: 992px;
-    height: 100px;
+    height: fit-content;
 }
 
 #drop-area{

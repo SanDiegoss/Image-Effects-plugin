@@ -49,7 +49,7 @@ const effect = {
      * @param {Number} value 
      * @param {ImageData} imageData 
      */
-    async brightness(value, imageData) {
+    brightness(value, imageData) {
         const module = Module;
         const ptr_ = allocateMemory(module, imageData.data.length);
         setMemory(module, imageData.data, ptr_);
