@@ -45,6 +45,7 @@ function setMemory(module, data, ptr) {
 }
 
 const effect = {
+    // TODO: decorator for module memory functions
     do(value, imageData, effect) {
         const module = Module;
         const ptr_ = allocateMemory(module, imageData.data.length);
