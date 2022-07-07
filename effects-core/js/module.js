@@ -45,7 +45,6 @@ function setMemory(module, data, ptr) {
 }
 
 const effect = {
-    // copypaste code
     brightness(value, imageData) {
         const module = Module;
         const ptr_ = allocateMemory(module, imageData.data.length);
