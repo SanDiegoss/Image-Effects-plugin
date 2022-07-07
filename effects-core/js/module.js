@@ -52,6 +52,8 @@ const effect = {
 
         module[`_change_${effect}`](ptr_, imageData.height, imageData.width, value);
         const ptr = new Uint8ClampedArray(module.HEAP8.buffer, ptr_, imageData.data.length);
+
+        imageData.data.set(ptr);
         
         freeMemory(module, ptr_);
     },
