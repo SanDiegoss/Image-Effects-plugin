@@ -1,4 +1,5 @@
 /* eslint-disable linebreak-style */
+/* eslint-disable spaced-comment */
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable new-cap */
@@ -58,12 +59,6 @@ const effect = {
         
         freeMemory(module, ptr_);
     },
-    brightness(value, imageData) {
-        this.do(value, imageData, 'brightness');
-    },
-    saturation(value, imageData) {
-        this.do(value, imageData, 'saturation');
-    },
 /* все эффекты, которые могут быть, будут перечислены тут */
 };
 
@@ -75,5 +70,5 @@ const effect = {
  * @param {Uint8ClampedArray} data 
  */
 function ApplyEffect({type, level}, data) {
-    effect[`${type}`](level, data);
+    effect.do(level, data, type);
 }
