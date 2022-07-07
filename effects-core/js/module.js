@@ -45,21 +45,22 @@ function setMemory(module, data, ptr) {
 }
 
 const effect = {
-    /**
-     * @param {Number} value 
-     * @param {ImageData} imageData 
-     */
-    async brightness(value, imageData) {
+    do(value, imageData, effect) {
         const module = Module;
         const ptr_ = allocateMemory(module, imageData.data.length);
         setMemory(module, imageData.data, ptr_);
 
-        module._change_brightness(ptr_, imageData.height, imageData.width, value);
+        module[`${effect}`](ptr_, imageData.height, imageData.width, value);
         const ptr = new Uint8ClampedArray(module.HEAP8.buffer, ptr_, imageData.data.length);
-        
-        imageData.data.set(ptr);
 
+        imageData.data.set(ptr);
         freeMemory(module, ptr_);
+    },
+    brightness(value, imageData) {
+        effect.do(value, imageData, '_change_brightness');
+    },
+    saturation(value, imageData) {
+        effect.do(value, imageData, '_change_saturation');
     },
 /* все эффекты, которые могут быть, будут перечислены тут */
 };

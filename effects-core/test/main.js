@@ -46,23 +46,20 @@ function confirmEffect(event) {
  */
 const createFormEvents = (function createFormsEvents(inputForms) {
     /**
-    * @type {HTMLInputElement}
-    */
-    let slider;
-    /**
-    * @type {HTMLInputElement}
-    */
-    let valueText;
-
-    /**
     * @param {Event} event
     */
     function changeValue(event) {
         preventDefaults(event);
-        if (event.target === slider) {
-            valueText.value = slider.value;
-        } else if (event.target === valueText) {
+        let valueText;
+        let slider;
+        if (event.target.className === 'effectTextInput') {
+            valueText = event.target;
+            slider = event.target.nextElementSibling.firstElementChild;
             slider.value = valueText.value;
+        } else if (event.target.parentElement.className === 'sliderContainer') {
+            slider = event.target;
+            valueText = event.target.parentElement.parentElement.firstElementChild;
+            valueText.value = slider.value;
         }
         if (valueText.value > 100) {
             valueText.value = 100;
@@ -72,8 +69,14 @@ const createFormEvents = (function createFormsEvents(inputForms) {
         }
     }
     inputForms.forEach((element) => {
-        slider = element.firstElementChild.nextElementSibling.firstElementChild;
-        valueText = element.firstElementChild;
+        /**
+        * @type {HTMLInputElement}
+        */
+        const slider = element.firstElementChild.nextElementSibling.firstElementChild;
+        /**
+        * @type {HTMLInputElement}
+        */
+        const valueText = element.firstElementChild;
 
         slider.addEventListener('input', changeValue, false);
         valueText.addEventListener('input', changeValue, false);

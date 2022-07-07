@@ -15,9 +15,19 @@
 				<span>Загрузите изображение</span>
 			</div>
 		</div>
-		<div id="effectsPanel">
+		<div id="effectsPanel"> <!-- TODO: not dragndrop image input -->
 			<div class="effectForm" id="brightness">
 				<h2>Brightness</h2>
+				<form>
+					Value:<input type="text" value="0" class="effectTextInput">
+					<div class="sliderContainer">
+						<input type="range" min="-100" max="100" value="0">
+					</div>
+					<button type="submit" class="submitButton">Принять</button>
+				</form>
+			</div>
+			<div class="effectForm" id="saturation">
+				<h2>Saturation</h2>
 				<form>
 					Value:<input type="text" value="0" class="effectTextInput">
 					<div class="sliderContainer">
