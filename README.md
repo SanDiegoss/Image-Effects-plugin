@@ -32,11 +32,11 @@ effects plugin
 
 Открываем командную строку (терминал в Linux) и переходим в каталог со скриптом:
 
-      cd <папка с репозиториями>\core\Common\js\
+      cd <папка с репозиториями>/core/Common/js/
       
 Для компиляции и сборки используется скрипт make.py, вводим команду:
       
-      python make.py <папка с репозиториями>\plugin\effects-build\effects.json
+      python make.py <папка с репозиториями>/plugin/effects-build/effects.json
       
 Скрипт автоматически скачает все необходимые инструменты и компоненты.
 
