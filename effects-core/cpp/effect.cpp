@@ -4,15 +4,12 @@ bool AddBrightnessEffect::Apply(Image *img)
 {
     int h = img->height();
     int w = img->width();
+    PixelHSV hsv;
 
     for(int i = 0; i < h; i++)
         for(int j = 0; j < w; j++)
         {
-            PixelHSV hsv;
-
-            // если невозможно получить hsv из rgb то идем дальше
-            if(!hsv.fromRGB(img->at(i, j).RGB())) continue;
-
+            hsv.fromRGB(img->at(i, j).RGB());
             hsv.V += (double)brightness_ / 100;
 
             // проверяем границы

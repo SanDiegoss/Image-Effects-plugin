@@ -63,8 +63,7 @@ struct PixelHSV
     PixelHSV() = default;
     PixelHSV(const PixelRGB& rgb);
 
-    // не всегда можно из rgb получить hsv, false - если это невозможно
-    bool fromRGB(const PixelRGB& rgb);
+    void fromRGB(const PixelRGB& rgb);
     PixelRGB RGB();
 };
 
@@ -84,6 +83,9 @@ public:
     Image(unsigned char* raw, int height, int width);
 
     ~Image();
+
+    // вернет пиксель как указатель
+    unsigned char* atRaw(int i, int j);
 
     // вернет пиксель
     Pixel at(int i, int j);

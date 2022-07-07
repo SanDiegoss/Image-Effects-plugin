@@ -65,18 +65,18 @@ PixelHSV::PixelHSV(const PixelRGB& rgb) : PixelHSV()
     this->fromRGB(rgb);
 }
 
-bool PixelHSV::fromRGB(const PixelRGB& rgb)
+void PixelHSV::fromRGB(const PixelRGB& rgb)
 {
     // RGB -> HSV
     double max = std::max({rgb.R, rgb.G, rgb.B});
     double min = std::min({rgb.R, rgb.G, rgb.B});
-    if(max == min) return false;
 
     // H setup
-    if(max == rgb.R && rgb.G >= rgb.B) H = 60 * ((rgb.G - rgb.B) / (max - min));
-    if(max == rgb.R && rgb.G < rgb.B) H = 60 * ((rgb.G - rgb.B) / (max - min)) + 360;
-    if(max == rgb.G) H = 60 * ((rgb.B - rgb.R) / (max - min)) + 120;
-    if(max == rgb.B) H = 60 * ((rgb.R - rgb.G) / (max - min)) + 240;
+    if(max == min) H = 0;
+    else if(max == rgb.R && rgb.G >= rgb.B) H = 60 * ((rgb.G - rgb.B) / (max - min));
+    else if(max == rgb.R && rgb.G < rgb.B) H = 60 * ((rgb.G - rgb.B) / (max - min)) + 360;
+    else if(max == rgb.G) H = 60 * ((rgb.B - rgb.R) / (max - min)) + 120;
+    else if(max == rgb.B) H = 60 * ((rgb.R - rgb.G) / (max - min)) + 240;
 
     // S setup
     if(max == 0) S = 0;
@@ -85,7 +85,6 @@ bool PixelHSV::fromRGB(const PixelRGB& rgb)
     // V setup
     V = max;
     
-    return true;
 }
 PixelRGB PixelHSV::RGB()
 {
@@ -150,11 +149,15 @@ Image::Image(unsigned char* raw, int height, int width) :  raw_(raw), height_(he
 Image::~Image()
 {
 }
-Pixel Image::at(int i, int j)
+unsigned char* Image::atRaw(int i, int j)
 {
     // ищем нужный нам пиксель
     int offset = i * width_ * 4;
-    return Pixel(&raw_[offset + j * 4]);
+    return &raw_[offset + j * 4];
+}
+Pixel Image::at(int i, int j)
+{
+    return Pixel(this->atRaw(i, j));
 }
 int Image::height() const
 {
