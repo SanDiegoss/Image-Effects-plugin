@@ -54,7 +54,7 @@ const effect = {
         const ptr_ = allocateMemory(module, imageData.data.length);
         setMemory(module, imageData.data, ptr_);
 
-        module._add_brightness(ptr_, imageData.height, imageData.width, value);
+        module._change_brightness(ptr_, imageData.height, imageData.width, value);
         const ptr = new Uint8ClampedArray(module.HEAP8.buffer, ptr_, imageData.data.length);
         
         imageData.data.set(ptr);
