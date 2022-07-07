@@ -1,0 +1,35 @@
+{
+	"name": "effects",
+	"res_folder": "../effects-core/deploy/",
+	"wasm": true,
+	"asm": true,
+	"embed_mem_file": true,
+	"run_before": "",
+	"run_after": "",
+	"base_js_content": "../effects-core/js/module.js",
+
+	"compiler_flags": [
+		"-O3",
+		"-fno-exceptions",
+		"-fno-rtti",
+		"-Wno-unused-command-line-argument",
+		"-s FILESYSTEM=0",
+		"-s ENVIRONMENT='web,worker'"
+	],
+	"exported_functions": [
+		"_malloc",
+		"_free",
+        "_main",
+        "_change_brightness",
+        "_change_saturation"
+	],
+	"include_path": ["../effects-core/cpp"],
+	"define": [],
+	"compile_files_array": [
+	{
+		"name": "s",
+		"folder": "../effects-core/cpp",
+		"files": ["effect.cpp", "exported_functions.cpp", "image.cpp", "main.cpp"]
+	}
+	]
+}
