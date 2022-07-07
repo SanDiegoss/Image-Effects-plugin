@@ -5,13 +5,9 @@
 /* eslint-disable indent */
 /* eslint-disable no-trailing-spaces */
 
+
 /* Working with Module */
-/* 0: 82
-1: 23
-2: 77
-3: 255
-4: 82
-5: 23*/
+
 /**
  * @param {Module} module
  * @param {Number} length
