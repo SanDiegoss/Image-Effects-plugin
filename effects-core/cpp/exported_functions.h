@@ -6,8 +6,8 @@ extern "C"
 {
 #endif // __cplusplus
 
-void change_brightness(unsigned char* data, int h, int w, int brightness);
-void change_saturation(unsigned char* data, int h, int w, int saturation);
+void brightness(unsigned char* data, int h, int w, int brightness);
+void saturation(unsigned char* data, int h, int w, int saturation);
 
 #ifdef __cplusplus
 }
