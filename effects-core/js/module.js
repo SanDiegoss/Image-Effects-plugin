@@ -54,7 +54,6 @@ const effect = {
         const ptr_ = allocateMemory(module, imageData.data.length);
         setMemory(module, imageData.data, ptr_);
 
-        console.log(isModuleLoaded);
         module[`_change_${effect}`](ptr_, imageData.height, imageData.width, value);
         const ptr = new Uint8ClampedArray(module.HEAP8.buffer, ptr_, imageData.data.length);
 
@@ -79,5 +78,9 @@ const effect = {
  * @param {Uint8ClampedArray} data 
  */
 function ApplyEffect({type, level}, data) {
-    effect[`${type}`](level, data);
+    if (isModuleLoaded) {
+        effect[`${type}`](level, data);
+    } else {
+        throw new Error('Module is not loaded!');
+    }
 }
