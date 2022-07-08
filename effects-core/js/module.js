@@ -6,14 +6,14 @@
 /* eslint-disable indent */
 /* eslint-disable no-trailing-spaces */
 
+// eslint-disable-next-line prefer-const
+let isModuleLoaded = false;
 
 /* Working with Module */
 
 //polyfill
 
 //module
-
-let isModuleLoaded = false;
 
 /**
  * @param {Module} module

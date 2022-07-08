@@ -6,6 +6,8 @@
 /* eslint-disable indent */
 /* eslint-disable no-trailing-spaces */
 
+// eslint-disable-next-line prefer-const
+let isModuleLoaded = false;
 
 /* Working with Module */
 
@@ -120,8 +122,6 @@ function callMain(args){var entryFunction=Module["_main"];args=args||[];args.uns
 function run(args){args=args||arguments_;if(runDependencies>0)return;preRun();if(runDependencies>0)return;function doRun(){if(calledRun)return;calledRun=true;Module["calledRun"]=true;if(ABORT)return;initRuntime();preMain();if(Module["onRuntimeInitialized"])Module["onRuntimeInitialized"]();if(shouldRunNow)callMain(args);postRun()}if(Module["setStatus"]){Module["setStatus"]("Running...");setTimeout(function(){setTimeout(function(){Module["setStatus"]("")},1);doRun()},1)}else doRun()}Module["run"]=run;
 function exit(status,implicit){EXITSTATUS=status;procExit(status)}function procExit(code){EXITSTATUS=code;if(!keepRuntimeAlive()){if(Module["onExit"])Module["onExit"](code);ABORT=true}quit_(code,new ExitStatus(code))}if(Module["preInit"]){if(typeof Module["preInit"]=="function")Module["preInit"]=[Module["preInit"]];while(Module["preInit"].length>0)Module["preInit"].pop()()}var shouldRunNow=true;if(Module["noInitialRun"])shouldRunNow=false;run();
 
-
-let isModuleLoaded = false;
 
 /**
  * @param {Module} module
