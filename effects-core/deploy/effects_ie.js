@@ -1,4 +1,10 @@
-/* eslint-disable  */
+/* eslint-disable linebreak-style */
+/* eslint-disable spaced-comment */
+/* eslint-disable max-len */
+/* eslint-disable no-unused-vars */
+/* eslint-disable new-cap */
+/* eslint-disable indent */
+/* eslint-disable no-trailing-spaces */
 
 
 /* Working with Module */
@@ -89,7 +95,7 @@ function stringToUTF8Array(str,heap,outIdx,maxBytesToWrite){if(!(maxBytesToWrite
 128|u>>6&63;heap[outIdx++]=128|u&63}else{if(outIdx+3>=endIdx)break;heap[outIdx++]=240|u>>18;heap[outIdx++]=128|u>>12&63;heap[outIdx++]=128|u>>6&63;heap[outIdx++]=128|u&63}}heap[outIdx]=0;return outIdx-startIdx}function lengthBytesUTF8(str){var len=0;for(var i=0;i<str.length;++i){var u=str.charCodeAt(i);if(u>=55296&&u<=57343)u=65536+((u&1023)<<10)|str.charCodeAt(++i)&1023;if(u<=127)++len;else if(u<=2047)len+=2;else if(u<=65535)len+=3;else len+=4}return len}
 function allocateUTF8OnStack(str){var size=lengthBytesUTF8(str)+1;var ret=stackAlloc(size);stringToUTF8Array(str,HEAP8,ret,size);return ret}var buffer,HEAP8,HEAPU8,HEAP16,HEAPU16,HEAP32,HEAPU32,HEAPF32,HEAPF64;
 function updateGlobalBufferAndViews(buf){buffer=buf;Module["HEAP8"]=HEAP8=new Int8Array(buf);Module["HEAP16"]=HEAP16=new Int16Array(buf);Module["HEAP32"]=HEAP32=new Int32Array(buf);Module["HEAPU8"]=HEAPU8=new Uint8Array(buf);Module["HEAPU16"]=HEAPU16=new Uint16Array(buf);Module["HEAPU32"]=HEAPU32=new Uint32Array(buf);Module["HEAPF32"]=HEAPF32=new Float32Array(buf);Module["HEAPF64"]=HEAPF64=new Float64Array(buf)}var INITIAL_MEMORY=Module["INITIAL_MEMORY"]||16777216;
-if(Module["wasmMemory"])wasmMemory=Module["wasmMemory"];else wasmMemory=new WebAssembly.Memory({"initial":INITIAL_MEMORY/65536,"maximum":INITIAL_MEMORY/65536});if(wasmMemory)buffer=wasmMemory.buffer;INITIAL_MEMORY=buffer.byteLength;updateGlobalBufferAndViews(buffer);var wasmTable;var __ATPRERUN__=[];var __ATINIT__=[];var __ATMAIN__=[];var __ATPOSTRUN__=[];var runtimeInitialized=false;function keepRuntimeAlive(){return noExitRuntime}
+if(Module["wasmMemory"])wasmMemory=Module["wasmMemory"];else wasmMemory=new WebAssembly.Memory({"initial":INITIAL_MEMORY/65536,"maximum":INITIAL_MEMORY/65536});if(wasmMemory)buffer=wasmMemory.buffer;INITIAL_MEMORY=buffer.byteLength;updateGlobalBufferAndViews(buffer);var wasmTable;var __ATPRERUN__=[];var __ATINIT__=[];var __ATMAIN__=[];var __ATPOSTRUN__=[function(){isModuleLoaded=true;}];var runtimeInitialized=false;function keepRuntimeAlive(){return noExitRuntime}
 function preRun(){if(Module["preRun"]){if(typeof Module["preRun"]=="function")Module["preRun"]=[Module["preRun"]];while(Module["preRun"].length)addOnPreRun(Module["preRun"].shift())}callRuntimeCallbacks(__ATPRERUN__)}function initRuntime(){runtimeInitialized=true;callRuntimeCallbacks(__ATINIT__)}function preMain(){callRuntimeCallbacks(__ATMAIN__)}
 function postRun(){if(Module["postRun"]){if(typeof Module["postRun"]=="function")Module["postRun"]=[Module["postRun"]];while(Module["postRun"].length)addOnPostRun(Module["postRun"].shift())}callRuntimeCallbacks(__ATPOSTRUN__)}function addOnPreRun(cb){__ATPRERUN__.unshift(cb)}function addOnInit(cb){__ATINIT__.unshift(cb)}function addOnPostRun(cb){__ATPOSTRUN__.unshift(cb)}
 if(!Math.imul||Math.imul(4294967295,5)!==-5)Math.imul=function imul(a,b){var ah=a>>>16;var al=a&65535;var bh=b>>>16;var bl=b&65535;return al*bl+(ah*bl+al*bh<<16)|0};if(!Math.fround){var froundBuffer=new Float32Array(1);Math.fround=function(x){froundBuffer[0]=x;return froundBuffer[0]}}if(!Math.clz32)Math.clz32=function(x){var n=32;var y=x>>16;if(y){n-=16;x=y}y=x>>8;if(y){n-=8;x=y}y=x>>4;if(y){n-=4;x=y}y=x>>2;if(y){n-=2;x=y}y=x>>1;if(y)return n-2;return n-x};
@@ -114,6 +120,8 @@ function callMain(args){var entryFunction=Module["_main"];args=args||[];args.uns
 function run(args){args=args||arguments_;if(runDependencies>0)return;preRun();if(runDependencies>0)return;function doRun(){if(calledRun)return;calledRun=true;Module["calledRun"]=true;if(ABORT)return;initRuntime();preMain();if(Module["onRuntimeInitialized"])Module["onRuntimeInitialized"]();if(shouldRunNow)callMain(args);postRun()}if(Module["setStatus"]){Module["setStatus"]("Running...");setTimeout(function(){setTimeout(function(){Module["setStatus"]("")},1);doRun()},1)}else doRun()}Module["run"]=run;
 function exit(status,implicit){EXITSTATUS=status;procExit(status)}function procExit(code){EXITSTATUS=code;if(!keepRuntimeAlive()){if(Module["onExit"])Module["onExit"](code);ABORT=true}quit_(code,new ExitStatus(code))}if(Module["preInit"]){if(typeof Module["preInit"]=="function")Module["preInit"]=[Module["preInit"]];while(Module["preInit"].length>0)Module["preInit"].pop()()}var shouldRunNow=true;if(Module["noInitialRun"])shouldRunNow=false;run();
 
+
+let isModuleLoaded = false;
 
 /**
  * @param {Module} module
@@ -148,12 +156,13 @@ function setMemory(module, data, ptr) {
 }
 
 const effect = {
-    /* Одна картинка - один параметр */
+    /* One Image - One Value */
     oIoV: function oneImageOneValue(value, imageData, effect) {
         const module = Module;
         const ptr_ = allocateMemory(module, imageData.data.length);
         setMemory(module, imageData.data, ptr_);
 
+        console.log(isModuleLoaded);
         module[`_change_${effect}`](ptr_, imageData.height, imageData.width, value);
         const ptr = new Uint8ClampedArray(module.HEAP8.buffer, ptr_, imageData.data.length);
 

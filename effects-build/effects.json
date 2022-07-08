@@ -5,7 +5,7 @@
 	"asm": true,
 	"embed_mem_file": true,
 	"run_before": "",
-	"run_after": "",
+	"run_after": "after.py",
 	"base_js_content": "../effects-core/js/module.js",
 
 	"compiler_flags": [

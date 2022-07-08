@@ -13,6 +13,8 @@
 
 //module
 
+let isModuleLoaded = false;
+
 /**
  * @param {Module} module
  * @param {Number} length
@@ -52,6 +54,7 @@ const effect = {
         const ptr_ = allocateMemory(module, imageData.data.length);
         setMemory(module, imageData.data, ptr_);
 
+        console.log(isModuleLoaded);
         module[`_change_${effect}`](ptr_, imageData.height, imageData.width, value);
         const ptr = new Uint8ClampedArray(module.HEAP8.buffer, ptr_, imageData.data.length);
 
