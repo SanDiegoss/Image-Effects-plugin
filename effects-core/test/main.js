@@ -49,6 +49,15 @@ function discardAllChanges(event) {
     effectContext.putImageData(originImageData, 0, 0);
 }
 /**
+ * @param {HTMLElement} form
+ * @return {[HTMLInputElement, HTMLInputElement]}
+ */
+ function getValuesFromForm(form) {
+    const slider = document.querySelector(`#${form.id} > .sliderContainer`).firstElementChild;
+    const valueText = form.firstElementChild.nextElementSibling;
+    return [slider, valueText];
+}
+/**
  */
 function setDefaults() {
     forms.forEach(function(item) {
@@ -123,15 +132,7 @@ function changeValue(event) {
     }
     setEffect();
 }
-/**
- * @param {HTMLElement} form
- * @return {[HTMLInputElement, HTMLInputElement]}
- */
-function getValuesFromForm(form) {
-    const slider = document.querySelector(`#${form.id} > .sliderContainer`).firstElementChild;
-    const valueText = form.firstElementChild.nextElementSibling;
-    return [slider, valueText];
-}
+
 forms.forEach(function(element) {
     getValuesFromForm(element).forEach(function(item) {
         item.addEventListener('input', changeValue, false);
