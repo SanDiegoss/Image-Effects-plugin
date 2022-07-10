@@ -1,39 +1,39 @@
-/**
- * @param {HTMLElement} element 
- */
-let createEvents = function createVisualEvents(element){
-    
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName)=>{
-        element.addEventListener(eventName, preventDefaults, false);
-    });
-    ['dragenter', 'dragover'].forEach(eventName => {
-        element.addEventListener(eventName, highlight, false);
-    });
-    ['dragleave', 'drop'].forEach(eventName => {
-        element.addEventListener(eventName, unhighlight, false);
-    });
-}
+/* eslint-disable linebreak-style */
+/* eslint-disable no-unused-vars */
+/* eslint-disable indent */
+/* eslint-disable new-cap */
+/* eslint-disable max-len */
 
+const dropArea = document.getElementById('drop-area');
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName)=>{
+    dropArea.addEventListener(eventName, preventDefaults, false);
+});
+['dragenter', 'dragover'].forEach((eventName) => {
+    dropArea.addEventListener(eventName, highlight, false);
+});
+['dragleave', 'drop'].forEach((eventName) => {
+    dropArea.addEventListener(eventName, unhighlight, false);
+});
 /**
- * @param {Event} event 
+ * @param {Event} event
  */
-let highlight = function addClassHighlight(event){
-    this.classList.add('highlight');
+const highlight = function addClassHighlight(event) {
+    dropArea.classList.add('highlight');
 };
 
 /**
- * @param {Event} event 
+ * @param {Event} event
  */
-let unhighlight = function removeClassHighlight(event){
-    this.classList.remove('highlight');
+const unhighlight = function removeClassHighlight(event) {
+    dropArea.classList.remove('highlight');
 };
 
 /**
- * @param {Event} event 
+ * @param {Event} event
  */
-function preventDefaults (event) {
-    event.preventDefault()
-    event.stopPropagation()
+function preventDefaults(event) {
+    event.preventDefault();
+    event.stopPropagation();
 }
 
-export {createEvents, preventDefaults};

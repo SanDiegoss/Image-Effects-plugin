@@ -4,11 +4,8 @@
 /* eslint-disable new-cap */
 /* eslint-disable max-len */
 
-import {createEvents, preventDefaults} from './visualEvents.js';
-
 const image = document.createElement('img');
 const forms = document.querySelectorAll('.effectForm > form');
-const dropArea = document.getElementById('drop-area');
 /**
  * @type {ImageData}
  */
@@ -21,8 +18,6 @@ const CANVAS = document.getElementById('canvas');
 
 const context = CANVAS.getContext('2d');
 
-createEvents(dropArea);
-
 /* Slider Events */
 
 /**
@@ -30,12 +25,14 @@ createEvents(dropArea);
  */
 function confirmEffect(event) {
     preventDefaults(event);
+    const copyImageData = context.createImageData(imageData);
+    copyImageData.data.set(imageData.data);
     if (imageData) {
         window.ApplyEffect({
             type: event.target.parentElement.id,
             level: event.target.firstElementChild.value},
-            imageData);
-        context.putImageData(imageData, 0, 0);
+            copyImageData);
+        context.putImageData(copyImageData, 0, 0);
     } else {
         throw new Error('No Image!');
     }
