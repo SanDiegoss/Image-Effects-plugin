@@ -6,19 +6,10 @@
 
 const dropArea = document.getElementById('drop-area');
 
-['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName)=>{
-    dropArea.addEventListener(eventName, preventDefaults, false);
-});
-['dragenter', 'dragover'].forEach((eventName) => {
-    dropArea.addEventListener(eventName, highlight, false);
-});
-['dragleave', 'drop'].forEach((eventName) => {
-    dropArea.addEventListener(eventName, unhighlight, false);
-});
 /**
  * @param {Event} event
  */
-const highlight = function addClassHighlight(event) {
+ const highlight = function addClassHighlight(event) {
     dropArea.classList.add('highlight');
 };
 
@@ -28,6 +19,16 @@ const highlight = function addClassHighlight(event) {
 const unhighlight = function removeClassHighlight(event) {
     dropArea.classList.remove('highlight');
 };
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function(eventName) {
+    dropArea.addEventListener(eventName, preventDefaults, false);
+});
+['dragenter', 'dragover'].forEach(function(eventName) {
+    dropArea.addEventListener(eventName, highlight, false);
+});
+['dragleave', 'drop'].forEach(function(eventName) {
+    dropArea.addEventListener(eventName, unhighlight, false);
+});
 
 /**
  * @param {Event} event
