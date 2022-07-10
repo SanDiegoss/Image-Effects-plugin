@@ -4,95 +4,153 @@
 /* eslint-disable new-cap */
 /* eslint-disable max-len */
 
-import {createEvents, preventDefaults} from './visualEvents.js';
-
 const image = document.createElement('img');
-const forms = document.querySelectorAll('.effectForm > form');
-const dropArea = document.getElementById('drop-area');
-/**
- * @type {ImageData}
- */
-let imageData;
-
+const forms = document.querySelectorAll('.effectForm');
 /**
  * @type {HTMLCanvasElement}
  */
-const CANVAS = document.getElementById('canvas');
+const originCanvas = document.getElementById('previewImage');
+const originContext = originCanvas.getContext('2d');
+/**
+ * @type {HTMLCanvasElement}
+ */
+const effectCanvas = document.getElementById('previewEffect');
+const effectContext = effectCanvas.getContext('2d');
+/**
+ * @type {ImageData}
+ */
+let originImageData;
+/**
+ * @type {ImageData}
+ */
+let effectImageData;
+/**
+ * @type {ImageData}
+ */
+let middlewareImageData;
+/* Global buttons Events*/
 
-const context = CANVAS.getContext('2d');
-
-createEvents(dropArea);
-
-/* Slider Events */
+/* origin -> middleware -> effect */
 
 /**
  * @param {Event} event
  */
-function confirmEffect(event) {
+function saveAllChanges(event) {
     preventDefaults(event);
-    if (imageData) {
-        window.ApplyEffect({
-            type: event.target.parentElement.id,
-            level: event.target.firstElementChild.value},
-            imageData);
-        context.putImageData(imageData, 0, 0);
+    originImageData.data.set(middlewareImageData.data);
+    originContext.putImageData(middlewareImageData, 0, 0);
+}
+/**
+ * @param {Event} event
+ */
+function discardAllChanges(event) {
+    preventDefaults(event);
+    middlewareImageData.data.set(originImageData.data);
+    effectContext.putImageData(originImageData, 0, 0);
+}
+/**
+ */
+function setDefaults() {
+    forms.forEach(function(item) {
+        const [slider, valueText] = getValuesFromForm(item);
+        slider.value = 0;
+        valueText.value = 0;
+    });
+}
+/**
+ * @param {Event} event
+ */
+function confirmEffects(event) {
+    preventDefaults(event);
+    middlewareImageData.data.set(effectImageData.data);
+    effectContext.putImageData(middlewareImageData, 0, 0);
+    setDefaults();
+}
+const saveAllChangesButton = document.getElementById('saveAllChangesButton');
+const discardAllChangesButton = document.getElementById('discardAllChangesButton');
+const confirmEffectsButton = document.getElementById('confirmEffects');
+
+saveAllChangesButton.addEventListener('click', saveAllChanges, false);
+discardAllChangesButton.addEventListener('click', discardAllChanges, false);
+confirmEffectsButton.addEventListener('click', confirmEffects, false);
+/* Slider Events */
+
+/**
+ */
+function setEffect() {
+    if (effectImageData) {
+        effectImageData.data.set(middlewareImageData.data);
+        forms.forEach(function(element) {
+            const [slider, valueText] = getValuesFromForm(element);
+            window.ApplyEffect({
+                type: valueText.parentElement.id,
+                level: valueText.value},
+                effectImageData);
+            effectContext.putImageData(effectImageData, 0, 0);
+        });
     } else {
         throw new Error('No Image!');
     }
 }
 
 /**
- * @param {NodeListOf<Element>} forms
+ * @param {Event} event
  */
-const createFormEvents = (function createFormsEvents(inputForms) {
+function changeValue(event) {
+    preventDefaults(event);
     /**
-    * @param {Event} event
+    * @type {HTMLInputElement}
     */
-    function changeValue(event) {
-        preventDefaults(event);
-        let valueText;
-        let slider;
-        if (event.target.className === 'effectTextInput') {
-            valueText = event.target;
-            slider = event.target.nextElementSibling.firstElementChild;
-            slider.value = valueText.value;
-        } else if (event.target.parentElement.className === 'sliderContainer') {
-            slider = event.target;
-            valueText = event.target.parentElement.parentElement.firstElementChild;
-            valueText.value = slider.value;
-        }
-        if (valueText.value > 100) {
-            valueText.value = 100;
-        }
-        if (valueText.value < -100) {
-            valueText.value = -100;
-        }
+    let valueText;
+    /**
+    * @type {HTMLInputElement}
+    */
+    let slider;
+    if (event.target.className === 'effectTextInput') {
+        valueText = event.target;
+        slider = event.target.nextElementSibling.firstElementChild;
+        slider.value = valueText.value;
+    } else if (event.target.parentElement.className === 'sliderContainer') {
+        slider = event.target;
+        valueText = event.target.parentElement.parentElement.firstElementChild.nextElementSibling;
+        valueText.value = slider.value;
     }
-    inputForms.forEach((element) => {
-        /**
-        * @type {HTMLInputElement}
-        */
-        const slider = element.firstElementChild.nextElementSibling.firstElementChild;
-        /**
-        * @type {HTMLInputElement}
-        */
-        const valueText = element.firstElementChild;
-
-        slider.addEventListener('input', changeValue, false);
-        valueText.addEventListener('input', changeValue, false);
-        element.addEventListener('submit', confirmEffect, false);
+    if (valueText.value > 100) {
+        valueText.value = 100;
+    }
+    if (valueText.value < -100) {
+        valueText.value = -100;
+    }
+    setEffect();
+}
+/**
+ * @param {HTMLElement} form
+ * @return {[HTMLInputElement, HTMLInputElement]}
+ */
+function getValuesFromForm(form) {
+    const slider = document.querySelector(`#${form.id} > .sliderContainer`).firstElementChild;
+    const valueText = form.firstElementChild.nextElementSibling;
+    return [slider, valueText];
+}
+forms.forEach(function(element) {
+    getValuesFromForm(element).forEach(function(item) {
+        item.addEventListener('input', changeValue, false);
     });
-}(forms));
+});
 
 /* Drag n Drop */
 /**
  * @param {HTMLImageElement} preImage
  */
 const imagePreview = function drawImageOnDisplay(preImage) {
-    CANVAS.width = preImage.width;
-    CANVAS.height = preImage.height;
-    context.clearRect(0, 0, CANVAS.width, CANVAS.height);
-    context.drawImage(preImage, 0, 0, CANVAS.width, CANVAS.height);
+    [originCanvas, effectCanvas].forEach(function(item) {
+        item.width = preImage.width;
+        item.height = preImage.height;
+    });
+    [originContext, effectContext].forEach(function(item) {
+        item.clearRect(0, 0, originCanvas.width, originCanvas.height);
+        item.drawImage(preImage, 0, 0, originCanvas.width, originCanvas.height);
+    });
 };
 
 /**
@@ -107,11 +165,15 @@ const handleFiles = function handleFilesFromForm(event) {
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = () => {
+    reader.onload = function() {
         image.src = reader.result;
-        image.onload = () => {
+        image.onload = function() {
             imagePreview(image);
-            imageData = context.getImageData(0, 0, CANVAS.width, CANVAS.height);
+            originImageData = originContext.getImageData(0, 0, originCanvas.width, originCanvas.height);
+            effectImageData = effectContext.getImageData(0, 0, originCanvas.width, originCanvas.height);
+
+            middlewareImageData = originContext.createImageData(originImageData);
+            middlewareImageData.data.set(originImageData.data);
         };
     };
 };

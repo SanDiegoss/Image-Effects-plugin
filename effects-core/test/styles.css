@@ -6,6 +6,13 @@ body{
     justify-content: center;
 }
 
+canvas{
+    margin: 5px;
+    border-width: 2px;
+    border-color: black;
+    border-style: solid;
+}
+
 form{
     display: flex;
     flex-direction: row;
@@ -48,12 +55,13 @@ form{
     height: fit-content;
     width: fit-content;
     border-width: 2px;
-    border-color: black;
-    border-style: solid;
+    border-color: blue;
+    border-style: dotted;
 }
 
 #drop-area.highlight{
     border-color: aqua;
+    border-style: solid;
 }
 
 /* Typography */
