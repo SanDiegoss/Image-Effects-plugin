@@ -7,14 +7,29 @@
 /* eslint-disable no-trailing-spaces */
 
 // eslint-disable-next-line prefer-const
-let isModuleLoaded = false;
 
-/* Working with Module */
-
-//polyfill
-
-//module
 (function(window) {
+	let isModuleLoaded = false;
+
+    function onLoadModule() {
+        isModuleLoaded = true;
+
+        if (window.ImageEffects) {
+            window.ImageEffects.onLoadModule && window.ImageEffects.onLoadModule({
+                ApplyEffect : ApplyEffect
+            });
+        } else {
+            window.ImageEffects = window.ImageEffects || {};
+            window.ImageEffects.isReady = true;
+            window.ImageEffects.Apply = ApplyEffect;
+        }
+    };
+
+	/* Working with Module */
+
+	//polyfill
+
+	//module
     /**
      * @param {Module} module
      * @param {Number} length
@@ -77,7 +92,7 @@ let isModuleLoaded = false;
      * @param {Effect} effect 
      * @param {Uint8ClampedArray} data 
      */
-    window.ApplyEffect = function ApplyEffect({type, level}, data) {
+    function ApplyEffect({type, level}, data) {
         if (isModuleLoaded) {
             effect[`${type}`](level, data);
         } else {
