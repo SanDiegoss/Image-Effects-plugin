@@ -41,8 +41,7 @@ form{
 /* Id styles */
 
 #mainContent{
-    height: fit-content;
-    width: fit-content;
+    display: inline-block;
 }
 
 #effectsPanel{
@@ -51,9 +50,7 @@ form{
 }
 
 #drop-area{
-    display: flex;
-    height: fit-content;
-    width: fit-content;
+    display: inline-flex;
     border-width: 2px;
     border-color: blue;
     border-style: dotted;
