@@ -1,6 +1,6 @@
 {
 	"name": "effects",
-	"res_folder": "../effects-core/deploy/",
+	"res_folder": "../effects-core/deploy/engine",
 	"wasm": true,
 	"asm": true,
 	"embed_mem_file": true,

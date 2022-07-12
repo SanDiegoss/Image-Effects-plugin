@@ -91,7 +91,7 @@ function setEffect() {
         effectImageData.data.set(middlewareImageData.data);
         forms.forEach(function(element) {
             const [slider, valueText] = getValuesFromForm(element);
-            window.ApplyEffect({
+            window.ImageEffects.Apply({
                 type: valueText.parentElement.id,
                 level: valueText.value},
                 effectImageData);
@@ -180,4 +180,6 @@ const handleFiles = function handleFilesFromForm(event) {
 };
 
 dropArea.addEventListener('drop', handleFiles, false);
+
+window.ImageEffects.loadModule({enginePath : "./effects-core/deploy/engine/"});
 
