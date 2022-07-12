@@ -9,14 +9,15 @@
 // eslint-disable-next-line prefer-const
 
 (function(window) {
-	let isModuleLoaded = false;
-
+    let isModuleLoaded = false;
+    /**
+     */
     function onLoadModule() {
         isModuleLoaded = true;
 
         if (window.ImageEffects) {
             window.ImageEffects.onLoadModule && window.ImageEffects.onLoadModule({
-                ApplyEffect : ApplyEffect
+                ApplyEffect: ApplyEffect,
             });
         } else {
             window.ImageEffects = window.ImageEffects || {};
@@ -25,11 +26,11 @@
         }
     };
 
-	/* Working with Module */
+    /* Working with Module */
 
-	//polyfill
+    //polyfill
 
-	//module
+    //module
     /**
      * @param {Module} module
      * @param {Number} length

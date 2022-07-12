@@ -181,5 +181,5 @@ const handleFiles = function handleFilesFromForm(event) {
 
 dropArea.addEventListener('drop', handleFiles, false);
 
-window.ImageEffects.loadModule({enginePath : "./effects-core/deploy/engine/"});
+window.ImageEffects.loadModule({enginePath: './effects-core/deploy/engine/'});
 
