@@ -70,17 +70,17 @@
             const ptr_ = allocateMemory(module, imageData.data.length);
             setMemory(module, imageData.data, ptr_);
 
-            module[`_change_${effect}`](ptr_, imageData.height, imageData.width, value);
+            module['_change_'+ effect](ptr_, imageData.height, imageData.width, value);
             const ptr = new Uint8ClampedArray(module.HEAP8.buffer, ptr_, imageData.data.length);
 
             imageData.data.set(ptr);
             freeMemory(module, ptr_);
         },
         /* --------------------------------------------------------- */
-        brightness(level, data) {
+        brightness: function(level, data) {
             this.oIoV(level, data, 'brightness');
         },
-        saturation(level, data) {
+        saturation: function(level, data) {
             this.oIoV(level, data, 'saturation');
         },
         /* все эффекты, которые могут быть, будут перечислены тут */
@@ -93,9 +93,9 @@
      * @param {Effect} effect 
      * @param {Uint8ClampedArray} data 
      */
-    function ApplyEffect({type, level}, data) {
+    function ApplyEffect(effect, data) {
         if (isModuleLoaded) {
-            effect[`${type}`](level, data);
+            effect[effect.type](effect.level, data);
         } else {
             throw new Error('Module is not loaded!');
         }

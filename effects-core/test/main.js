@@ -3,6 +3,12 @@
 /* eslint-disable indent */
 /* eslint-disable new-cap */
 /* eslint-disable max-len */
+/**
+ * @return {Boolean}
+ */
+function isInternetExplorer() {
+    return window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
+}
 
 const image = document.createElement('img');
 const forms = document.querySelectorAll('.effectForm');
@@ -53,15 +59,17 @@ function discardAllChanges(event) {
  * @return {[HTMLInputElement, HTMLInputElement]}
  */
  function getValuesFromForm(form) {
-    const slider = document.querySelector(`#${form.id} > .sliderContainer`).firstElementChild;
+    const slider = document.querySelector('#' + form.id + '> .sliderContainer').firstElementChild;
     const valueText = form.firstElementChild.nextElementSibling;
     return [slider, valueText];
 }
 /**
  */
 function setDefaults() {
-    forms.forEach(function(item) {
-        const [slider, valueText] = getValuesFromForm(item);
+    Array.prototype.forEach.call(forms, function(item) {
+        const values = getValuesFromForm(item);
+        const slider = values[0];
+        const valueText = values[1];
         slider.value = 0;
         valueText.value = 0;
     });
@@ -89,8 +97,8 @@ confirmEffectsButton.addEventListener('click', confirmEffects, false);
 function setEffect() {
     if (effectImageData) {
         effectImageData.data.set(middlewareImageData.data);
-        forms.forEach(function(element) {
-            const [slider, valueText] = getValuesFromForm(element);
+        Array.prototype.forEach.call(forms, function(element) {
+            const valueText = getValuesFromForm(element)[1];
             window.ImageEffects.Apply({
                 type: valueText.parentElement.id,
                 level: valueText.value},
@@ -133,11 +141,11 @@ function changeValue(event) {
     setEffect();
 }
 
-forms.forEach(function(element) {
-    getValuesFromForm(element).forEach(function(item) {
-        item.addEventListener('input', changeValue, false);
-    });
-});
+Array.prototype.forEach.call(forms, (function(element) {
+    const values = getValuesFromForm(element);
+    values[0].addEventListener((isInternetExplorer() ? 'change' : 'input'), changeValue, false);
+    values[1].addEventListener('input', changeValue, false);
+}));
 
 /* Drag n Drop */
 /**
@@ -158,7 +166,7 @@ const imagePreview = function drawImageOnDisplay(preImage) {
  * @param {DragEvent} event
  */
 const handleFiles = function handleFilesFromForm(event) {
-    const {files} = event.dataTransfer;
+    const files = event.dataTransfer.files;
     if (files.length > 1) {
         throw new Error('Only 1 file, please.');
     }
