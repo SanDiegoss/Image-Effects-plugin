@@ -1,4 +1,3 @@
-/* eslint-disable linebreak-style */
 /* eslint-disable no-unused-vars */
 /* eslint-disable indent */
 /* eslint-disable new-cap */
@@ -166,16 +165,25 @@ const imagePreview = function drawImageOnDisplay(preImage) {
  * @param {DragEvent} event
  */
 const handleFiles = function handleFilesFromForm(event) {
+    /**
+     * @param {ArrayBuffer} typedArray
+     * @param {String} mimeType
+     * @return {String}
+     */
+    function typedArrayToURL(typedArray, mimeType) {
+        return URL.createObjectURL(new Blob([typedArray], {type: mimeType}));
+    }
     const files = event.dataTransfer.files;
     if (files.length > 1) {
         throw new Error('Only 1 file, please.');
     }
     const file = files.item(0);
-
     const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = function() {
-        image.src = reader.result;
+    reader.readAsArrayBuffer(file);
+    console.log(file.type);
+    reader.onloadend = function() {
+        const url = typedArrayToURL(reader.result, file.type);
+        image.src = url;
         image.onload = function() {
             imagePreview(image);
             originImageData = originContext.getImageData(0, 0, originCanvas.width, originCanvas.height);
