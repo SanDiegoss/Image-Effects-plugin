@@ -1,6 +1,6 @@
 "use strict";
 
-(function(){
+(function(window) {
 
     window.ImageEffects = window.ImageEffects || {};
     window.ImageEffects.isReady = false;
@@ -12,7 +12,6 @@
     };
 
     window.ImageEffects.loadModule = function(settings) {
-
         let url = settings.enginePath ? settings.enginePath : "./effects-core/deploy/engine/";
 
         let useWasm = false;
@@ -42,4 +41,4 @@
 
     };
 
-})();
+})(window || self);

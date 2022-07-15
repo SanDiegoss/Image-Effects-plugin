@@ -4,7 +4,7 @@
 /* eslint-disable space-before-blocks */
 'use strict';
 
-(function(){
+(function(window){
     window.ImageEffects = window.ImageEffects || {};
     window.ImageEffects.isReady = false;
     window.ImageEffects.Apply = function() {
@@ -29,15 +29,16 @@
         }
         url += (useWasm ? 'effects.js' : 'effects_ie.js');
         // eslint-disable-next-line no-var
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = url;
-        script.onload = function() {
-            console.log((useWasm ? 'wasm' : 'asmjs') + ' module will be used');
-        };
-        script.onerror = function() {
-            // TODO: попробовать загрузить еще сколько-то раз (максимальное число попыток  - зашито в коде - например 5)
-        };
-        document.head.appendChild(script);
+        var worker = new Worker(url);
+        // var script = document.createElement('script');
+        // script.type = 'text/javascript';
+        // script.src = url;
+        // script.onload = function() {
+        //     console.log((useWasm ? 'wasm' : 'asmjs') + ' module will be used');
+        // };
+        // script.onerror = function() {
+        //     // TODO: попробовать загрузить еще сколько-то раз (максимальное число попыток  - зашито в коде - например 5)
+        // };
+        // document.head.appendChild(script);
     };
-})();
+})(window || self);
