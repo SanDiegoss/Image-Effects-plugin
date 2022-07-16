@@ -1,12 +1,4 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable spaced-comment */
-/* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
-/* eslint-disable new-cap */
-/* eslint-disable indent */
-/* eslint-disable no-trailing-spaces */
-
-// eslint-disable-next-line prefer-const
+/*eslint-disable*/
 
 (function(window) {
 	let isModuleLoaded = false;
@@ -100,5 +92,5 @@
             throw new Error('Module is not loaded!');
         }
     };
-})(window || self);
+})(self);
 

@@ -41,4 +41,4 @@
 
     };
 
-})(window || self);
+})(self);

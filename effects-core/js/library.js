@@ -29,7 +29,8 @@
         }
         url += (useWasm ? 'effects.js' : 'effects_ie.js');
         // eslint-disable-next-line no-var
-        var worker = new Worker(url);
+        const worker = new Worker(url);
+        return worker;
         // var script = document.createElement('script');
         // script.type = 'text/javascript';
         // script.src = url;
@@ -41,4 +42,4 @@
         // };
         // document.head.appendChild(script);
     };
-})(window || self);
+})(self);

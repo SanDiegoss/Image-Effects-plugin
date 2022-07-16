@@ -100,5 +100,5 @@
             throw new Error('Module is not loaded!');
         }
     };
-})(window || self);
+})(self);
 

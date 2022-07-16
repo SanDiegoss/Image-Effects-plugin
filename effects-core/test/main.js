@@ -180,7 +180,6 @@ const handleFiles = function handleFilesFromForm(event) {
     const file = files.item(0);
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
-    console.log(file.type);
     reader.onloadend = function() {
         const url = typedArrayToURL(reader.result, file.type);
         image.src = url;

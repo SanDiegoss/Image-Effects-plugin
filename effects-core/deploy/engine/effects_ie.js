@@ -207,5 +207,5 @@ function exit(status,implicit){EXITSTATUS=status;procExit(status)}function procE
             throw new Error('Module is not loaded!');
         }
     };
-})(window || self);
+})(self);
 
