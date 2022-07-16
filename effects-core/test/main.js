@@ -8,7 +8,6 @@
 function isInternetExplorer() {
     return window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 }
-
 const image = document.createElement('img');
 const forms = document.querySelectorAll('.effectForm');
 /**
@@ -96,14 +95,13 @@ confirmEffectsButton.addEventListener('click', confirmEffects, false);
 function setEffect() {
     if (effectImageData) {
         effectImageData.data.set(middlewareImageData.data);
+    // Формируем пачку эффектов и отдаем ее
+        const effects = [];
         Array.prototype.forEach.call(forms, function(element) {
             const valueText = getValuesFromForm(element)[1];
-            window.ImageEffects.Apply({
-                type: valueText.parentElement.id,
-                level: valueText.value},
-                effectImageData);
-            effectContext.putImageData(effectImageData, 0, 0);
+            effects.push({type: valueText.parentElement.id, level: valueText.value});
         });
+        window.ImageEffects.Apply(effects, effectImageData);
     } else {
         throw new Error('No Image!');
     }
@@ -195,6 +193,5 @@ const handleFiles = function handleFilesFromForm(event) {
 };
 
 dropArea.addEventListener('drop', handleFiles, false);
-
 window.ImageEffects.loadModule({enginePath: './effects-core/deploy/engine/'});
 
