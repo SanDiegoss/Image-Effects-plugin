@@ -30,38 +30,43 @@
         }
         url += (useWasm ? 'effects.js' : 'effects_ie.js');
         // eslint-disable-next-line no-var
-        const worker = new Worker(url);
-        /**
-         * @typedef {Object} Effect
-         * @property {String} type
-         * @property {Number} level
-         * @param {Array<Effect>} effects
-         * @param {Uint8ClampedArray} data
-         */
-         function ApplyEffect(effects, data){
-            worker.postMessage({effects: effects, data: data});
-        }
-        worker.onmessage = function(e) {
-            if (e.data == 'module is ready'){
-                ImageEffects.onLoadModule({ApplyEffect: ApplyEffect});
-                console.log((useWasm ? 'wasm' : 'asmjs') + ' module will be used');
-                worker.onmessage = function(e){
-                    effectImageData.data.set(e.data.data);
-                    effectContext.putImageData(effectImageData, 0, 0);
-                };
-            } else {
-                throw new Error('Unknown message from worker:' + url);
+        if (isWorker){
+            const worker = new Worker(url);
+            /**
+             * @typedef {Object} Effect
+             * @property {String} type
+             * @property {Number} level
+             * @param {Array<Effect>} effects
+             * @param {Uint8ClampedArray} data
+             */
+            function ApplyEffect(effects, data){
+                worker.postMessage({effects: effects, data: data});
             }
-        };
-        // var script = document.createElement('script');
-        // script.type = 'text/javascript';
-        // script.src = url;
-        // script.onload = function() {
-        //     console.log((useWasm ? 'wasm' : 'asmjs') + ' module will be used');
-        // };
-        // script.onerror = function() {
-        //     // TODO: попробовать загрузить еще сколько-то раз (максимальное число попыток  - зашито в коде - например 5)
-        // };
-        // document.head.appendChild(script);
+            worker.onmessage = function(e) {
+                if (e.data == 'module is ready'){
+                    console.log('WebWorkers will be used');
+                    ImageEffects.onLoadModule({ApplyEffect: ApplyEffect});
+                    console.log((useWasm ? 'wasm' : 'asmjs') + ' module will be used');
+                    worker.onmessage = function(e){
+                        effectImageData.data.set(e.data.data);
+                        effectContext.putImageData(effectImageData, 0, 0);
+                    };
+                } else {
+                    throw new Error('Unknown message from worker:' + url);
+                }
+            };
+        } else {
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = url;
+            script.onload = function() {
+                console.log('default script will be used');
+                console.log((useWasm ? 'wasm' : 'asmjs') + ' module will be used');
+            };
+            script.onerror = function() {
+                // TODO: попробовать загрузить еще сколько-то раз (максимальное число попыток  - зашито в коде - например 5)
+            };
+            document.head.appendChild(script);
+        }
     };
 })(self);

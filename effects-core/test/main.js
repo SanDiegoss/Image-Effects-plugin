@@ -7,6 +7,8 @@
 function isInternetExplorer() {
     return window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 }
+// eslint-disable-next-line no-unused-vars
+const isWorker = true;
 const image = document.createElement('img');
 const forms = document.querySelectorAll('.effectForm');
 /**
@@ -101,6 +103,9 @@ function setEffect() {
             effects.push({type: valueText.parentElement.id, level: valueText.value});
         });
         window.ImageEffects.Apply(effects, effectImageData);
+        if (!isWorker) {
+            effectContext.putImageData(effectImageData, 0, 0);
+        }
     } else {
         throw new Error('No Image!');
     }

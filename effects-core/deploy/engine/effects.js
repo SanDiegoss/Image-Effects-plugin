@@ -20,9 +20,6 @@
             });
         } else {
             postMessage('module is ready');
-            // window.ImageEffects = window.ImageEffects || {};
-            // window.ImageEffects.isReady = true;
-            // window.ImageEffects.Apply = ApplyEffect;
         }
     };
 
