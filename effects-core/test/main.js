@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable indent */
 /* eslint-disable new-cap */
 /* eslint-disable max-len */
