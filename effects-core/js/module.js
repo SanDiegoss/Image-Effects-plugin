@@ -14,15 +14,15 @@
      */
     function onLoadModule() {
         isModuleLoaded = true;
-
         if (window.ImageEffects) {
             window.ImageEffects.onLoadModule && window.ImageEffects.onLoadModule({
                 ApplyEffect: ApplyEffect,
             });
         } else {
-            window.ImageEffects = window.ImageEffects || {};
-            window.ImageEffects.isReady = true;
-            window.ImageEffects.Apply = ApplyEffect;
+            postMessage('module is ready');
+            // window.ImageEffects = window.ImageEffects || {};
+            // window.ImageEffects.isReady = true;
+            // window.ImageEffects.Apply = ApplyEffect;
         }
     };
 
@@ -37,7 +37,7 @@
      * @return {Number}
      * Allocate memory for wasm, returns pointer
      */
-    function allocateMemory(module, length) {
+     function allocateMemory(module, length) {
         const ptr = module._malloc(length);
         return ptr;
     }
@@ -70,7 +70,7 @@
             const ptr_ = allocateMemory(module, imageData.data.length);
             setMemory(module, imageData.data, ptr_);
 
-            module['_change_'+ effect](ptr_, imageData.height, imageData.width, value);
+            module['_change_' + effect](ptr_, imageData.height, imageData.width, value);
             const ptr = new Uint8ClampedArray(module.HEAP8.buffer, ptr_, imageData.data.length);
 
             imageData.data.set(ptr);
@@ -90,15 +90,24 @@
      * @typedef {Object} Effect
      * @property {String} type
      * @property {Number} level
-     * @param {Effect} effect 
+     * @param {Array<Effect>} effects
      * @param {Uint8ClampedArray} data 
      */
-    function ApplyEffect(effect, data) {
+    function ApplyEffect(effects, data) {
         if (isModuleLoaded) {
-            effect[effect.type](effect.level, data);
+            effects.forEach(function(item) {
+                effect[item.type](item.level, data);
+            });
         } else {
             throw new Error('Module is not loaded!');
         }
     };
-})(window || self);
+    window.onmessage = function(e) {
+        // console.log(e.data.data);
+        const effects = e.data.effects;
+        const data = e.data.data;
+        ApplyEffect(effects, data);
+        postMessage(data);
+    };
+})(self);
 

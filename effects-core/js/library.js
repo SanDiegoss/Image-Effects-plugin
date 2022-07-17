@@ -4,17 +4,18 @@
 /* eslint-disable space-before-blocks */
 'use strict';
 
-(function(){
+(function(window){
     window.ImageEffects = window.ImageEffects || {};
     window.ImageEffects.isReady = false;
     window.ImageEffects.Apply = function() {
         console.log('Module is not ready');
     };
+
     window.ImageEffects.onLoadModule = function(exports) {
         window.ImageEffects.isReady = true;
         window.ImageEffects.Apply = exports.ApplyEffect;
     };
-
+    // Точка входа из main.js
     window.ImageEffects.loadModule = function(settings) {
         let url = settings.enginePath ? settings.enginePath : './effects-core/deploy/engine/';
 
@@ -29,15 +30,38 @@
         }
         url += (useWasm ? 'effects.js' : 'effects_ie.js');
         // eslint-disable-next-line no-var
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = url;
-        script.onload = function() {
-            console.log((useWasm ? 'wasm' : 'asmjs') + ' module will be used');
+        const worker = new Worker(url);
+        /**
+         * @typedef {Object} Effect
+         * @property {String} type
+         * @property {Number} level
+         * @param {Array<Effect>} effects
+         * @param {Uint8ClampedArray} data
+         */
+         function ApplyEffect(effects, data){
+            worker.postMessage({effects: effects, data: data});
+        }
+        worker.onmessage = function(e) {
+            if (e.data == 'module is ready'){
+                ImageEffects.onLoadModule({ApplyEffect: ApplyEffect});
+                console.log((useWasm ? 'wasm' : 'asmjs') + ' module will be used');
+                worker.onmessage = function(e){
+                    effectImageData.data.set(e.data.data);
+                    effectContext.putImageData(effectImageData, 0, 0);
+                };
+            } else {
+                throw new Error('Unknown message from worker:' + url);
+            }
         };
-        script.onerror = function() {
-            // TODO: попробовать загрузить еще сколько-то раз (максимальное число попыток  - зашито в коде - например 5)
-        };
-        document.head.appendChild(script);
+        // var script = document.createElement('script');
+        // script.type = 'text/javascript';
+        // script.src = url;
+        // script.onload = function() {
+        //     console.log((useWasm ? 'wasm' : 'asmjs') + ' module will be used');
+        // };
+        // script.onerror = function() {
+        //     // TODO: попробовать загрузить еще сколько-то раз (максимальное число попыток  - зашито в коде - например 5)
+        // };
+        // document.head.appendChild(script);
     };
-})();
+})(self);
