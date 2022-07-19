@@ -133,12 +133,12 @@ function changeValue(event) {
         valueText = event.target.parentElement.parentElement.firstElementChild.nextElementSibling;
         valueText.value = slider.value;
     }
-    if (valueText.value > 100) {
-        valueText.value = 100;
-    }
-    if (valueText.value < -100) {
-        valueText.value = -100;
-    }
+    // if (valueText.value > 100) {
+    //     valueText.value = 100;
+    // }
+    // if (valueText.value < -100) {
+    //     valueText.value = -100;
+    // }
     setEffect();
 }
 

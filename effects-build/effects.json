@@ -14,14 +14,23 @@
 		"-fno-rtti",
 		"-Wno-unused-command-line-argument",
 		"-s FILESYSTEM=0",
-		"-s ENVIRONMENT='web,worker'"
+		"-s ENVIRONMENT='web,worker'",
+		"-s TOTAL_MEMORY=64MB"
 	],
 	"exported_functions": [
 		"_malloc",
 		"_free",
         "_main",
         "_change_brightness",
-        "_change_saturation"
+        "_change_saturation",
+		"_change_hue",
+		"_change_transparency",
+		"_change_lighting",
+		"_change_intension_red",
+		"_change_intension_green",
+		"_change_intension_blue",
+		"_shades_of_gray",
+		"_sepia"
 	],
 	"include_path": ["../effects-core/cpp"],
 	"define": [],

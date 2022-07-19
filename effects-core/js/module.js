@@ -67,7 +67,7 @@
             const ptr_ = allocateMemory(module, imageData.data.length);
             setMemory(module, imageData.data, ptr_);
 
-            module['_change_' + effect](ptr_, imageData.height, imageData.width, value);
+            module[effect](ptr_, imageData.height, imageData.width, value);
             const ptr = new Uint8ClampedArray(module.HEAP8.buffer, ptr_, imageData.data.length);
 
             imageData.data.set(ptr);
@@ -75,10 +75,34 @@
         },
         /* --------------------------------------------------------- */
         brightness: function(level, data) {
-            this.oIoV(level, data, 'brightness');
+            this.oIoV(level, data, '_change_brightness');
         },
         saturation: function(level, data) {
-            this.oIoV(level, data, 'saturation');
+            this.oIoV(level, data, '_change_saturation');
+        },
+        hue: function(level, data) {
+            this.oIoV(level, data, '_change_hue');
+        },
+        transparency: function(level, data) {
+            this.oIoV(level, data, '_change_transparency');
+        },
+        lighting: function(level, data) {
+            this.oIoV(level, data, '_change_lighting');
+        },
+        intension_red: function(level, data) {
+            this.oIoV(level, data, '_change_intension_red');
+        },
+        intension_green: function(level, data) {
+            this.oIoV(level, data, '_change_intension_green');
+        },
+        intension_blue: function(level, data) {
+            this.oIoV(level, data, '_change_intension_blue');
+        },
+        shades_of_gray: function(level, data) {
+            this.oIoV(level, data, '_shades_of_gray');
+        },
+        sepia: function(level, data) {
+            this.oIoV(level, data, '_sepia');
         },
         /* все эффекты, которые могут быть, будут перечислены тут */
     };
