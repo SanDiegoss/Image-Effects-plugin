@@ -20,7 +20,6 @@
 	"exported_functions": [
 		"_malloc",
 		"_free",
-        "_main",
         "_change_brightness",
         "_change_saturation",
 		"_change_hue",
@@ -38,7 +37,7 @@
 	{
 		"name": "s",
 		"folder": "../effects-core/cpp",
-		"files": ["effect.cpp", "exported_functions.cpp", "image.cpp", "main.cpp"]
+		"files": ["effect.cpp", "exported_functions.cpp", "image.cpp"]
 	}
 	]
 }
