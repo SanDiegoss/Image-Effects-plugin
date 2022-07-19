@@ -9,91 +9,102 @@
 	<link rel="stylesheet" href="effects-core/test/styles.css">
 </head>
 	<body>
-		<div id="mainContent">
+		<div id="main-content">
 			<!-- TODO: not dragndrop image input -->
 			<div id="drop-area">
-				<canvas width="500" height="300" id="previewImage"></canvas>
-				<canvas width="500" height="300" id="previewEffect"></canvas>
+				<!-- <canvas width="500" height="300" id="previewImage"></canvas> -->
+				<div><p id="no-image-text">Please, select an image</p></div>
+				<canvas id="previewEffect" width="373" height="373"></canvas>
 			</div>
 		</div>
-		<div id="effectsPanel">
-			<div class="effectForm" id="brightness">
-				<h2>Brightness</h2>
-				Value:<input type="text" value="0" class="effectTextInput">
-				<div class="sliderContainer">
-					<input type="range" min="-100" max="100" value="0">
+		<div id="effects-content">
+			<div class="effect-panel">
+				<div class="effect-form" id="sepia">
+					<input type="checkbox" class="checkbox">
+					<p>Sepia</p>
+					<div class="sliderContainer">
+						<input type="range" min="0" max="1" value="0">
+					</div>
+					<p class="value-text">0</p>
+				</div>
+				<div class="effect-form" id="brightness">
+					<input type="checkbox" class="checkbox">
+					<p>Brightness</p>
+					<div class="sliderContainer">
+						<input type="range" min="-100" max="100" value="0">
+					</div>
+					<p class="value-text">0</p>
+				</div>
+				<div class="effect-form" id="saturation">
+					<input type="checkbox" class="checkbox">
+					<p>Saturation</p>
+					<div class="sliderContainer">
+						<input type="range" min="-100" max="100" value="0">
+					</div>
+					<p class="value-text">0</p>
+				</div>
+				<div class="effect-form" id="hue">
+					<input type="checkbox" class="checkbox">
+					<p>Hue</p>
+					<div class="sliderContainer">
+						<input type="range" min="0" max="360" value="0">
+					</div>
+					<p class="value-text">0</p>
+				</div>
+				<div class="effect-form" id="transparency">
+					<input type="checkbox" class="checkbox">
+					<p>Transparency</p>
+					<div class="sliderContainer">
+						<input type="range" min="0" max="100" value="0">
+					</div>
+					<p class="value-text">0</p>
 				</div>
 			</div>
-			<div class="effectForm" id="saturation">
-				<h2>Saturation</h2>
-				Value:<input type="text" value="0" class="effectTextInput">
-				<div class="sliderContainer">
-					<input type="range" min="-100" max="100" value="0">
+			<div class="effect-panel">
+				<div class="effect-form" id="shades_of_gray">
+					<input type="checkbox" class="checkbox">
+					<p>Shades of gray</p>
+					<div class="sliderContainer">
+						<input type="range" min="0" max="1" value="0">
+					</div>
+					<p class="value-text">0</p>
+				</div>
+				<div class="effect-form" id="lighting">
+					<input type="checkbox" class="checkbox">
+					<p>Lighting</p>
+					<div class="sliderContainer">
+						<input type="range" min="-100" max="100" value="0">
+					</div>
+					<p class="value-text">0</p>
+				</div>
+				<div class="effect-form" id="intension_red">
+					<input type="checkbox" class="checkbox">
+					<p>Intension red</p>
+					<div class="sliderContainer">
+						<input type="range" min="-100" max="100" value="0">
+					</div>
+					<p class="value-text">0</p>
+				</div>
+				<div class="effect-form" id="intension_green">
+					<input type="checkbox" class="checkbox">
+					<p>Intension green</p>
+					<div class="sliderContainer">
+						<input type="range" min="-100" max="100" value="0">
+					</div>
+					<p class="value-text">0</p>
+				</div>
+				<div class="effect-form" id="intension_blue">
+					<input type="checkbox" class="checkbox">
+					<p>Intension blue</p>
+					<div class="sliderContainer">
+						<input type="range" min="-100" max="100" value="0">
+					</div>
+					<p class="value-text">0</p>
 				</div>
 			</div>
-			<div class="effectForm" id="hue">
-				<h2>Hue</h2>
-				Value:<input type="text" value="0" class="effectTextInput">
-				<div class="sliderContainer">
-					<input type="range" min="0" max="360" value="0">
-				</div>
-			</div>
-			<div class="effectForm" id="transparency">
-				<h2>Transparency</h2>
-				Value:<input type="text" value="0" class="effectTextInput">
-				<div class="sliderContainer">
-					<input type="range" min="0" max="100" value="0">
-				</div>
-			</div>
-			<div class="effectForm" id="lighting">
-				<h2>Lighting</h2>
-				Value:<input type="text" value="0" class="effectTextInput">
-				<div class="sliderContainer">
-					<input type="range" min="-100" max="100" value="0">
-				</div>
-			</div>
-			<div class="effectForm" id="intension_red">
-				<h2>Intension red color</h2>
-				Value:<input type="text" value="0" class="effectTextInput">
-				<div class="sliderContainer">
-					<input type="range" min="-100" max="100" value="0">
-				</div>
-			</div>
-			<div class="effectForm" id="intension_green">
-				<h2>Intension green color</h2>
-				Value:<input type="text" value="0" class="effectTextInput">
-				<div class="sliderContainer">
-					<input type="range" min="-100" max="100" value="0">
-				</div>
-			</div>
-			<div class="effectForm" id="intension_blue">
-				<h2>Intension blue color</h2>
-				Value:<input type="text" value="0" class="effectTextInput">
-				<div class="sliderContainer">
-					<input type="range" min="-100" max="100" value="0">
-				</div>
-			</div>
-			<div class="effectForm" id="shades_of_gray">
-				<h2>Shades of gray</h2>
-				Value:<input type="text" value="0" class="effectTextInput">
-				<div class="sliderContainer">
-					<input type="range" min="0" max="1" value="0">
-				</div>
-			</div>
-			<div class="effectForm" id="sepia">
-				<h2>Sepia</h2>
-				Value:<input type="text" value="0" class="effectTextInput">
-				<div class="sliderContainer">
-					<input type="range" min="0" max="1" value="0">
-				</div>
-			</div>
-			<button type="submit" class="submitButton" id="confirmEffects">Применить</button>
-			<button type="submit" class="submitButton" id="saveAllChangesButton">Сохранить все изменения</button>
-			<button type="submit" class="submitButton" id="discardAllChangesButton">Отменить все изменения</button>
 		</div>
 		<script src="effects-core/deploy/effects.js"></script>
 		<!-- <script src="effects-core/js/module.js"></script> -->
-		<script src="effects-core/test/visualEvents.js"></script>
 		<script src="effects-core/test/main.js"></script>
 	</body>
 </html>

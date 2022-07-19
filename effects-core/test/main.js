@@ -10,11 +10,13 @@ function isInternetExplorer() {
 // eslint-disable-next-line no-unused-vars
 const isWorker = true;
 const image = document.createElement('img');
-const forms = document.querySelectorAll('.effectForm');
+const forms = document.querySelectorAll('.effect-form');
+const dropArea = document.getElementById('drop-area');
+
 /**
  * @type {HTMLCanvasElement}
  */
-const originCanvas = document.getElementById('previewImage');
+const originCanvas = document.createElement('canvas');
 const originContext = originCanvas.getContext('2d');
 /**
  * @type {HTMLCanvasElement}
@@ -40,55 +42,66 @@ let middlewareImageData;
 /**
  * @param {Event} event
  */
-function saveAllChanges(event) {
-    preventDefaults(event);
-    originImageData.data.set(middlewareImageData.data);
-    originContext.putImageData(middlewareImageData, 0, 0);
-}
+// function saveAllChanges(event) {
+//     preventDefaults(event);
+//     originImageData.data.set(middlewareImageData.data);
+//     originContext.putImageData(middlewareImageData, 0, 0);
+// }
+// /**
+//  * @param {Event} event
+//  */
+// function discardAllChanges(event) {
+//     preventDefaults(event);
+//     middlewareImageData.data.set(originImageData.data);
+//     effectContext.putImageData(originImageData, 0, 0);
+// }
 /**
  * @param {Event} event
  */
-function discardAllChanges(event) {
-    preventDefaults(event);
-    middlewareImageData.data.set(originImageData.data);
-    effectContext.putImageData(originImageData, 0, 0);
+function preventDefaults(event) {
+    event.preventDefault();
+    event.stopPropagation();
 }
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function(eventName) {
+    dropArea.addEventListener(eventName, preventDefaults, false);
+});
 /**
  * @param {HTMLElement} form
- * @return {[HTMLInputElement, HTMLInputElement]}
+ * @return {[HTMLInputElement, HTMLParagraphElement]}
  */
  function getValuesFromForm(form) {
     const slider = document.querySelector('#' + form.id + '> .sliderContainer').firstElementChild;
-    const valueText = form.firstElementChild.nextElementSibling;
+    const valueText = document.querySelector('#' + form.id + '> .value-text');
     return [slider, valueText];
 }
 /**
  */
-function setDefaults() {
-    Array.prototype.forEach.call(forms, function(item) {
-        const values = getValuesFromForm(item);
-        const slider = values[0];
-        const valueText = values[1];
-        slider.value = 0;
-        valueText.value = 0;
-    });
-}
+// function setDefaults() {
+//     Array.prototype.forEach.call(forms, function(item) {
+//         const values = getValuesFromForm(item);
+//         const slider = values[0];
+//         const valueText = values[1];
+//         slider.value = 0;
+//         valueText.value = 0;
+//     });
+// }
 /**
  * @param {Event} event
  */
-function confirmEffects(event) {
-    preventDefaults(event);
-    middlewareImageData.data.set(effectImageData.data);
-    effectContext.putImageData(middlewareImageData, 0, 0);
-    setDefaults();
-}
-const saveAllChangesButton = document.getElementById('saveAllChangesButton');
-const discardAllChangesButton = document.getElementById('discardAllChangesButton');
-const confirmEffectsButton = document.getElementById('confirmEffects');
+// function confirmEffects(event) {
+//     preventDefaults(event);
+//     middlewareImageData.data.set(effectImageData.data);
+//     effectContext.putImageData(middlewareImageData, 0, 0);
+//     setDefaults();
+// }
+// const saveAllChangesButton = document.getElementById('saveAllChangesButton');
+// const discardAllChangesButton = document.getElementById('discardAllChangesButton');
+// const confirmEffectsButton = document.getElementById('confirmEffects');
 
-saveAllChangesButton.addEventListener('click', saveAllChanges, false);
-discardAllChangesButton.addEventListener('click', discardAllChanges, false);
-confirmEffectsButton.addEventListener('click', confirmEffects, false);
+// saveAllChangesButton.addEventListener('click', saveAllChanges, false);
+// discardAllChangesButton.addEventListener('click', discardAllChanges, false);
+// confirmEffectsButton.addEventListener('click', confirmEffects, false);
 /* Slider Events */
 
 /**
@@ -99,8 +112,9 @@ function setEffect() {
     // Формируем пачку эффектов и отдаем ее
         const effects = [];
         Array.prototype.forEach.call(forms, function(element) {
+            const slider = getValuesFromForm(element)[0];
             const valueText = getValuesFromForm(element)[1];
-            effects.push({type: valueText.parentElement.id, level: valueText.value});
+            effects.push({type: valueText.parentElement.id, level: slider.value});
         });
         window.ImageEffects.Apply(effects, effectImageData);
         if (!isWorker) {
@@ -119,33 +133,18 @@ function changeValue(event) {
     /**
     * @type {HTMLInputElement}
     */
-    let valueText;
+    const slider = event.target;
     /**
-    * @type {HTMLInputElement}
+    * @type {HTMLParagraphElement}
     */
-    let slider;
-    if (event.target.className === 'effectTextInput') {
-        valueText = event.target;
-        slider = event.target.nextElementSibling.firstElementChild;
-        slider.value = valueText.value;
-    } else if (event.target.parentElement.className === 'sliderContainer') {
-        slider = event.target;
-        valueText = event.target.parentElement.parentElement.firstElementChild.nextElementSibling;
-        valueText.value = slider.value;
-    }
-    // if (valueText.value > 100) {
-    //     valueText.value = 100;
-    // }
-    // if (valueText.value < -100) {
-    //     valueText.value = -100;
-    // }
+    const valueText = slider.parentElement.nextElementSibling;
+    valueText.textContent = slider.value;
     setEffect();
 }
 
 Array.prototype.forEach.call(forms, (function(element) {
     const values = getValuesFromForm(element);
     values[0].addEventListener((isInternetExplorer() ? 'change' : 'input'), changeValue, false);
-    values[1].addEventListener('input', changeValue, false);
 }));
 
 /* Drag n Drop */
@@ -167,6 +166,8 @@ const imagePreview = function drawImageOnDisplay(preImage) {
  * @param {DragEvent} event
  */
 const handleFiles = function handleFilesFromForm(event) {
+    document.getElementById('no-image-text').parentElement.style.display = 'none';
+    effectCanvas.style.display = 'block';
     /**
      * @param {ArrayBuffer} typedArray
      * @param {String} mimeType

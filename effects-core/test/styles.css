@@ -1,68 +1,93 @@
 /* Element styles */
-
-body{
+body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    background-color: #e2e2e2;
 }
-
-canvas{
-    margin: 5px;
-    border-width: 2px;
-    border-color: black;
-    border-style: solid;
-}
-
-form{
+body div {
     display: flex;
     flex-direction: row;
+    justify-content: center;
     align-items: center;
 }
-
+body div p {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.02em;
+    color: #CBCBCB;
+  }
+  
+canvas {
+    background-color: white;
+    display: none;
+  }
+  
 /* Class styles */
 
-.sliderContainer{
-    display: inline-block;
-    width: fit-content;
+.checkbox {
+    background: white;
+    border: 1px solid #C0C0C0;
+    border-radius: 2px;
 }
 
-.submitButton{
-    display: block;
-    margin: 10px;
-    width: fit-content;
-    height: fit-content;
+.sliderContainer {
+    margin-left: auto;
 }
 
-.effectTextInput{
-    width: 2em;
-    margin: 1em;
+.effect-panel{
+    align-items: flex-start;
 }
 
+.effect-form{
+    padding: 0;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.effect-form .value-text {
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: 0.02em;
+}
+
+.effect-form p{
+    color: #444444;
+    font-weight: 700;
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: 0.02em;
+}  
 /* Id styles */
-
-#mainContent{
-    display: inline-block;
+#main-content {
+    width: 767px;
+    height: 405px;
 }
-
-#effectsPanel{
+  
+#drop-area {
+    width: 663px;
+    height: 373px;
+}
+#drop-area > div {
+    height: 373px;
+    width: 373px;
+    background-color: white;
+}
+  
+#effects-content {
+    align-items: flex-start;
+    flex-direction: row;
     width: 992px;
-    height: fit-content;
+    height: 300px;
 }
-
-#drop-area{
-    display: inline-flex;
-    border-width: 2px;
-    border-color: blue;
-    border-style: dotted;
+#effects-content > div {
+    flex-direction: column;
 }
-
-#drop-area.highlight{
-    border-color: aqua;
-    border-style: solid;
-}
-
 /* Typography */
-
-h2{
-    margin: 5px;
+p {
+    font-family: "Arial";
+    font-style: normal;
+    font-weight: 700;
 }
