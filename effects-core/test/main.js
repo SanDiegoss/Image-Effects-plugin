@@ -7,6 +7,12 @@
 function isInternetExplorer() {
     return window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 }
+/**
+ * @return {Boolean}
+ */
+function isChrome() {
+    return window.navigator.userAgent.indexOf('Chrome') > -1;
+};
 // eslint-disable-next-line no-unused-vars
 const isWorker = true;
 const image = document.createElement('img');
@@ -124,7 +130,23 @@ function setEffect() {
         throw new Error('No Image!');
     }
 }
-
+/**
+ * @param {HTMLInputElement} slider
+ * @desciption Google progress bar
+ */
+function chromeProgressBar(slider) {
+    const del = ((+slider.max - +slider.min)/100);
+    let value = slider.value / del;
+    if (+slider.min < 0) {
+        value += 50;
+    }
+    slider.style.background =
+    'linear-gradient(to right, #444444 0%, #444444 '+
+    value +
+    '%, #c0c0c0 ' +
+    value +
+    '%, #c0c0c0 100%)';
+}
 /**
  * @param {Event} event
  */
@@ -139,12 +161,21 @@ function changeValue(event) {
     */
     const valueText = slider.parentElement.nextElementSibling;
     valueText.textContent = slider.value;
+    if (isChrome()) {
+        chromeProgressBar(slider);
+    }
     setEffect();
 }
 
 Array.prototype.forEach.call(forms, (function(element) {
     const values = getValuesFromForm(element);
     values[0].addEventListener((isInternetExplorer() ? 'change' : 'input'), changeValue, false);
+    if (isInternetExplorer()) {
+        values[0].parentElement.classList.add('ie-support');
+    }
+    if (isChrome()) {
+        chromeProgressBar(values[0]);
+    }
 }));
 
 /* Drag n Drop */
