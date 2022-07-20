@@ -48,22 +48,6 @@ let middlewareImageData;
 /**
  * @param {Event} event
  */
-// function saveAllChanges(event) {
-//     preventDefaults(event);
-//     originImageData.data.set(middlewareImageData.data);
-//     originContext.putImageData(middlewareImageData, 0, 0);
-// }
-// /**
-//  * @param {Event} event
-//  */
-// function discardAllChanges(event) {
-//     preventDefaults(event);
-//     middlewareImageData.data.set(originImageData.data);
-//     effectContext.putImageData(originImageData, 0, 0);
-// }
-/**
- * @param {Event} event
- */
 function preventDefaults(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -74,42 +58,14 @@ function preventDefaults(event) {
 });
 /**
  * @param {HTMLElement} form
- * @return {[HTMLInputElement, HTMLParagraphElement]}
+ * @return {[HTMLInputElement, HTMLParagraphElement, HTMLInputElement]}
  */
  function getValuesFromForm(form) {
     const slider = document.querySelector('#' + form.id + '> .sliderContainer').firstElementChild;
     const valueText = document.querySelector('#' + form.id + '> .value-text');
-    return [slider, valueText];
+    const checkbox = document.querySelector('#' + form.id).firstElementChild;
+    return [slider, valueText, checkbox];
 }
-/**
- */
-// function setDefaults() {
-//     Array.prototype.forEach.call(forms, function(item) {
-//         const values = getValuesFromForm(item);
-//         const slider = values[0];
-//         const valueText = values[1];
-//         slider.value = 0;
-//         valueText.value = 0;
-//     });
-// }
-/**
- * @param {Event} event
- */
-// function confirmEffects(event) {
-//     preventDefaults(event);
-//     middlewareImageData.data.set(effectImageData.data);
-//     effectContext.putImageData(middlewareImageData, 0, 0);
-//     setDefaults();
-// }
-// const saveAllChangesButton = document.getElementById('saveAllChangesButton');
-// const discardAllChangesButton = document.getElementById('discardAllChangesButton');
-// const confirmEffectsButton = document.getElementById('confirmEffects');
-
-// saveAllChangesButton.addEventListener('click', saveAllChanges, false);
-// discardAllChangesButton.addEventListener('click', discardAllChanges, false);
-// confirmEffectsButton.addEventListener('click', confirmEffects, false);
-/* Slider Events */
-
 /**
  */
 function setEffect() {
@@ -118,9 +74,13 @@ function setEffect() {
     // Формируем пачку эффектов и отдаем ее
         const effects = [];
         Array.prototype.forEach.call(forms, function(element) {
-            const slider = getValuesFromForm(element)[0];
-            const valueText = getValuesFromForm(element)[1];
-            effects.push({type: valueText.parentElement.id, level: slider.value});
+            const values = getValuesFromForm(element);
+            const slider = values[0];
+            const valueText = values[1];
+            const checkbox = values[2];
+            if (checkbox.checked) {
+                effects.push({type: valueText.parentElement.id, level: slider.value});
+            }
         });
         window.ImageEffects.Apply(effects, effectImageData);
         if (!isWorker) {
@@ -166,6 +126,27 @@ function changeValue(event) {
     }
     setEffect();
 }
+/**
+ * @param {Event} event
+ */
+function changeCheckbox(event) {
+    setEffect();
+    if (event.target.checked) {
+        event
+        .target
+        .nextElementSibling
+        .nextElementSibling
+        .firstElementChild
+        .removeAttribute('disabled');
+    } else {
+        event
+        .target
+        .nextElementSibling
+        .nextElementSibling
+        .firstElementChild
+        .setAttribute('disabled', '');
+    }
+}
 
 Array.prototype.forEach.call(forms, (function(element) {
     const values = getValuesFromForm(element);
@@ -176,6 +157,7 @@ Array.prototype.forEach.call(forms, (function(element) {
     if (isChrome()) {
         chromeProgressBar(values[0]);
     }
+    values[2].addEventListener('click', changeCheckbox, false);
 }));
 
 /* Drag n Drop */
@@ -192,7 +174,14 @@ const imagePreview = function drawImageOnDisplay(preImage) {
         item.drawImage(preImage, 0, 0, originCanvas.width, originCanvas.height);
     });
 };
-
+/**
+ */
+function enableCheckbox() {
+    const checkboxes = document.querySelectorAll('.checkbox');
+    Array.prototype.forEach.call(checkboxes, (function(checkbox) {
+        checkbox.removeAttribute('disabled');
+    }));
+}
 /**
  * @param {DragEvent} event
  */
@@ -224,6 +213,7 @@ const handleFiles = function handleFilesFromForm(event) {
 
             middlewareImageData = originContext.createImageData(originImageData);
             middlewareImageData.data.set(originImageData.data);
+            enableCheckbox();
         };
     };
 };
