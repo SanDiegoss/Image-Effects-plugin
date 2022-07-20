@@ -102,11 +102,15 @@ function chromeProgressBar(slider) {
         value += +slider.max / 2;
     }
     slider.style.background =
-    'linear-gradient(to right, ' + color + ' 0%, ' + color +' '+
-    value +
-    '%, #c0c0c0 ' +
-    value +
-    '%, #c0c0c0 100%)';
+        'linear-gradient(to right, ' +
+        color +
+        ' 0%, ' +
+        color +
+        ' ' +
+        value +
+        '%, #c0c0c0 ' +
+        value +
+        '%, #c0c0c0 100%)';
 }
 /**
  * @param {Event} event
