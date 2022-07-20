@@ -92,14 +92,14 @@ function setEffect() {
 }
 /**
  * @param {HTMLInputElement} slider
- * @desciption Google progress bar
+ * @desciption Google polyfill for progress bar
  */
 function chromeProgressBar(slider) {
     const color = slider.disabled ? '#a0a0a0' : '#444444';
     const del = ((+slider.max - +slider.min)/100);
     let value = slider.value / del;
     if (+slider.min < 0) {
-        value += 50;
+        value += +slider.max / 2;
     }
     slider.style.background =
     'linear-gradient(to right, ' + color + ' 0%, ' + color +' '+
