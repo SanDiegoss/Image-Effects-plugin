@@ -29,6 +29,8 @@ const originContext = originCanvas.getContext('2d');
  */
 const effectCanvas = document.getElementById('previewEffect');
 const effectContext = effectCanvas.getContext('2d');
+originCanvas.width = effectCanvas.width;
+originCanvas.height = effectCanvas.height;
 /**
  * @type {ImageData}
  */
@@ -168,10 +170,11 @@ Array.prototype.forEach.call(forms, (function(element) {
  * @param {HTMLImageElement} preImage
  */
 const imagePreview = function drawImageOnDisplay(preImage) {
-    [originCanvas, effectCanvas].forEach(function(item) {
-        item.width = preImage.width;
-        item.height = preImage.height;
-    });
+    // TODO: 16:9 formatter
+    // [originCanvas, effectCanvas].forEach(function(item) {
+    //     item.width = preImage.width;
+    //     item.height = preImage.height;
+    // });
     [originContext, effectContext].forEach(function(item) {
         item.clearRect(0, 0, originCanvas.width, originCanvas.height);
         item.drawImage(preImage, 0, 0, originCanvas.width, originCanvas.height);
