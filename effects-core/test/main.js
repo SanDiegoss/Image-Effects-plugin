@@ -95,13 +95,14 @@ function setEffect() {
  * @desciption Google progress bar
  */
 function chromeProgressBar(slider) {
+    const color = slider.disabled ? '#a0a0a0' : '#444444';
     const del = ((+slider.max - +slider.min)/100);
     let value = slider.value / del;
     if (+slider.min < 0) {
         value += 50;
     }
     slider.style.background =
-    'linear-gradient(to right, #444444 0%, #444444 '+
+    'linear-gradient(to right, ' + color + ' 0%, ' + color +' '+
     value +
     '%, #c0c0c0 ' +
     value +
@@ -130,22 +131,20 @@ function changeValue(event) {
  * @param {Event} event
  */
 function changeCheckbox(event) {
-    setEffect();
+    const slider = event
+        .target
+        .nextElementSibling
+        .nextElementSibling
+        .firstElementChild;
     if (event.target.checked) {
-        event
-        .target
-        .nextElementSibling
-        .nextElementSibling
-        .firstElementChild
-        .removeAttribute('disabled');
+       slider.removeAttribute('disabled');
     } else {
-        event
-        .target
-        .nextElementSibling
-        .nextElementSibling
-        .firstElementChild
-        .setAttribute('disabled', '');
+       slider.setAttribute('disabled', '');
     }
+    if (isChrome()) {
+        chromeProgressBar(slider);
+    }
+    setEffect();
 }
 
 Array.prototype.forEach.call(forms, (function(element) {

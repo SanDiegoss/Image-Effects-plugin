@@ -55,14 +55,23 @@ canvas {
     height: 12px;
 }
 
+.sliderContainer input[type="range"]:disabled::-webkit-slider-thumb {
+    background: #a0a0a0;
+}
+
 .sliderContainer input[type="range"]::-moz-range-progress {
     -webkit-appearance: none;
-    background: #c0c0c0;
-  }
+    background: #444444;
+}
+
+.sliderContainer input[type="range"]:disabled:-moz-range-progress {
+    -webkit-appearance: none;
+    background: #a0a0a0;
+}
   
 .sliderContainer input[type="range"]::-moz-range-track {
     -webkit-appearance: none;
-    background-color: #444444;
+    background-color: #c0c0c0;
 }
 
 .sliderContainer input[type="range"]::-moz-range-thumb {
@@ -71,6 +80,10 @@ canvas {
     border-radius: 50%;
     width: 12px;
     height: 12px;
+}
+
+.sliderContainer input[type="range"]:disabled:-moz-range-thumb {
+    background: #a0a0a0;
 }
 
 .ie-support input[type="range"]{
@@ -85,6 +98,12 @@ canvas {
     -webkit-appearance: none;
     background: #444444;
 }
+
+.ie-support input[type="range"]:disabled:-ms-fill-lower{
+    -webkit-appearance: none;
+    background: #a0a0a0;
+}
+
 .ie-support input[type="range"]::-ms-fill-upper{
     -webkit-appearance: none;
     background: #c0c0c0;
@@ -94,6 +113,10 @@ canvas {
     background: #444444;
     width: 12px;
     height: 12px;
+}
+
+.ie-support input[type="range"]:disabled:-ms-thumb{
+    background: #a0a0a0;
 }
 
 .effect-panel{
