@@ -70,33 +70,41 @@ function preventDefaults(event) {
 });
 /**
  * @param {HTMLElement} form
- * @return {[HTMLInputElement, HTMLParagraphElement, HTMLInputElement]}
+ * @typedef {Object} values
+ * @property {HTMLInputElement} slider
+ * @property {HTMLParagraphElement} valueText
+ * @property {HTMLInputElement} checkbox
+ * @return {values}
  */
  function getValuesFromForm(form) {
-    const slider = document.querySelector('#' + form.id + '> .sliderContainer').firstElementChild;
-    const valueText = document.querySelector('#' + form.id + '> .value-text');
-    const checkbox = document.querySelector('#' + form.id).firstElementChild;
-    return [slider, valueText, checkbox];
+    const values = {
+        slider: null,
+        valueText: null,
+        checkbox: document.querySelector('#' + form.id).firstElementChild,
+    };
+    if (document.querySelector('#' + form.id + '> .sliderContainer')) {
+        values.slider = document.querySelector('#' + form.id + '> .sliderContainer').firstElementChild;
+        values.valueText = document.querySelector('#' + form.id + '> .value-text');
+    }
+    return values;
 }
 /**
  */
 function setEffect() {
     if (effectImageData) {
         effectImageData.data.set(middlewareImageData.data);
-    // Формируем пачку эффектов и отдаем ее
+        // Формируем пачку эффектов и отдаем ее
         const effects = [];
         Array.prototype.forEach.call(forms, function(element) {
-            if (!document.querySelector('#' + element.id + '> .sliderContainer')) {
+            const values = getValuesFromForm(element);
+            if (!values.slider) {
                 effects.push({
                     type: element.id,
-                    level: element.firstElementChild.checked ? 1 : 0,
+                    level: values.checkbox.checked ? 1 : 0,
                 });
             } else {
-                const values = getValuesFromForm(element);
-                const slider = values[0];
-                const checkbox = values[2];
-                if (checkbox.checked) {
-                    effects.push({type: element.id, level: slider.value});
+                if (values.checkbox.checked) {
+                    effects.push({type: element.id, level: values.slider.value});
                 }
             }
         });
@@ -170,18 +178,18 @@ function changeCheckbox(event) {
 }
 
 Array.prototype.forEach.call(forms, (function(element) {
-    if (!document.querySelector('#' + element.id + '> .sliderContainer')) {
-        element.firstElementChild.addEventListener('click', setEffect, false);
+    const values = getValuesFromForm(element);
+    if (!values.slider) {
+        values.checkbox.addEventListener('click', setEffect, false);
     } else {
-        const values = getValuesFromForm(element);
-        values[0].addEventListener((isInternetExplorer() ? 'change' : 'input'), changeValue, false);
+        values.slider.addEventListener((isInternetExplorer() ? 'change' : 'input'), changeValue, false);
         if (isInternetExplorer()) {
-            values[0].parentElement.classList.add('ie-support');
+            element.classList.add('ie-support');
         }
         if (isChrome()) {
-            chromeProgressBar(values[0]);
+            chromeProgressBar(values.slider);
         }
-        values[2].addEventListener('click', changeCheckbox, false);
+        values.checkbox.addEventListener('click', changeCheckbox, false);
     }
 }));
 
