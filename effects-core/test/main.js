@@ -1,6 +1,16 @@
 /* eslint-disable indent */
 /* eslint-disable new-cap */
 /* eslint-disable max-len */
+const format = {
+    horizontal: {
+        width: 663,
+        height: 373,
+    },
+    vertical: {
+        width: 218,
+        height: 373,
+    },
+};
 /**
  * @return {Boolean}
  */
@@ -15,7 +25,6 @@ function isChrome() {
 };
 // eslint-disable-next-line no-unused-vars
 const isWorker = true;
-const image = document.createElement('img');
 const forms = document.querySelectorAll('.effect-form');
 const dropArea = document.getElementById('drop-area');
 
@@ -29,11 +38,11 @@ const originContext = originCanvas.getContext('2d');
  */
 const effectCanvas = document.getElementById('previewEffect');
 const effectContext = effectCanvas.getContext('2d');
-originCanvas.width = effectCanvas.width;
-originCanvas.height = effectCanvas.height;
+
 /**
  * @type {ImageData}
  */
+// eslint-disable-next-line no-unused-vars
 let originImageData;
 /**
  * @type {ImageData}
@@ -76,12 +85,18 @@ function setEffect() {
     // Формируем пачку эффектов и отдаем ее
         const effects = [];
         Array.prototype.forEach.call(forms, function(element) {
-            const values = getValuesFromForm(element);
-            const slider = values[0];
-            const valueText = values[1];
-            const checkbox = values[2];
-            if (checkbox.checked) {
-                effects.push({type: valueText.parentElement.id, level: slider.value});
+            if (!document.querySelector('#' + element.id + '> .sliderContainer')) {
+                effects.push({
+                    type: element.id,
+                    level: element.firstElementChild.checked ? 1 : 0,
+                });
+            } else {
+                const values = getValuesFromForm(element);
+                const slider = values[0];
+                const checkbox = values[2];
+                if (checkbox.checked) {
+                    effects.push({type: element.id, level: slider.value});
+                }
             }
         });
         window.ImageEffects.Apply(effects, effectImageData);
@@ -154,31 +169,82 @@ function changeCheckbox(event) {
 }
 
 Array.prototype.forEach.call(forms, (function(element) {
-    const values = getValuesFromForm(element);
-    values[0].addEventListener((isInternetExplorer() ? 'change' : 'input'), changeValue, false);
-    if (isInternetExplorer()) {
-        values[0].parentElement.classList.add('ie-support');
+    if (!document.querySelector('#' + element.id + '> .sliderContainer')) {
+        element.firstElementChild.addEventListener('click', setEffect, false);
+    } else {
+        const values = getValuesFromForm(element);
+        values[0].addEventListener((isInternetExplorer() ? 'change' : 'input'), changeValue, false);
+        if (isInternetExplorer()) {
+            values[0].parentElement.classList.add('ie-support');
+        }
+        if (isChrome()) {
+            chromeProgressBar(values[0]);
+        }
+        values[2].addEventListener('click', changeCheckbox, false);
     }
-    if (isChrome()) {
-        chromeProgressBar(values[0]);
-    }
-    values[2].addEventListener('click', changeCheckbox, false);
 }));
 
 /* Drag n Drop */
 /**
+ * @param {HTMLImageElement} image
+ * @typedef {Object} Formatter
+ * @property {HTMLImageElement} image
+ * @property {Number} sx
+ * @property {Number} sy
+ * @property {Number} sWidth
+ * @property {Number} sHeight
+ * @property {Number} dx
+ * @property {Number} dy
+ * @property {Number} dWidth
+ * @property {Number} dHeight
+ * @return {Formatter}
+ */
+function formatImage(image) {
+    const formatter = {
+        image: image,
+        sx: 0,
+        sy: 0,
+        sWidth: image.width,
+        sHeight: image.height,
+        dx: 0,
+        dy: 0,
+        dWidth: effectCanvas.width,
+        dHeight: effectCanvas.height,
+    };
+    if (image.height > image.width) {
+        effectCanvas.width = format.vertical.width;
+        formatter.dWidth = format.vertical.width;
+        formatter.sx = (image.width - (image.height * 9 / 16)) / 2;
+        formatter.sWidth = image.height * 9 / 16;
+    } else {
+        effectCanvas.width = format.horizontal.width;
+        formatter.dWidth = format.horizontal.width;
+        formatter.sy = (image.height - (image.width * 9 / 16)) / 2;
+        formatter.sHeight = image.width * 9 / 16;
+    }
+    return formatter;
+}
+/**
  * @param {HTMLImageElement} preImage
  */
 const imagePreview = function drawImageOnDisplay(preImage) {
-    // TODO: 16:9 formatter
-    // [originCanvas, effectCanvas].forEach(function(item) {
-    //     item.width = preImage.width;
-    //     item.height = preImage.height;
-    // });
-    [originContext, effectContext].forEach(function(item) {
-        item.clearRect(0, 0, originCanvas.width, originCanvas.height);
-        item.drawImage(preImage, 0, 0, originCanvas.width, originCanvas.height);
-    });
+    originContext.clearRect(0, 0, originCanvas.width, originCanvas.height);
+    originContext.drawImage(preImage, 0, 0, originCanvas.width, effectCanvas.width);
+
+    const formatter = formatImage(preImage);
+
+    effectContext.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
+    effectContext.drawImage(
+        formatter.image,
+        formatter.sx,
+        formatter.sy,
+        formatter.sWidth,
+        formatter.sHeight,
+        formatter.dx,
+        formatter.dy,
+        formatter.dWidth,
+        formatter.dHeight);
+    // void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
 };
 /**
  */
@@ -211,14 +277,20 @@ const handleFiles = function handleFilesFromForm(event) {
     reader.readAsArrayBuffer(file);
     reader.onloadend = function() {
         const url = typedArrayToURL(reader.result, file.type);
+        const image = new Image();
         image.src = url;
-        image.onload = function() {
-            imagePreview(image);
-            originImageData = originContext.getImageData(0, 0, originCanvas.width, originCanvas.height);
-            effectImageData = effectContext.getImageData(0, 0, originCanvas.width, originCanvas.height);
 
-            middlewareImageData = originContext.createImageData(originImageData);
-            middlewareImageData.data.set(originImageData.data);
+        image.onload = function() {
+            originCanvas.width = image.width;
+            originCanvas.height = image.height;
+
+            imagePreview(image);
+
+            originImageData = originContext.getImageData(0, 0, originCanvas.width, originCanvas.height);
+            effectImageData = effectContext.getImageData(0, 0, effectCanvas.width, effectCanvas.height);
+
+            middlewareImageData = effectContext.createImageData(effectImageData);
+            middlewareImageData.data.set(effectImageData.data);
             enableCheckbox();
         };
     };

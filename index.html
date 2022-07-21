@@ -12,7 +12,7 @@
 		<div id="main-content">
 			<!-- TODO: 16:9 formatter -->
 			<div id="drop-area">
-				<!-- <canvas width="500" height="300" id="previewImage"></canvas> -->
+				<!-- <canvas id="previewImage"></canvas> -->
 				<div><p id="no-image-text">Please, select an image</p></div>
 				<canvas id="previewEffect" width="663" height="373"></canvas>
 			</div>
@@ -22,10 +22,6 @@
 				<div class="effect-form" id="sepia">
 					<input type="checkbox" class="checkbox" disabled>
 					<p>Sepia</p>
-					<div class="sliderContainer">
-						<input type="range" min="0" max="1" value="0" disabled>
-					</div>
-					<p class="value-text">0</p>
 				</div>
 				<div class="effect-form" id="brightness">
 					<input type="checkbox" class="checkbox" disabled>
@@ -63,11 +59,7 @@
 			<div class="effect-panel">
 				<div class="effect-form" id="shades_of_gray">
 					<input type="checkbox" class="checkbox" disabled>
-					<p>Shades of gray</p>
-					<div class="sliderContainer">
-						<input type="range" min="0" max="1" value="0" disabled>
-					</div>
-					<p class="value-text">0</p>
+					<p>B&W</p>
 				</div>
 				<div class="effect-form" id="lighting">
 					<input type="checkbox" class="checkbox" disabled>
