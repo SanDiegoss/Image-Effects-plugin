@@ -1,15 +1,30 @@
 /* eslint-disable indent */
 /* eslint-disable new-cap */
 /* eslint-disable max-len */
+const format = {
+    horizontal: {
+        width: 663,
+        height: 373,
+    },
+    vertical: {
+        width: 218,
+        height: 373,
+    },
+};
 /**
  * @return {Boolean}
  */
 function isInternetExplorer() {
     return window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 }
+/**
+ * @return {Boolean}
+ */
+function isChrome() {
+    return window.navigator.userAgent.indexOf('Chrome') > -1;
+};
 // eslint-disable-next-line no-unused-vars
 const isWorker = true;
-const image = document.createElement('img');
 const forms = document.querySelectorAll('.effect-form');
 const dropArea = document.getElementById('drop-area');
 
@@ -23,9 +38,11 @@ const originContext = originCanvas.getContext('2d');
  */
 const effectCanvas = document.getElementById('previewEffect');
 const effectContext = effectCanvas.getContext('2d');
+
 /**
  * @type {ImageData}
  */
+// eslint-disable-next-line no-unused-vars
 let originImageData;
 /**
  * @type {ImageData}
@@ -42,22 +59,6 @@ let middlewareImageData;
 /**
  * @param {Event} event
  */
-// function saveAllChanges(event) {
-//     preventDefaults(event);
-//     originImageData.data.set(middlewareImageData.data);
-//     originContext.putImageData(middlewareImageData, 0, 0);
-// }
-// /**
-//  * @param {Event} event
-//  */
-// function discardAllChanges(event) {
-//     preventDefaults(event);
-//     middlewareImageData.data.set(originImageData.data);
-//     effectContext.putImageData(originImageData, 0, 0);
-// }
-/**
- * @param {Event} event
- */
 function preventDefaults(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -68,42 +69,14 @@ function preventDefaults(event) {
 });
 /**
  * @param {HTMLElement} form
- * @return {[HTMLInputElement, HTMLParagraphElement]}
+ * @return {[HTMLInputElement, HTMLParagraphElement, HTMLInputElement]}
  */
  function getValuesFromForm(form) {
     const slider = document.querySelector('#' + form.id + '> .sliderContainer').firstElementChild;
     const valueText = document.querySelector('#' + form.id + '> .value-text');
-    return [slider, valueText];
+    const checkbox = document.querySelector('#' + form.id).firstElementChild;
+    return [slider, valueText, checkbox];
 }
-/**
- */
-// function setDefaults() {
-//     Array.prototype.forEach.call(forms, function(item) {
-//         const values = getValuesFromForm(item);
-//         const slider = values[0];
-//         const valueText = values[1];
-//         slider.value = 0;
-//         valueText.value = 0;
-//     });
-// }
-/**
- * @param {Event} event
- */
-// function confirmEffects(event) {
-//     preventDefaults(event);
-//     middlewareImageData.data.set(effectImageData.data);
-//     effectContext.putImageData(middlewareImageData, 0, 0);
-//     setDefaults();
-// }
-// const saveAllChangesButton = document.getElementById('saveAllChangesButton');
-// const discardAllChangesButton = document.getElementById('discardAllChangesButton');
-// const confirmEffectsButton = document.getElementById('confirmEffects');
-
-// saveAllChangesButton.addEventListener('click', saveAllChanges, false);
-// discardAllChangesButton.addEventListener('click', discardAllChanges, false);
-// confirmEffectsButton.addEventListener('click', confirmEffects, false);
-/* Slider Events */
-
 /**
  */
 function setEffect() {
@@ -112,9 +85,19 @@ function setEffect() {
     // Формируем пачку эффектов и отдаем ее
         const effects = [];
         Array.prototype.forEach.call(forms, function(element) {
-            const slider = getValuesFromForm(element)[0];
-            const valueText = getValuesFromForm(element)[1];
-            effects.push({type: valueText.parentElement.id, level: slider.value});
+            if (!document.querySelector('#' + element.id + '> .sliderContainer')) {
+                effects.push({
+                    type: element.id,
+                    level: element.firstElementChild.checked ? 1 : 0,
+                });
+            } else {
+                const values = getValuesFromForm(element);
+                const slider = values[0];
+                const checkbox = values[2];
+                if (checkbox.checked) {
+                    effects.push({type: element.id, level: slider.value});
+                }
+            }
         });
         window.ImageEffects.Apply(effects, effectImageData);
         if (!isWorker) {
@@ -124,7 +107,28 @@ function setEffect() {
         throw new Error('No Image!');
     }
 }
-
+/**
+ * @param {HTMLInputElement} slider
+ * @desciption Google polyfill for progress bar
+ */
+function chromeProgressBar(slider) {
+    const color = slider.disabled ? '#a0a0a0' : '#444444';
+    const del = ((+slider.max - +slider.min)/100);
+    let value = slider.value / del;
+    if (+slider.min < 0) {
+        value += +slider.max / 2;
+    }
+    slider.style.background =
+        'linear-gradient(to right, ' +
+        color +
+        ' 0%, ' +
+        color +
+        ' ' +
+        value +
+        '%, #c0c0c0 ' +
+        value +
+        '%, #c0c0c0 100%)';
+}
 /**
  * @param {Event} event
  */
@@ -139,29 +143,117 @@ function changeValue(event) {
     */
     const valueText = slider.parentElement.nextElementSibling;
     valueText.textContent = slider.value;
+    if (isChrome()) {
+        chromeProgressBar(slider);
+    }
+    setEffect();
+}
+/**
+ * @param {Event} event
+ */
+function changeCheckbox(event) {
+    const slider = event
+        .target
+        .nextElementSibling
+        .nextElementSibling
+        .firstElementChild;
+    if (event.target.checked) {
+       slider.removeAttribute('disabled');
+    } else {
+       slider.setAttribute('disabled', '');
+    }
+    if (isChrome()) {
+        chromeProgressBar(slider);
+    }
     setEffect();
 }
 
 Array.prototype.forEach.call(forms, (function(element) {
-    const values = getValuesFromForm(element);
-    values[0].addEventListener((isInternetExplorer() ? 'change' : 'input'), changeValue, false);
+    if (!document.querySelector('#' + element.id + '> .sliderContainer')) {
+        element.firstElementChild.addEventListener('click', setEffect, false);
+    } else {
+        const values = getValuesFromForm(element);
+        values[0].addEventListener((isInternetExplorer() ? 'change' : 'input'), changeValue, false);
+        if (isInternetExplorer()) {
+            values[0].parentElement.classList.add('ie-support');
+        }
+        if (isChrome()) {
+            chromeProgressBar(values[0]);
+        }
+        values[2].addEventListener('click', changeCheckbox, false);
+    }
 }));
 
 /* Drag n Drop */
 /**
+ * @param {HTMLImageElement} image
+ * @typedef {Object} Formatter
+ * @property {HTMLImageElement} image
+ * @property {Number} sx
+ * @property {Number} sy
+ * @property {Number} sWidth
+ * @property {Number} sHeight
+ * @property {Number} dx
+ * @property {Number} dy
+ * @property {Number} dWidth
+ * @property {Number} dHeight
+ * @return {Formatter}
+ */
+function formatImage(image) {
+    const formatter = {
+        image: image,
+        sx: 0,
+        sy: 0,
+        sWidth: image.width,
+        sHeight: image.height,
+        dx: 0,
+        dy: 0,
+        dWidth: effectCanvas.width,
+        dHeight: effectCanvas.height,
+    };
+    if (image.height > image.width) {
+        effectCanvas.width = format.vertical.width;
+        formatter.dWidth = format.vertical.width;
+        formatter.sx = (image.width - (image.height * 9 / 16)) / 2;
+        formatter.sWidth = image.height * 9 / 16;
+    } else {
+        effectCanvas.width = format.horizontal.width;
+        formatter.dWidth = format.horizontal.width;
+        formatter.sy = (image.height - (image.width * 9 / 16)) / 2;
+        formatter.sHeight = image.width * 9 / 16;
+    }
+    return formatter;
+}
+/**
  * @param {HTMLImageElement} preImage
  */
 const imagePreview = function drawImageOnDisplay(preImage) {
-    [originCanvas, effectCanvas].forEach(function(item) {
-        item.width = preImage.width;
-        item.height = preImage.height;
-    });
-    [originContext, effectContext].forEach(function(item) {
-        item.clearRect(0, 0, originCanvas.width, originCanvas.height);
-        item.drawImage(preImage, 0, 0, originCanvas.width, originCanvas.height);
-    });
-};
+    originContext.clearRect(0, 0, originCanvas.width, originCanvas.height);
+    originContext.drawImage(preImage, 0, 0, originCanvas.width, effectCanvas.width);
 
+    const formatter = formatImage(preImage);
+
+    effectContext.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
+    effectContext.drawImage(
+        formatter.image,
+        formatter.sx,
+        formatter.sy,
+        formatter.sWidth,
+        formatter.sHeight,
+        formatter.dx,
+        formatter.dy,
+        formatter.dWidth,
+        formatter.dHeight);
+    // void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+};
+/**
+ */
+function enableCheckbox() {
+    const checkboxes = document.querySelectorAll('.checkbox');
+    Array.prototype.forEach.call(checkboxes, (function(checkbox) {
+        checkbox.removeAttribute('disabled');
+    }));
+}
 /**
  * @param {DragEvent} event
  */
@@ -185,14 +277,21 @@ const handleFiles = function handleFilesFromForm(event) {
     reader.readAsArrayBuffer(file);
     reader.onloadend = function() {
         const url = typedArrayToURL(reader.result, file.type);
+        const image = new Image();
         image.src = url;
-        image.onload = function() {
-            imagePreview(image);
-            originImageData = originContext.getImageData(0, 0, originCanvas.width, originCanvas.height);
-            effectImageData = effectContext.getImageData(0, 0, originCanvas.width, originCanvas.height);
 
-            middlewareImageData = originContext.createImageData(originImageData);
-            middlewareImageData.data.set(originImageData.data);
+        image.onload = function() {
+            originCanvas.width = image.width;
+            originCanvas.height = image.height;
+
+            imagePreview(image);
+
+            originImageData = originContext.getImageData(0, 0, originCanvas.width, originCanvas.height);
+            effectImageData = effectContext.getImageData(0, 0, effectCanvas.width, effectCanvas.height);
+
+            middlewareImageData = effectContext.createImageData(effectImageData);
+            middlewareImageData.data.set(effectImageData.data);
+            enableCheckbox();
         };
     };
 };
