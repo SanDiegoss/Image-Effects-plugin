@@ -108,27 +108,20 @@
     };
 
     /**
-     * @typedef {Object} Effect
-     * @property {String} type
-     * @property {Number} level
-     * @param {Array<Effect>} effects
-     * @param {Uint8ClampedArray} data 
+     * @param {Message} message 
      */
-    function ApplyEffect(effects, data) {
+    function ApplyEffect(message) {
         if (isModuleLoaded) {
-            effects.forEach(function(item) {
-                effect[item.type](item.level, data);
+            message.effects.forEach(function(item) {
+                effect[item.type](item.level, message.data);
             });
         } else {
             throw new Error('Module is not loaded!');
         }
     };
     window.onmessage = function(e) {
-        // console.log(e.data.data);
-        const effects = e.data.effects;
-        const data = e.data.data;
-        ApplyEffect(effects, data);
-        postMessage(data);
+        ApplyEffect(e.data);
+        postMessage(e.data.data);
     };
 })(self);
 

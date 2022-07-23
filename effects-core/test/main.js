@@ -108,7 +108,7 @@ function setEffect() {
                 }
             }
         });
-        window.ImageEffects.Apply(effects, effectImageData);
+        window.ImageEffects.Apply({effects: effects, data: effectImageData});
         if (!isWorker) {
             effectContext.putImageData(effectImageData, 0, 0);
         }

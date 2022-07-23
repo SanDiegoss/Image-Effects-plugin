@@ -4,6 +4,18 @@
 /* eslint-disable space-before-blocks */
 'use strict';
 
+/**
+ * @typedef {Object} Effect
+ * @property {String} type
+ * @property {Number} level
+ */
+
+/**
+ * @typedef {Object} Message
+ * @property {Array<Effect>} effects
+ * @property {ImageData} data
+ */
+
 (function(window){
     window.ImageEffects = window.ImageEffects || {};
     window.ImageEffects.isReady = false;
@@ -32,15 +44,22 @@
         // eslint-disable-next-line no-var
         if (isWorker){
             const worker = new Worker(url);
+            let isSent = false;
+            let backup = null;
             /**
-             * @typedef {Object} Effect
-             * @property {String} type
-             * @property {Number} level
-             * @param {Array<Effect>} effects
-             * @param {Uint8ClampedArray} data
+             * @param {Message} message
              */
-            function ApplyEffect(effects, data){
-                worker.postMessage({effects: effects, data: data});
+            function ApplyEffect(message){
+                if (isSent) {
+                    backup = {
+                        effects: message.effects,
+                        data: effectContext.createImageData(message.data),
+                    };
+                    backup.data.data.set(message.data.data);
+                    return;
+                }
+                isSent = true;
+                worker.postMessage(message);
             }
             worker.onmessage = function(e) {
                 if (e.data == 'module is ready'){
@@ -50,6 +69,12 @@
                     worker.onmessage = function(e){
                         effectImageData.data.set(e.data.data);
                         effectContext.putImageData(effectImageData, 0, 0);
+                        isSent = false;
+                        if (backup) {
+                            isSent = true;
+                            this.postMessage(backup);
+                            backup = null;
+                        }
                     };
                 } else {
                     throw new Error('Unknown message from worker:' + url);
