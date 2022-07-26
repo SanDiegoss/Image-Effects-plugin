@@ -32,7 +32,7 @@ const Slider = (function() {
         progressColor: {mainColor: '#444444', disabledColor: '#a0a0a0'},
         thumbColor: {mainColor: '#444444', disabledColor: '#a0a0a0'},
         borderColor: {mainColor: '#c0c0c0', disabledColor: '#c0c0c0'},
-        width: 129,
+        width: 128,
         height: 4,
         borderRadius: 2,
         thumbRadius: 6,
@@ -81,6 +81,17 @@ const Slider = (function() {
 
         context.closePath();
     }
+    /**
+     * @param {CanvasRenderingContext2D} context
+     * @param {Settings} settings
+     * @param {Boolean} isEnabled
+     */
+    function drawThumb(context, settings, isEnabled) {
+        context.beginPath();
+        context.arc(settings.thumbRadius, settings.thumbRadius, settings.thumbRadius, 0, 2*Math.PI);
+        context.fillStyle = (isEnabled) ? settings.thumbColor.mainColor : settings.thumbColor.disabledColor;
+        context.fill();
+    }
     return {
         /**
          * Constructor for sliders
@@ -92,20 +103,46 @@ const Slider = (function() {
             if (this.settings.borderRadius > this.settings.height / 2) {
                 this.settings.borderRadius = this.settings.height / 2;
             }
+
             this.backgoundCanvas = document.createElement('canvas');
+            this.progressCanvas = document.createElement('canvas');
+            this.thumbCanvas = document.createElement('canvas');
+
             this.backgoundCanvas.width = this.settings.width;
-            // TODO: 1 слой - фон, 2 слой - thumb
-            /**
-             * settings.height + (settings.thumbRadius * 2 - settings.height) - всегда чётное число
-             * из свойства чётности чисел, следовательно
-             * this.canvas.height - чётное
-             */
+            this.progressCanvas.width = this.settings.width;
+            this.thumbCanvas.width = this.settings.thumbRadius * 2;
+
             this.backgoundCanvas.height = this.settings.thumbRadius * 2;
+            this.progressCanvas.height = this.settings.height;
+            this.thumbCanvas.height = this.settings.thumbRadius * 2;
+
+            this.backgoundCanvas.style.zIndex = 1;
+            this.progressCanvas.style.zIndex = 2;
+            this.thumbCanvas.style.zIndex = 3;
+
+            this.backgoundCanvas.style.position = 'absolute';
+            this.progressCanvas.style.position = 'absolute';
+            this.thumbCanvas.style.position = 'absolute';
+
+            this.progressCanvas.style.top = this.settings.thumbRadius - this.settings.height / 2 + 'px';
 
             this.bgContext = this.backgoundCanvas.getContext('2d');
+            this.bgContext.imageSmoothingEnabled = false;
+            drawBorders(this.bgContext, this.settings, this.isEnabled);
+            drawThumb(this.thumbCanvas.getContext('2d'), this.settings, this.isEnabled);
             // TODO: Зависимость от прогресса
             this.draw = function() {
-                drawBorders(this.bgContext, this.settings, this.isEnabled);
+            };
+            /**
+             * @param {HTMLDivElement} div
+             */
+            this.addToDiv = function(div) {
+                div.style.position = 'relative';
+                div.style.height = this.settings.thumbRadius * 2 + 'px';
+                div.style.margin = '2px';
+                div.appendChild(this.backgoundCanvas);
+                div.appendChild(this.progressCanvas);
+                div.appendChild(this.thumbCanvas);
             };
         },
     };
