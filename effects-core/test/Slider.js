@@ -34,9 +34,9 @@ const SliderModule = (function() {
     const defualtSliderSettings = {
         backgroundColor: {mainColor: '#c0c0c0', disabledColor: '#c0c0c0'},
         progressColor: {mainColor: '#444444', disabledColor: '#a0a0a0'},
-        borderProgressColor: {mainColor: '#444444', disabledColor: '#a0a0a0'},
+        borderProgressColor: {mainColor: '#444444', disabledColor: 'red'},
         thumbColor: {mainColor: '#444444', disabledColor: '#a0a0a0'},
-        borderBackgroundColor: {mainColor: '#c0c0c0', disabledColor: '#c0c0c0'},
+        borderBackgroundColor: {mainColor: '#c0c0c0', disabledColor: 'blue'},
         width: 128,
         height: 4,
         borderRadius: 2,
@@ -58,12 +58,8 @@ const SliderModule = (function() {
         /**
          * Constructor for sliders
          * @param {Settings} settings
-         * @return {Slider}
          */
         CSlider: function(settings) {
-            if (!new.target) {
-                return new SliderModule.CSlider(settings);
-            }
             settings = settings || defualtSliderSettings;
             let isEnabled = settings.isEnabledByDefault;
             if (settings.borderRadius > settings.height / 2) {
@@ -199,7 +195,7 @@ const SliderModule = (function() {
                  */
                 function moveAt(pageX) {
                     const offset = thumbCanvas.parentElement.getBoundingClientRect();
-                    const moving = (pageX - offset.x - thumbCanvas.width / 2 + window.scrollX);
+                    const moving = (pageX - offset.left - thumbCanvas.width / 2 + window.pageXOffset);
                     if (moving < 0) {
                         thumbCanvas.style.left = 0;
                         value = settings.min;
