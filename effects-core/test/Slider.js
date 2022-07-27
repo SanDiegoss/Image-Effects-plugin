@@ -26,7 +26,7 @@
  * Slider module
  */
 // eslint-disable-next-line no-unused-vars
-const Slider = (function() {
+const SliderModule = (function() {
     /**
      * Default settings for slider
      * @type {Settings}
@@ -58,8 +58,12 @@ const Slider = (function() {
         /**
          * Constructor for sliders
          * @param {Settings} settings
+         * @return {Slider}
          */
-        Slider: function(settings) {
+        CSlider: function(settings) {
+            if (!new.target) {
+                return new SliderModule.CSlider(settings);
+            }
             settings = settings || defualtSliderSettings;
             let isEnabled = settings.isEnabledByDefault;
             if (settings.borderRadius > settings.height / 2) {
