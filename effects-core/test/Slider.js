@@ -77,7 +77,7 @@ const SliderModule = (function() {
             if (settings.borderRadius > settings.height / 2) {
                 settings.borderRadius = settings.height / 2;
             }
-            if (settings.thumbRadius*2 < settings.height) {
+            if (settings.thumbRadius * 2 < settings.height) {
                 settings.thumbRadius = settings.height / 2;
             }
 
