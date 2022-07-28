@@ -41,7 +41,7 @@ const SliderModule = (function() {
         height: 4,
         max: 100,
         min: -100,
-        startValue: 100,
+        startValue: 0,
         isEnabledByDefault: false,
     };
     /**
@@ -54,7 +54,8 @@ const SliderModule = (function() {
     }
     return {
         changeDefaultSettings: function(settings) {
-            for (const i in settings) {
+            // eslint-disable-next-line prefer-const
+            for (let i in settings) {
                 if (Object.prototype.hasOwnProperty.call(defaultSliderSettings, i)) {
                     defaultSliderSettings[i] = settings[i] || defaultSliderSettings[i];
                 }
@@ -68,7 +69,8 @@ const SliderModule = (function() {
         CSlider: function(oSettings, parent) {
             // TODO: refactoring
             const settings = {};
-            for (const i in defaultSliderSettings) {
+            // eslint-disable-next-line prefer-const
+            for (let i in defaultSliderSettings) {
                 if (Object.prototype.hasOwnProperty.call(defaultSliderSettings, i)) {
                     settings[i] = oSettings[i] || defaultSliderSettings[i];
                 }
