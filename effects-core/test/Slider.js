@@ -66,6 +66,7 @@ const SliderModule = (function() {
          * @param {HTMLDivElement} parent
          */
         CSlider: function(oSettings, parent) {
+            // TODO: refactoring
             const settings = {};
             for (const i in defaultSliderSettings) {
                 if (Object.prototype.hasOwnProperty.call(defaultSliderSettings, i)) {
@@ -200,7 +201,6 @@ const SliderModule = (function() {
                         const total = settings.max - settings.min;
                         const maxleft = offset.width - settings.thumbRadius * 2;
                         const percent = moving / maxleft;
-                        // TODO: refactoring
                         value = (settings.min + percent * total);
                         // value = Math.floor(value);
                     }
