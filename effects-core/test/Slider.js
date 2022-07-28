@@ -182,9 +182,6 @@ const SliderModule = (function() {
                 drawThumb();
             }
             canvas.onpointerdown = function(event) {
-                /**
-                 * @type {HTMLCanvasElement}
-                 */
                 event.preventDefault();
                 event.stopPropagation();
                 moveAt(event.pageX);
