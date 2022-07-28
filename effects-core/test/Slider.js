@@ -13,10 +13,9 @@
  * @property {Color} borderProgressColor
  * @property {Color} thumbColor
  * @property {Color} borderBackgroundColor
- * @property {Number} width
- * @property {Number} height
  * @property {Number} borderRadius
  * @property {Number} thumbRadius
+ * @property {Number} height
  * @property {Number} max
  * @property {Number} min
  * @property {Number} startValue
@@ -31,19 +30,18 @@ const SliderModule = (function() {
      * Default settings for slider
      * @type {Settings}
      */
-    const defualtSliderSettings = {
+    const defaultSliderSettings = {
         backgroundColor: {mainColor: '#c0c0c0', disabledColor: '#c0c0c0'},
         progressColor: {mainColor: '#444444', disabledColor: '#a0a0a0'},
         borderProgressColor: {mainColor: '#444444', disabledColor: 'red'},
         thumbColor: {mainColor: '#444444', disabledColor: '#a0a0a0'},
         borderBackgroundColor: {mainColor: '#c0c0c0', disabledColor: 'blue'},
-        width: 128,
-        height: 4,
         borderRadius: 2,
         thumbRadius: 6,
+        height: 4,
         max: 100,
-        min: 0,
-        startValue: 50,
+        min: -100,
+        startValue: 100,
         isEnabledByDefault: false,
     };
     /**
@@ -55,12 +53,25 @@ const SliderModule = (function() {
         this.y = y;
     }
     return {
+        changeDefaultSettings: function(settings) {
+            for (const i in settings) {
+                if (Object.prototype.hasOwnProperty.call(defaultSliderSettings, i)) {
+                    defaultSliderSettings[i] = settings[i] || defaultSliderSettings[i];
+                }
+            }
+        },
         /**
          * Constructor for sliders
-         * @param {Settings} settings
+         * @param {Settings} oSettings
+         * @param {HTMLDivElement} parent
          */
-        CSlider: function(settings) {
-            settings = settings || defualtSliderSettings;
+        CSlider: function(oSettings, parent) {
+            const settings = {};
+            for (const i in defaultSliderSettings) {
+                if (Object.prototype.hasOwnProperty.call(defaultSliderSettings, i)) {
+                    settings[i] = oSettings[i] || defaultSliderSettings[i];
+                }
+            }
             let isEnabled = settings.isEnabledByDefault;
             if (settings.borderRadius > settings.height / 2) {
                 settings.borderRadius = settings.height / 2;
@@ -71,119 +82,103 @@ const SliderModule = (function() {
 
             let value = settings.startValue;
 
-            const backgoundCanvas = document.createElement('canvas');
-            const progressCanvas = document.createElement('canvas');
-            const thumbCanvas = document.createElement('canvas');
-
-            backgoundCanvas.width = settings.width;
-            progressCanvas.width = settings.width;
-            thumbCanvas.width = settings.thumbRadius * 2;
-
-            backgoundCanvas.height = settings.thumbRadius * 2;
-            progressCanvas.height = settings.thumbRadius * 2;
-            thumbCanvas.height = settings.thumbRadius * 2;
-
-            backgoundCanvas.style.zIndex = 1;
-            progressCanvas.style.zIndex = 2;
-            thumbCanvas.style.zIndex = 3;
-
-            backgoundCanvas.style.position = 'absolute';
-            progressCanvas.style.position = 'absolute';
-            thumbCanvas.style.position = 'absolute';
-
-            const bgContext = backgoundCanvas.getContext('2d');
-            const pgContext = progressCanvas.getContext('2d');
-            const thContext = thumbCanvas.getContext('2d');
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
             /**
              */
             function drawBorders() {
-                bgContext.beginPath();
+                const borderRadius = settings.borderRadius * window.devicePixelRatio;
+                const height = settings.height * window.devicePixelRatio;
+                const thumbRadius = settings.thumbRadius * window.devicePixelRatio;
+                context.beginPath();
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                const LeftArcStartPoint = new Coordinates(borderRadius, thumbRadius - height / 2);
+                const LeftArcMiddlePoint = new Coordinates(0, thumbRadius);
+                const LeftArcEndPoint = new Coordinates(borderRadius, thumbRadius + height / 2);
 
-                const LeftArcStartPoint = new Coordinates(settings.borderRadius, settings.thumbRadius - settings.height / 2);
-                const LeftArcMiddlePoint = new Coordinates(0, settings.thumbRadius);
-                const LeftArcEndPoint = new Coordinates(settings.borderRadius, settings.thumbRadius + settings.height / 2);
+                const RightArcStartPoint = new Coordinates(canvas.width - 2 * borderRadius, thumbRadius - height / 2);
+                const RightArcMiddlePoint = new Coordinates(canvas.width, thumbRadius);
+                const RightArcEndPoint = new Coordinates(canvas.width - 2 * borderRadius, thumbRadius + height / 2);
 
-                const RightArcStartPoint = new Coordinates(settings.width - 2 * settings.borderRadius, settings.thumbRadius - settings.height / 2);
-                const RightArcMiddlePoint = new Coordinates(settings.width, settings.thumbRadius);
-                const RightArcEndPoint = new Coordinates(settings.width - 2 * settings.borderRadius, settings.thumbRadius + settings.height / 2);
+                context.moveTo(LeftArcStartPoint.x, LeftArcStartPoint.y);
+                context.arcTo(LeftArcMiddlePoint.x, LeftArcMiddlePoint.y, LeftArcEndPoint.x, LeftArcEndPoint.y, borderRadius);
+                context.lineTo(LeftArcEndPoint.x, LeftArcEndPoint.y);
 
-                bgContext.moveTo(LeftArcStartPoint.x, LeftArcStartPoint.y);
-                bgContext.arcTo(LeftArcMiddlePoint.x, LeftArcMiddlePoint.y, LeftArcEndPoint.x, LeftArcEndPoint.y, settings.borderRadius);
-                bgContext.lineTo(LeftArcEndPoint.x, LeftArcEndPoint.y);
+                context.moveTo(LeftArcStartPoint.x, LeftArcStartPoint.y);
 
-                bgContext.moveTo(LeftArcStartPoint.x, LeftArcStartPoint.y);
+                context.lineTo(RightArcStartPoint.x, RightArcStartPoint.y);
+                context.arcTo(RightArcMiddlePoint.x, RightArcMiddlePoint.y, RightArcEndPoint.x, RightArcEndPoint.y, borderRadius);
+                context.lineTo(RightArcEndPoint.x, RightArcEndPoint.y);
 
-                bgContext.lineTo(RightArcStartPoint.x, RightArcStartPoint.y);
-                bgContext.arcTo(RightArcMiddlePoint.x, RightArcMiddlePoint.y, RightArcEndPoint.x, RightArcEndPoint.y, settings.borderRadius);
-                bgContext.lineTo(RightArcEndPoint.x, RightArcEndPoint.y);
+                context.lineTo(LeftArcEndPoint.x, LeftArcEndPoint.y);
 
-                bgContext.lineTo(LeftArcEndPoint.x, LeftArcEndPoint.y);
+                context.strokeStyle = (isEnabled) ? settings.borderBackgroundColor.mainColor : settings.borderBackgroundColor.disabledColor;
+                context.stroke();
+                context.fillStyle = (isEnabled) ? settings.backgroundColor.mainColor : settings.backgroundColor.disabledColor;
+                context.fill();
 
-                bgContext.strokeStyle = (isEnabled) ? settings.borderBackgroundColor.mainColor : settings.borderBackgroundColor.disabledColor;
-                bgContext.stroke();
-                bgContext.fillStyle = (isEnabled) ? settings.backgroundColor.mainColor : settings.backgroundColor.disabledColor;
-                bgContext.fill();
-
-                bgContext.closePath();
+                context.closePath();
             }
             /**
              */
             function drawThumb() {
-                thContext.clearRect(0, 0, thumbCanvas.width, thumbCanvas.height);
-                thContext.beginPath();
-                thContext.arc(settings.thumbRadius, settings.thumbRadius, settings.thumbRadius, 0, 2*Math.PI);
-                thContext.fillStyle = (isEnabled) ? settings.thumbColor.mainColor : settings.thumbColor.disabledColor;
-                thContext.fill();
+                const thumbRadius = settings.thumbRadius * window.devicePixelRatio;
                 const total = settings.max - settings.min;
-                const percent = (value + settings.min) / total;
-                const needWidth = (settings.width - settings.thumbRadius*2) * percent;
-                thumbCanvas.style.left = needWidth + 'px';
+                const percent = (value - settings.min) / total;
+                const needx = ((canvas.width - 2 * thumbRadius) * percent) + thumbRadius;
+                context.beginPath();
+                context.arc(needx, thumbRadius, thumbRadius, 0, 2*Math.PI);
+                context.fillStyle = (isEnabled) ? settings.thumbColor.mainColor : settings.thumbColor.disabledColor;
+                context.fill();
+                context.closePath();
             }
             /**
              */
             function drawProgress() {
+                const borderRadius = settings.borderRadius * window.devicePixelRatio;
+                const height = settings.height * window.devicePixelRatio;
+                const thumbRadius = settings.thumbRadius * window.devicePixelRatio;
                 const total = settings.max - settings.min;
-                const percent = (value + settings.min) / total;
-                const needWidth = (settings.width - settings.thumbRadius) * percent;
+                const percent = (value - settings.min) / total;
+                const needWidth = (canvas.width - thumbRadius) * percent;
                 console.log(needWidth);
-                pgContext.clearRect(0, 0, progressCanvas.width, progressCanvas.height);
                 if (percent == 0) {
                     return;
                 }
-                const LeftArcStartPoint = new Coordinates(settings.borderRadius, settings.thumbRadius - settings.height / 2);
-                const LeftArcMiddlePoint = new Coordinates(0, settings.thumbRadius);
-                const LeftArcEndPoint = new Coordinates(settings.borderRadius, settings.thumbRadius + settings.height / 2);
+                const LeftArcStartPoint = new Coordinates(borderRadius, thumbRadius - height / 2);
+                const LeftArcMiddlePoint = new Coordinates(0, thumbRadius);
+                const LeftArcEndPoint = new Coordinates(borderRadius, thumbRadius + height / 2);
 
-                const RightArcStartPoint = new Coordinates(needWidth + settings.thumbRadius / 2, settings.thumbRadius - settings.height / 2);
-                const RightArcEndPoint = new Coordinates(needWidth + settings.thumbRadius / 2, settings.thumbRadius + settings.height / 2);
+                const RightArcStartPoint = new Coordinates(needWidth + thumbRadius / 2, thumbRadius - height / 2);
+                const RightArcEndPoint = new Coordinates(needWidth + thumbRadius / 2, thumbRadius + height / 2);
 
-                pgContext.beginPath();
+                context.beginPath();
 
-                pgContext.moveTo(LeftArcStartPoint.x, LeftArcStartPoint.y);
-                pgContext.arcTo(LeftArcMiddlePoint.x, LeftArcMiddlePoint.y, LeftArcEndPoint.x, LeftArcEndPoint.y, settings.borderRadius);
-                pgContext.lineTo(LeftArcEndPoint.x, LeftArcEndPoint.y);
+                context.moveTo(LeftArcStartPoint.x, LeftArcStartPoint.y);
+                context.arcTo(LeftArcMiddlePoint.x, LeftArcMiddlePoint.y, LeftArcEndPoint.x, LeftArcEndPoint.y, borderRadius);
+                context.lineTo(LeftArcEndPoint.x, LeftArcEndPoint.y);
 
-                pgContext.moveTo(LeftArcStartPoint.x, LeftArcStartPoint.y);
+                context.moveTo(LeftArcStartPoint.x, LeftArcStartPoint.y);
 
-                pgContext.lineTo(RightArcStartPoint.x, RightArcStartPoint.y);
-                pgContext.lineTo(RightArcEndPoint.x, RightArcEndPoint.y);
+                context.lineTo(RightArcStartPoint.x, RightArcStartPoint.y);
+                context.lineTo(RightArcEndPoint.x, RightArcEndPoint.y);
 
-                pgContext.lineTo(LeftArcEndPoint.x, LeftArcEndPoint.y);
+                context.lineTo(LeftArcEndPoint.x, LeftArcEndPoint.y);
 
-                pgContext.strokeStyle = (isEnabled) ? settings.borderProgressColor.mainColor : settings.borderProgressColor.disabledColor;
-                pgContext.stroke();
-                pgContext.fillStyle = (isEnabled) ? settings.progressColor.mainColor : settings.progressColor.disabledColor;
-                pgContext.fill();
-                pgContext.closePath();
+                context.strokeStyle = (isEnabled) ? settings.borderProgressColor.mainColor : settings.borderProgressColor.disabledColor;
+                context.stroke();
+                context.fillStyle = (isEnabled) ? settings.progressColor.mainColor : settings.progressColor.disabledColor;
+                context.fill();
+                context.closePath();
             }
             /**
              */
-            (function update() {
+            function update() {
                 drawBorders();
                 drawProgress();
                 drawThumb();
-            })();
-            thumbCanvas.onpointerdown = function(event) {
+            }
+            canvas.onpointerdown = function(event) {
                 /**
                  * @type {HTMLCanvasElement}
                  */
@@ -194,25 +189,23 @@ const SliderModule = (function() {
                  * @param {Number} pageX
                  */
                 function moveAt(pageX) {
-                    const offset = thumbCanvas.parentElement.getBoundingClientRect();
-                    const moving = (pageX - offset.left - thumbCanvas.width / 2 + window.pageXOffset);
+                    const offset = parent.getBoundingClientRect();
+                    const moving = (pageX - offset.left - settings.thumbRadius + window.pageXOffset);
+                    console.log(offset.left);
                     if (moving < 0) {
-                        thumbCanvas.style.left = 0;
                         value = settings.min;
-                    } else if (moving > progressCanvas.width - thumbCanvas.width) {
-                        thumbCanvas.style.left = progressCanvas.width - thumbCanvas.width + 'px';
+                    } else if (moving > offset.width - settings.thumbRadius * 2) {
                         value = settings.max;
                     } else {
-                        thumbCanvas.style.left = moving + 'px';
                         const total = settings.max - settings.min;
-                        const maxleft = progressCanvas.width - thumbCanvas.width;
+                        const maxleft = offset.width - settings.thumbRadius * 2;
                         const percent = moving / maxleft;
                         // TODO: refactoring
                         value = (settings.min + percent * total);
-                        value = Math.floor(value);
+                        // value = Math.floor(value);
                     }
-                    progressCanvas.setAttribute('value', '' + value);
-                    drawProgress(pgContext, settings, true, value);
+                    canvas.setAttribute('value', '' + value);
+                    update();
                 }
                 /**
                  * @param {PointerEvent} event
@@ -230,20 +223,12 @@ const SliderModule = (function() {
                 document.addEventListener('pointermove', onPointerMove, false);
                 document.addEventListener('pointerup', onPointerUp, false);
             };
-            /**
-             * @param {HTMLDivElement} div
-             */
-            this.addToDiv = function(div) {
-                div.style.position = 'relative';
-                div.style.height = settings.thumbRadius * 2 + 'px';
-                div.style.margin = '2px';
-                div.appendChild(backgoundCanvas);
-                div.appendChild(progressCanvas);
-                div.appendChild(thumbCanvas);
-            };
             this.getValue = function() {
                 return value;
             };
+            /**
+             * @param {Number} oValue
+             */
             this.setValue = function(oValue) {
                 value = oValue;
                 update();
@@ -256,6 +241,21 @@ const SliderModule = (function() {
                 isEnabled = false;
                 update();
             };
+            parent.appendChild(canvas);
+            resize();
+            window.addEventListener('resize', resize);
+            /**
+             */
+            function resize() {
+                const scale = window.devicePixelRatio;
+                const rect = parent.getBoundingClientRect();
+                console.log(rect.height);
+                canvas.style.width = rect.width + 'px';
+                canvas.style.height = rect.height + 'px';
+                canvas.width = Math.round(scale * rect.right) - Math.round(scale * rect.left);
+                canvas.height = Math.round(scale * rect.bottom) - Math.round(scale * rect.top);
+                update();
+            }
         },
     };
 })();
