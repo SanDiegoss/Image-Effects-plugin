@@ -165,7 +165,7 @@ const SliderModule = (function() {
                     const offset = (settings.isVertical) ? rect.top : rect.left;
                     const oWidth = (settings.isVertical) ? rect.height : rect.width;
                     const pageOffset = (settings.isVertical) ? window.pageYOffset : window.pageXOffset;
-                    let moving = (pageX - offset - settings.thumbRadius + pageOffset);
+                    let moving = (pageX - offset - settings.thumbRadius - pageOffset);
                     if (settings.isVertical) {
                         moving = oWidth - moving - 2*settings.thumbRadius;
                     }
