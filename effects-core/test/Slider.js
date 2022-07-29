@@ -129,24 +129,34 @@ const SliderModule = (function() {
 
                 // before thumb
                 context.beginPath();
-                context.moveTo(leftTop.x, leftTop.y);
-                context.arcTo(leftMid.x, leftMid.y, leftBot.x, leftBot.y, borderRadius);
-                context.lineTo(leftBot.x, leftBot.y);
-                context.lineTo(centerBot.x, centerBot.y);
-                context.lineTo(centerTop.x, centerTop.y);
-                context.lineTo(leftTop.x, leftTop.y);
-                context.arcTo(leftMid.x, leftMid.y, leftBot.x, leftBot.y, borderRadius);
+                context.moveTo(leftTop.x >> 0, leftTop.y >> 0);
+                if (settings.isVertical) {
+                    context.arcTo(leftTop.x >> 0, (leftTop.y >> 0) + borderRadius, leftMid.x >> 0, (leftBot.y >> 0) + borderRadius, borderRadius);
+                    context.arcTo(leftBot.x >> 0, (leftBot.y >> 0) + borderRadius, (leftBot.x >> 0), (leftBot.y >> 0), borderRadius);
+                } else {
+                    context.arcTo((leftTop.x >> 0) - borderRadius, leftTop.y >> 0, (leftBot.x >> 0) - borderRadius, leftMid.y >> 0, borderRadius);
+                    context.arcTo((leftBot.x >> 0) - borderRadius, leftBot.y >> 0, (leftBot.x >> 0), leftBot.y >> 0, borderRadius);
+                }
+                context.lineTo(centerBot.x >> 0, centerBot.y >> 0);
+                context.lineTo(centerTop.x >> 0, centerTop.y >> 0);
+                context.closePath();
                 context.fillStyle = (isEnabled) ? settings.progressColor.mainColor : settings.progressColor.disabledColor;
                 context.fill();
                 context.strokeStyle = (isEnabled) ? settings.borderProgressColor.mainColor : settings.borderProgressColor.disabledColor;
                 context.stroke();
                 // after thumb
                 context.beginPath();
-                context.moveTo(centerTop.x, centerTop.y);
-                context.lineTo(rightTop.x, rightTop.y);
-                context.arcTo(rightMid.x, rightMid.y, rightBot.x, rightBot.y, borderRadius);
-                context.lineTo(rightBot.x, rightBot.y);
-                context.lineTo(centerBot.x, centerBot.y);
+                context.moveTo(rightTop.x >> 0, (rightTop.y >> 0));
+                if (settings.isVertical) {
+                    context.arcTo(rightTop.x >> 0, (rightTop.y >> 0) - borderRadius, rightMid.x >> 0, (rightBot.y >> 0) - borderRadius, borderRadius);
+                    context.arcTo(rightBot.x >> 0, (rightBot.y >> 0) - borderRadius, (rightBot.x >> 0), (rightBot.y >> 0), borderRadius);
+                } else {
+                    context.arcTo((rightTop.x >> 0) + borderRadius, rightTop.y >> 0, (rightBot.x >> 0) + borderRadius, rightMid.y >> 0, borderRadius);
+                    context.arcTo((rightBot.x >> 0) + borderRadius, rightBot.y >> 0, rightBot.x >> 0, rightBot.y >> 0, borderRadius);
+                }
+                context.lineTo(centerBot.x >> 0, (centerBot.y >> 0));
+                context.lineTo(centerTop.x >> 0, (centerTop.y >> 0));
+                context.closePath();
                 context.fillStyle = (isEnabled) ? settings.backgroundColor.mainColor : settings.backgroundColor.disabledColor;
                 context.fill();
                 context.strokeStyle = (isEnabled) ? settings.borderBackgroundColor.mainColor : settings.borderBackgroundColor.disabledColor;
