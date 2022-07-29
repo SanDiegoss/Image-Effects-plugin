@@ -124,31 +124,31 @@ const SliderModule = (function() {
 
                 // before thumb
                 context.beginPath();
-                context.moveTo(leftTop.x >> 0, leftTop.y >> 0 + offsetCeil);
-                context.arcTo(leftMid.x >> 0, leftMid.y >> 0 + offsetCeil, leftBot.x >> 0, leftBot.y >> 0 + offsetCeil, borderRadius);
-                context.lineTo(leftBot.x >> 0, leftBot.y >> 0 + offsetCeil);
-                context.lineTo(centerBot.x >> 0, centerBot.y >> 0 + offsetCeil);
-                context.lineTo(centerTop.x >> 0, centerTop.y >> 0 + offsetCeil);
-                context.lineTo(leftTop.x >> 0, leftTop.y >> 0 + offsetCeil);
-                context.arcTo(leftMid.x >> 0, leftMid.y >> 0 + offsetCeil, leftBot.x >> 0, leftBot.y >> 0 + offsetCeil, borderRadius);
+                context.moveTo(leftTop.x >> 0, (leftTop.y >> 0) + offsetCeil);
+                context.arcTo(leftMid.x >> 0, (leftMid.y >> 0) + offsetCeil, leftBot.x >> 0, leftBot.y >> 0 + offsetCeil, borderRadius);
+                context.lineTo(leftBot.x >> 0, (leftBot.y >> 0) + offsetCeil);
+                context.lineTo(centerBot.x >> 0, (centerBot.y >> 0) + offsetCeil);
+                context.lineTo(centerTop.x >> 0, (centerTop.y >> 0) + offsetCeil);
+                context.lineTo(leftTop.x >> 0, (leftTop.y >> 0) + offsetCeil);
+                context.arcTo(leftMid.x >> 0, (leftMid.y >> 0) + offsetCeil, leftBot.x >> 0, (leftBot.y >> 0) + offsetCeil, borderRadius);
                 context.fillStyle = (isEnabled) ? settings.progressColor.mainColor : settings.progressColor.disabledColor;
                 context.fill();
                 context.strokeStyle = (isEnabled) ? settings.borderProgressColor.mainColor : settings.borderProgressColor.disabledColor;
                 context.stroke();
                 // after thumb
                 context.beginPath();
-                context.moveTo(centerTop.x >> 0, centerTop.y >> 0 + offsetCeil);
-                context.lineTo(rightTop.x >> 0, rightTop.y >> 0 + offsetCeil);
-                context.arcTo(rightMid.x >> 0, rightMid.y >> 0 + offsetCeil, rightBot.x >> 0, rightBot.y >> 0 + offsetCeil, borderRadius);
-                context.lineTo(rightBot.x >> 0, rightBot.y >> 0 + offsetCeil);
-                context.lineTo(centerBot.x >> 0, centerBot.y >> 0 + offsetCeil);
+                context.moveTo(centerTop.x >> 0, (centerTop.y >> 0) + offsetCeil);
+                context.lineTo(rightTop.x >> 0, (rightTop.y >> 0) + offsetCeil);
+                context.arcTo(rightMid.x >> 0, (rightMid.y >> 0) + offsetCeil, rightBot.x >> 0, rightBot.y >> 0 + offsetCeil, borderRadius);
+                context.lineTo(rightBot.x >> 0, (rightBot.y >> 0) + offsetCeil);
+                context.lineTo(centerBot.x >> 0, (centerBot.y >> 0) + offsetCeil);
                 context.fillStyle = (isEnabled) ? settings.backgroundColor.mainColor : settings.backgroundColor.disabledColor;
                 context.fill();
                 context.strokeStyle = (isEnabled) ? settings.borderBackgroundColor.mainColor : settings.borderBackgroundColor.disabledColor;
                 context.stroke();
                 // Thumb
                 context.beginPath();
-                context.arc(thumbCoords.x, thumbCoords.y, thumbRadius, 0, 2*Math.PI);
+                context.arc(thumbCoords.x >> 0, (thumbCoords.y >> 0) + offsetCeil, thumbRadius, 0, 2*Math.PI);
                 context.fillStyle = (isEnabled) ? settings.thumbColor.mainColor : settings.thumbColor.disabledColor;
                 context.fill();
             }
