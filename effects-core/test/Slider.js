@@ -101,54 +101,59 @@ const SliderModule = (function() {
 
                 context.clearRect(0, 0, canvas.width, canvas.height);
 
-                const leftTop = new Coordinates(borderRadius * 2, cHeight / 2 - height / 2);
-                const leftMid = new Coordinates(0, cHeight / 2);
-                const leftBot = new Coordinates(borderRadius * 2, cHeight / 2 + height / 2);
+                const leftTop = new Coordinates((borderRadius * 2) >> 0, (cHeight / 2 - height / 2) >> 0);
+                const leftMid = new Coordinates(0, (cHeight / 2) >> 0);
+                const leftBot = new Coordinates((borderRadius * 2) >> 0, (cHeight / 2 + height / 2) >> 0);
 
-                const centerTop = new Coordinates(needx, cHeight / 2 - height / 2);
-                const centerBot = new Coordinates(needx, cHeight / 2 + height / 2);
+                const centerTop = new Coordinates(needx >> 0, (cHeight / 2 - height / 2) >> 0);
+                const centerBot = new Coordinates(needx >> 0, (cHeight / 2 + height / 2) >> 0);
 
-                const rightTop = new Coordinates(cWidth - 2 * borderRadius, cHeight / 2 - height / 2);
-                const rightMid = new Coordinates(cWidth, cHeight / 2);
-                const rightBot = new Coordinates(cWidth - 2 * borderRadius, cHeight / 2 + height / 2);
+                const rightTop = new Coordinates((cWidth - 2 * borderRadius) >> 0, (cHeight / 2 - height / 2) >> 0);
+                const rightMid = new Coordinates(cWidth >> 0, (cHeight / 2) >> 0);
+                const rightBot = new Coordinates((cWidth - 2 * borderRadius) >> 0, (cHeight / 2 + height / 2) >> 0);
 
-                const thumbCoords = new Coordinates(needx, cHeight / 2);
-                if (settings.isVertical) {
-                    [leftTop, leftMid, leftBot, centerTop, centerBot, rightTop, rightMid, rightBot, thumbCoords].forEach(function(item) {
-                        item.y = [cWidth - item.x, item.x = item.y][0];
-                    });
-                }
+                const thumbCoords = new Coordinates(needx >> 0, (cHeight / 2) >> 0);
+
                 const needPenW = 1;
                 context.lineWidth = (needPenW * window.devicePixelRatio) >> 0;
                 const offsetCeil = (context.lineWidth & 1) / 2;
 
+                [leftTop, leftMid, leftBot, centerTop, centerBot, rightTop, rightMid, rightBot, thumbCoords].forEach(function(item) {
+                    if (settings.isVertical) {
+                        item.y = [(cWidth - item.x), item.x = item.y][0];
+                        item.x += offsetCeil;
+                    } else {
+                        item.y += offsetCeil;
+                    }
+                });
+
                 // before thumb
                 context.beginPath();
-                context.moveTo(leftTop.x >> 0, (leftTop.y >> 0) + offsetCeil);
-                context.arcTo(leftMid.x >> 0, (leftMid.y >> 0) + offsetCeil, leftBot.x >> 0, leftBot.y >> 0 + offsetCeil, borderRadius);
-                context.lineTo(leftBot.x >> 0, (leftBot.y >> 0) + offsetCeil);
-                context.lineTo(centerBot.x >> 0, (centerBot.y >> 0) + offsetCeil);
-                context.lineTo(centerTop.x >> 0, (centerTop.y >> 0) + offsetCeil);
-                context.lineTo(leftTop.x >> 0, (leftTop.y >> 0) + offsetCeil);
-                context.arcTo(leftMid.x >> 0, (leftMid.y >> 0) + offsetCeil, leftBot.x >> 0, (leftBot.y >> 0) + offsetCeil, borderRadius);
+                context.moveTo(leftTop.x, leftTop.y);
+                context.arcTo(leftMid.x, leftMid.y, leftBot.x, leftBot.y, borderRadius);
+                context.lineTo(leftBot.x, leftBot.y);
+                context.lineTo(centerBot.x, centerBot.y);
+                context.lineTo(centerTop.x, centerTop.y);
+                context.lineTo(leftTop.x, leftTop.y);
+                context.arcTo(leftMid.x, leftMid.y, leftBot.x, leftBot.y, borderRadius);
                 context.fillStyle = (isEnabled) ? settings.progressColor.mainColor : settings.progressColor.disabledColor;
                 context.fill();
                 context.strokeStyle = (isEnabled) ? settings.borderProgressColor.mainColor : settings.borderProgressColor.disabledColor;
                 context.stroke();
                 // after thumb
                 context.beginPath();
-                context.moveTo(centerTop.x >> 0, (centerTop.y >> 0) + offsetCeil);
-                context.lineTo(rightTop.x >> 0, (rightTop.y >> 0) + offsetCeil);
-                context.arcTo(rightMid.x >> 0, (rightMid.y >> 0) + offsetCeil, rightBot.x >> 0, rightBot.y >> 0 + offsetCeil, borderRadius);
-                context.lineTo(rightBot.x >> 0, (rightBot.y >> 0) + offsetCeil);
-                context.lineTo(centerBot.x >> 0, (centerBot.y >> 0) + offsetCeil);
+                context.moveTo(centerTop.x, centerTop.y);
+                context.lineTo(rightTop.x, rightTop.y);
+                context.arcTo(rightMid.x, rightMid.y, rightBot.x, rightBot.y, borderRadius);
+                context.lineTo(rightBot.x, rightBot.y);
+                context.lineTo(centerBot.x, centerBot.y);
                 context.fillStyle = (isEnabled) ? settings.backgroundColor.mainColor : settings.backgroundColor.disabledColor;
                 context.fill();
                 context.strokeStyle = (isEnabled) ? settings.borderBackgroundColor.mainColor : settings.borderBackgroundColor.disabledColor;
                 context.stroke();
                 // Thumb
                 context.beginPath();
-                context.arc(thumbCoords.x >> 0, (thumbCoords.y >> 0) + offsetCeil, thumbRadius, 0, 2*Math.PI);
+                context.arc(thumbCoords.x, thumbCoords.y, thumbRadius, 0, 2*Math.PI);
                 context.fillStyle = (isEnabled) ? settings.thumbColor.mainColor : settings.thumbColor.disabledColor;
                 context.fill();
             }
