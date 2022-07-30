@@ -1,7 +1,9 @@
+/* eslint-disable no-invalid-this */
 /* eslint-disable linebreak-style */
 /* eslint-disable indent */
 /* eslint-disable new-cap */
 /* eslint-disable max-len */
+
 const format = {
     horizontal: {
         width: 663,
@@ -13,21 +15,56 @@ const format = {
     },
 };
 /**
- * @return {Boolean}
+ * @param {HTMLDivElement} effectForm
+ * @param {Boolean} isCheckboxOnly
+ * @param {Settings} settings
  */
-function isInternetExplorer() {
-    return window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
+function CForm(effectForm, isCheckboxOnly, settings) {
+    this.id = effectForm.id;
+    this.checkbox = effectForm.firstElementChild;
+    this.isCheckboxOnly = isCheckboxOnly;
+    if (!this.isCheckboxOnly) {
+        this.valueText = effectForm.lastElementChild;
+        this.slider = new SliderModule.CSlider(settings, this.valueText.previousElementSibling);
+
+        this.changeValue = function() {
+            this.valueText.textContent = this.slider.parent.getAttribute('value');
+            setEffect();
+        };
+        this.getValue = function() {
+            return +this.slider.parent.getAttribute('value');
+        };
+        this.slider.registerEvent('change', this.changeValue.bind(this));
+    }
+    /**
+     * @param {Event} event
+     */
+    function changeCheckbox(event) {
+        if (!this.isCheckboxOnly) {
+            if (this.checkbox.checked) {
+                this.slider.enable();
+            } else {
+                this.slider.disable();
+            }
+        }
+        setEffect();
+    }
+    this.checkbox.addEventListener('click', changeCheckbox.bind(this), false);
 }
-/**
- * @return {Boolean}
- */
-function isChrome() {
-    return window.navigator.userAgent.indexOf('Chrome') > -1;
-};
 // eslint-disable-next-line no-unused-vars
 const isWorker = true;
-const forms = document.querySelectorAll('.effect-form');
+/**
+ * @type {CForm[]}
+ */
+const forms = [];
 const dropArea = document.getElementById('drop-area');
+Array.prototype.forEach.call(document.querySelectorAll('.effect-form'), (function(element) {
+    if (document.querySelector('#' + element.id + '> .sliderContainer') == null) {
+        forms.push(new CForm(element, true, {}));
+    } else {
+        forms.push(new CForm(element, false, {}));
+    }
+}));
 
 /**
  * @type {HTMLCanvasElement}
@@ -69,42 +106,24 @@ function preventDefaults(event) {
     dropArea.addEventListener(eventName, preventDefaults, false);
 });
 /**
- * @param {HTMLElement} form
- * @typedef {Object} values
- * @property {HTMLInputElement} slider
- * @property {HTMLParagraphElement} valueText
- * @property {HTMLInputElement} checkbox
- * @return {values}
- */
- function getValuesFromForm(form) {
-    const values = {
-        slider: null,
-        valueText: null,
-        checkbox: document.querySelector('#' + form.id).firstElementChild,
-    };
-    if (document.querySelector('#' + form.id + '> .sliderContainer')) {
-        values.slider = document.querySelector('#' + form.id + '> .sliderContainer').firstElementChild;
-        values.valueText = document.querySelector('#' + form.id + '> .value-text');
-    }
-    return values;
-}
-/**
  */
 function setEffect() {
     if (effectImageData) {
         effectImageData.data.set(middlewareImageData.data);
         // Формируем пачку эффектов и отдаем ее
         const effects = [];
-        Array.prototype.forEach.call(forms, function(element) {
-            const values = getValuesFromForm(element);
-            if (!values.slider) {
+        forms.forEach(function(element) {
+            if (element.isCheckboxOnly) {
                 effects.push({
                     type: element.id,
-                    level: values.checkbox.checked ? 1 : 0,
+                    level: element.checkbox.checked ? 1 : 0,
                 });
             } else {
-                if (values.checkbox.checked) {
-                    effects.push({type: element.id, level: values.slider.value});
+                if (element.checkbox.checked) {
+                    effects.push({
+                        type: element.id,
+                        level: element.getValue(),
+                    });
                 }
             }
         });
@@ -116,82 +135,6 @@ function setEffect() {
         throw new Error('No Image!');
     }
 }
-/**
- * @param {HTMLInputElement} slider
- * @desciption Google polyfill for progress bar
- */
-function chromeProgressBar(slider) {
-    const color = slider.disabled ? '#a0a0a0' : '#444444';
-    const del = ((+slider.max - +slider.min)/100);
-    let value = slider.value / del;
-    if (+slider.min < 0) {
-        value += +slider.max / 2;
-    }
-    slider.style.background =
-        'linear-gradient(to right, ' +
-        color +
-        ' 0%, ' +
-        color +
-        ' ' +
-        value +
-        '%, #c0c0c0 ' +
-        value +
-        '%, #c0c0c0 100%)';
-}
-/**
- * @param {Event} event
- */
-function changeValue(event) {
-    preventDefaults(event);
-    /**
-    * @type {HTMLInputElement}
-    */
-    const slider = event.target;
-    /**
-    * @type {HTMLParagraphElement}
-    */
-    const valueText = slider.parentElement.nextElementSibling;
-    valueText.textContent = slider.value;
-    if (isChrome()) {
-        chromeProgressBar(slider);
-    }
-    setEffect();
-}
-/**
- * @param {Event} event
- */
-function changeCheckbox(event) {
-    const slider = event
-        .target
-        .nextElementSibling
-        .nextElementSibling
-        .firstElementChild;
-    if (event.target.checked) {
-       slider.removeAttribute('disabled');
-    } else {
-       slider.setAttribute('disabled', '');
-    }
-    if (isChrome()) {
-        chromeProgressBar(slider);
-    }
-    setEffect();
-}
-
-Array.prototype.forEach.call(forms, (function(element) {
-    const values = getValuesFromForm(element);
-    if (!values.slider) {
-        values.checkbox.addEventListener('click', setEffect, false);
-    } else {
-        values.slider.addEventListener((isInternetExplorer() ? 'change' : 'input'), changeValue, false);
-        if (isInternetExplorer()) {
-            element.classList.add('ie-support');
-        }
-        if (isChrome()) {
-            chromeProgressBar(values.slider);
-        }
-        values.checkbox.addEventListener('click', changeCheckbox, false);
-    }
-}));
 
 /* Drag n Drop */
 /**
