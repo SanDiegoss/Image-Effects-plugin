@@ -35,9 +35,9 @@ const SliderModule = (function() {
     const defaultSliderSettings = {
         backgroundColor: {mainColor: '#c0c0c0', disabledColor: '#c0c0c0'},
         progressColor: {mainColor: '#444444', disabledColor: '#a0a0a0'},
-        borderProgressColor: {mainColor: '#444444', disabledColor: 'blue'},
+        borderProgressColor: {mainColor: '#444444', disabledColor: '#a0a0a0'},
         thumbColor: {mainColor: '#444444', disabledColor: '#a0a0a0'},
-        borderBackgroundColor: {mainColor: '#c0c0c0', disabledColor: 'red'},
+        borderBackgroundColor: {mainColor: '#c0c0c0', disabledColor: '#c0c0c0'},
         borderRadius: 2,
         thumbRadius: 6,
         height: 4,
