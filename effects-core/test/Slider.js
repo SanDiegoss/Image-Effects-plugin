@@ -1,3 +1,4 @@
+/* eslint-disable no-invalid-this */
 /* eslint-disable max-len */
 /* eslint-disable indent */
 'use strict';
@@ -71,6 +72,7 @@ const SliderModule = (function() {
         CSlider: function(oSettings, parent) {
             // TODO: refactoring
             const settings = {};
+            this.handlers = {};
             // eslint-disable-next-line prefer-const, guard-for-in
             for (let i in defaultSliderSettings) {
                 settings[i] = oSettings[i] || defaultSliderSettings[i];
@@ -149,13 +151,13 @@ const SliderModule = (function() {
                 context.moveTo(rightTop.x >> 0, (rightTop.y >> 0));
                 if (settings.isVertical) {
                     context.arcTo(rightTop.x >> 0, (rightTop.y >> 0) - borderRadius, rightMid.x >> 0, (rightBot.y >> 0) - borderRadius, borderRadius);
-                    context.arcTo(rightBot.x >> 0, (rightBot.y >> 0) - borderRadius, (rightBot.x >> 0), (rightBot.y >> 0), borderRadius);
+                    context.arcTo(rightBot.x >> 0, (rightBot.y >> 0) - borderRadius, rightBot.x >> 0, (rightBot.y >> 0), borderRadius);
                 } else {
                     context.arcTo((rightTop.x >> 0) + borderRadius, rightTop.y >> 0, (rightBot.x >> 0) + borderRadius, rightMid.y >> 0, borderRadius);
                     context.arcTo((rightBot.x >> 0) + borderRadius, rightBot.y >> 0, rightBot.x >> 0, rightBot.y >> 0, borderRadius);
                 }
-                context.lineTo(centerBot.x >> 0, (centerBot.y >> 0));
-                context.lineTo(centerTop.x >> 0, (centerTop.y >> 0));
+                context.lineTo(centerBot.x >> 0, centerBot.y >> 0);
+                context.lineTo(centerTop.x >> 0, centerTop.y >> 0);
                 context.closePath();
                 context.fillStyle = (isEnabled) ? settings.backgroundColor.mainColor : settings.backgroundColor.disabledColor;
                 context.fill();
@@ -167,6 +169,7 @@ const SliderModule = (function() {
                 context.fillStyle = (isEnabled) ? settings.thumbColor.mainColor : settings.thumbColor.disabledColor;
                 context.fill();
             }
+            const sendEvent = _sendEvent.bind(this);
             canvas.onpointerdown = function(event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -180,6 +183,7 @@ const SliderModule = (function() {
                     const offset = (settings.isVertical) ? rect.top : rect.left;
                     const oWidth = (settings.isVertical) ? rect.height : rect.width;
                     const pageOffset = (settings.isVertical) ? window.pageYOffset : window.pageXOffset;
+                    const oValue = value;
                     let moving = (pageX - offset - settings.thumbRadius - pageOffset);
                     if (settings.isVertical) {
                         moving = oWidth - moving - 2*settings.thumbRadius;
@@ -195,8 +199,11 @@ const SliderModule = (function() {
                         value = (settings.min + percent * total);
                         // value = Math.floor(value);
                     }
-                    canvas.setAttribute('value', '' + value);
-                    update();
+                    if (Math.floor(oValue) != Math.floor(value)) {
+                        parent.setAttribute('value', '' + Math.floor(value));
+                        update();
+                        sendEvent('change');
+                    }
                 }
                 /**
                  * @param {PointerEvent} event
@@ -233,6 +240,31 @@ const SliderModule = (function() {
                 isEnabled = false;
                 update();
             };
+            /**
+             * @param {String} name
+             * @param {Function} handler
+             */
+            this.registerEvent = function(name, handler) {
+                if (!this.handlers.hasOwnProperty(name)) {
+                    this.handlers[name] = [];
+                }
+                this.handlers[name].push(handler);
+            };
+            /**
+             * @return {Boolean}
+             */
+            function _sendEvent() {
+                // eslint-disable-next-line prefer-rest-params
+                const name = arguments[0];
+                if (this.handlers.hasOwnProperty(name)) {
+                    for (let i = 0; i < this.handlers[name].length; i+=1) {
+                        // eslint-disable-next-line prefer-rest-params
+                        this.handlers[name][i].apply(this || window, Array.prototype.slice.call(arguments, 1));
+                    }
+                    return true;
+                }
+            };
+            this.sendEvent = _sendEvent;
             parent.appendChild(canvas);
             resize();
             window.addEventListener('resize', resize);

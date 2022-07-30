@@ -23,8 +23,10 @@ Array.prototype.forEach.call(divs, function(div) {
         height: (i+5)*2,
         thumbRadius: (i+5)*2,
     }, div));
-    console.log(i);
     i+=1;
 });
 
-new SliderModule.CSlider({isVertical: true}, vert);
+const slider = new SliderModule.CSlider({isVertical: true}, vert);
+slider.registerEvent('change', function() {
+    console.log(vert.getAttribute('value'));
+});
