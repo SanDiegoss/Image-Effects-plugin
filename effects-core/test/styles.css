@@ -21,9 +21,15 @@ body div p {
   }
   
 #previewEffect {
-    background-color: white;
+    position:absolute;
+    z-index: 1;
+}
+
+/* #background-grid {
+    position:absolute;
     display: none;
-  }
+    z-index: 0;
+} */
   
 /* Class styles */
 
@@ -75,6 +81,7 @@ body div p {
 }
   
 #drop-area {
+    position: relative;
     width: 663px;
     height: 373px;
 }

@@ -3,7 +3,17 @@
 /* eslint-disable indent */
 /* eslint-disable new-cap */
 /* eslint-disable max-len */
-
+/*
+horizontal: {
+        width: 663,
+        height: 373,
+    },
+    vertical: {
+        width: 218,
+        height: 373,
+    },
+*/
+// TODO: resizing window ...
 const format = {
     horizontal: {
         width: 663,
@@ -76,7 +86,7 @@ const originContext = originCanvas.getContext('2d');
  */
 const effectCanvas = document.getElementById('previewEffect');
 const effectContext = effectCanvas.getContext('2d');
-
+const bg = new CBackground(effectCanvas);
 /**
  * @type {ImageData}
  */
@@ -181,11 +191,12 @@ function formatImage(image) {
  */
 const imagePreview = function drawImageOnDisplay(preImage) {
     originContext.clearRect(0, 0, originCanvas.width, originCanvas.height);
-    originContext.drawImage(preImage, 0, 0, originCanvas.width, effectCanvas.width);
+    originContext.drawImage(preImage, 0, 0, originCanvas.width, originCanvas.width);
 
     const formatter = formatImage(preImage);
 
     effectContext.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
+
     effectContext.drawImage(
         formatter.image,
         formatter.sx,
@@ -196,6 +207,8 @@ const imagePreview = function drawImageOnDisplay(preImage) {
         formatter.dy,
         formatter.dWidth,
         formatter.dHeight);
+        // TODO: style.width != canvas.width и т.д.
+        dropArea.style.width = effectCanvas.width + 'px';
     // void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
 };
 /**
@@ -212,6 +225,7 @@ function enableCheckbox() {
 const handleFiles = function handleFilesFromForm(event) {
     document.getElementById('no-image-text').parentElement.style.display = 'none';
     effectCanvas.style.display = 'block';
+    bg.enable();
     /**
      * @param {ArrayBuffer} typedArray
      * @param {String} mimeType
