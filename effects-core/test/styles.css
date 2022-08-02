@@ -1,10 +1,6 @@
 /* Element styles */
 body {
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     background-color: #e2e2e2;
 }
 body div {
@@ -94,7 +90,6 @@ canvas{
 #effects-content {
     align-items: flex-start;
     flex-direction: row;
-    height: 300px;
 }
 #effects-content > div {
     flex-direction: column;

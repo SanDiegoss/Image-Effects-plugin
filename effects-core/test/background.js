@@ -54,5 +54,6 @@ function CBackground(mainCanvas) {
     }
     this.enable = function() {
         canvas.style.display = mainCanvas.style.display;
+        resize();
     };
 }
