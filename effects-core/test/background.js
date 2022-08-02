@@ -17,14 +17,14 @@ function CBackground(mainCanvas) {
         const ro = new ResizeObserver(function() {
             resize();
         });
-        ro.observe(mainCanvas.parentElement);
+        ro.observe(mainCanvas);
     }
     /**
      * TODO: не забыть поменять (тестовая версия)
     */
     function resize() {
         const scale = window.devicePixelRatio;
-        const rect = mainCanvas.parentElement.getBoundingClientRect();
+        const rect = mainCanvas.getBoundingClientRect();
         canvas.style.width = rect.width + 'px';
         canvas.style.height = rect.height + 'px';
         canvas.width = Math.round(scale * rect.right) - Math.round(scale * rect.left);
@@ -54,5 +54,6 @@ function CBackground(mainCanvas) {
     }
     this.enable = function() {
         canvas.style.display = mainCanvas.style.display;
+        resize();
     };
 }

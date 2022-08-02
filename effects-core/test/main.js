@@ -3,17 +3,7 @@
 /* eslint-disable indent */
 /* eslint-disable new-cap */
 /* eslint-disable max-len */
-/*
-horizontal: {
-        width: 663,
-        height: 373,
-    },
-    vertical: {
-        width: 218,
-        height: 373,
-    },
-*/
-// TODO: resizing window ...
+let isImageLoaded = false;
 const format = {
     horizontal: {
         width: 663,
@@ -148,6 +138,7 @@ function setEffect() {
 
 /* Drag n Drop */
 /**
+ * Показывает, откуда и сколько надо вырезать
  * @param {HTMLImageElement} image
  * @typedef {Object} Formatter
  * @property {HTMLImageElement} image
@@ -155,10 +146,6 @@ function setEffect() {
  * @property {Number} sy
  * @property {Number} sWidth
  * @property {Number} sHeight
- * @property {Number} dx
- * @property {Number} dy
- * @property {Number} dWidth
- * @property {Number} dHeight
  * @return {Formatter}
  */
 function formatImage(image) {
@@ -168,23 +155,56 @@ function formatImage(image) {
         sy: 0,
         sWidth: image.width,
         sHeight: image.height,
-        dx: 0,
-        dy: 0,
-        dWidth: effectCanvas.width,
-        dHeight: effectCanvas.height,
     };
     if (image.height > image.width) {
-        effectCanvas.width = format.vertical.width;
-        formatter.dWidth = format.vertical.width;
         formatter.sx = (image.width - (image.height * 9 / 16)) / 2;
         formatter.sWidth = image.height * 9 / 16;
     } else {
-        effectCanvas.width = format.horizontal.width;
-        formatter.dWidth = format.horizontal.width;
         formatter.sy = (image.height - (image.width * 9 / 16)) / 2;
         formatter.sHeight = image.width * 9 / 16;
     }
     return formatter;
+}
+/**
+ */
+function resize() {
+    const isVertical = (effectCanvas.width < effectCanvas.height);
+    const rect = dropArea.parentElement.getBoundingClientRect();
+    const stRect = (isVertical) ? format.vertical.width : format.horizontal.width;
+    const panels = document.getElementById('effects-content');
+    if (panels.getBoundingClientRect().width < 510) {
+        panels.style.flexDirection = 'column';
+        panels.style.alignItems = 'center';
+        if (panels.getBoundingClientRect().width < 303) {
+            panels.style.alignItems = 'flex-start';
+        }
+    } else {
+        panels.style.flexDirection = 'row';
+        panels.style.alignItems = 'flex-start';
+    }
+    if (isImageLoaded) {
+        if (rect.width < stRect) {
+            dropArea.style.width = rect.width + 'px';
+            dropArea.style.height = (isVertical) ? rect.width * 16 / 9 + 'px' : rect.width * 9 / 16 + 'px';
+        } else {
+            dropArea.style.width = (isVertical) ? format.vertical.width + 'px' : format.horizontal.width + 'px';
+            dropArea.style.height = (isVertical) ? format.vertical.height + 'px' : format.horizontal.height + 'px';
+        }
+        effectCanvas.style.width = dropArea.style.width;
+        effectCanvas.style.height = dropArea.style.height;
+        return;
+    }
+    const noImage = dropArea.firstElementChild;
+    if (rect.width < format.vertical.height) {
+        dropArea.style.width = rect.width + 'px';
+        dropArea.style.height = rect.width + 'px';
+    } else {
+        dropArea.style.width = format.vertical.height + 'px';
+        dropArea.style.height = format.vertical.height + 'px';
+    }
+    noImage.style.width = dropArea.style.width;
+    noImage.style.height = dropArea.style.height;
+    return;
 }
 /**
  * @param {HTMLImageElement} preImage
@@ -194,7 +214,9 @@ const imagePreview = function drawImageOnDisplay(preImage) {
     originContext.drawImage(preImage, 0, 0, originCanvas.width, originCanvas.width);
 
     const formatter = formatImage(preImage);
-
+    effectCanvas.width = formatter.sWidth;
+    effectCanvas.height = formatter.sHeight;
+    resize();
     effectContext.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
 
     effectContext.drawImage(
@@ -203,13 +225,10 @@ const imagePreview = function drawImageOnDisplay(preImage) {
         formatter.sy,
         formatter.sWidth,
         formatter.sHeight,
-        formatter.dx,
-        formatter.dy,
-        formatter.dWidth,
-        formatter.dHeight);
-        // TODO: style.width != canvas.width и т.д.
-        dropArea.style.width = effectCanvas.width + 'px';
-    // void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+        0,
+        0,
+        effectCanvas.width,
+        effectCanvas.height);
 };
 /**
  */
@@ -219,13 +238,13 @@ function enableCheckbox() {
         checkbox.removeAttribute('disabled');
     }));
 }
+const noImageText = document.getElementById('no-image-text');
 /**
  * @param {DragEvent} event
  */
 const handleFiles = function handleFilesFromForm(event) {
-    document.getElementById('no-image-text').parentElement.style.display = 'none';
+    noImageText.parentElement.style.display = 'none';
     effectCanvas.style.display = 'block';
-    bg.enable();
     /**
      * @param {ArrayBuffer} typedArray
      * @param {String} mimeType
@@ -247,6 +266,7 @@ const handleFiles = function handleFilesFromForm(event) {
         image.src = url;
 
         image.onload = function() {
+            isImageLoaded = true;
             originCanvas.width = image.width;
             originCanvas.height = image.height;
 
@@ -258,10 +278,11 @@ const handleFiles = function handleFilesFromForm(event) {
             middlewareImageData = effectContext.createImageData(effectImageData);
             middlewareImageData.data.set(effectImageData.data);
             enableCheckbox();
+            bg.enable();
         };
     };
 };
-
+window.addEventListener('resize', resize);
 dropArea.addEventListener('drop', handleFiles, false);
 window.ImageEffects.loadModule({enginePath: './effects-core/deploy/engine/'});
 

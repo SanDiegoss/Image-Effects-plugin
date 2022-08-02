@@ -1,10 +1,6 @@
 /* Element styles */
 body {
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     background-color: #e2e2e2;
 }
 body div {
@@ -49,7 +45,7 @@ body div p {
 
 .effect-panel{
     align-items: flex-start;
-    margin: 0 20px;
+    margin: 0 10px;
 }
 
 .effect-form{
@@ -76,14 +72,14 @@ body div p {
 }  
 /* Id styles */
 #main-content {
-    width: 767px;
-    height: 405px;
+    margin-top: 20px;
 }
-  
+canvas{
+    top:0;
+    left: 0;
+}
 #drop-area {
     position: relative;
-    width: 663px;
-    height: 373px;
 }
 #drop-area > div {
     height: 373px;
@@ -94,8 +90,6 @@ body div p {
 #effects-content {
     align-items: flex-start;
     flex-direction: row;
-    width: 992px;
-    height: 300px;
 }
 #effects-content > div {
     flex-direction: column;

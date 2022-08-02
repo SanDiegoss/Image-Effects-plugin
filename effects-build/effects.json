@@ -15,7 +15,7 @@
 		"-Wno-unused-command-line-argument",
 		"-s FILESYSTEM=0",
 		"-s ENVIRONMENT='web,worker'",
-		"-s TOTAL_MEMORY=64MB"
+		"-s TOTAL_MEMORY=128MB"
 	],
 	"exported_functions": [
 		"_malloc",
