@@ -159,9 +159,21 @@ function formatImage(image) {
     if (image.height > image.width) {
         formatter.sx = (image.width - (image.height * 9 / 16)) / 2;
         formatter.sWidth = image.height * 9 / 16;
+        if (formatter.sx < 0) {
+            formatter.sx = 0;
+            formatter.sWidth = image.width;
+            formatter.sy = (image.height - (image.width * 16 / 9)) / 2;
+            formatter.sHeight = image.width * 16 / 9;
+        }
     } else {
         formatter.sy = (image.height - (image.width * 9 / 16)) / 2;
         formatter.sHeight = image.width * 9 / 16;
+        if (formatter.sy < 0) {
+            formatter.sy = 0;
+            formatter.sHeight = image.height;
+            formatter.sx = (image.width - (image.height * 16 / 9)) / 2;
+            formatter.sWidth = image.height * 16 / 9;
+        }
     }
     return formatter;
 }
@@ -214,8 +226,10 @@ const imagePreview = function drawImageOnDisplay(preImage) {
     originContext.drawImage(preImage, 0, 0, originCanvas.width, originCanvas.width);
 
     const formatter = formatImage(preImage);
+    console.log(formatter.sx, formatter.sy, formatter.sWidth, formatter.sHeight);
     effectCanvas.width = formatter.sWidth;
     effectCanvas.height = formatter.sHeight;
+    console.log(effectCanvas.width, effectCanvas.height);
     resize();
     effectContext.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
 
