@@ -155,10 +155,6 @@ function setEffect() {
  * @property {Number} sy
  * @property {Number} sWidth
  * @property {Number} sHeight
- * @property {Number} dx
- * @property {Number} dy
- * @property {Number} dWidth
- * @property {Number} dHeight
  * @return {Formatter}
  */
 function formatImage(image) {
@@ -168,21 +164,15 @@ function formatImage(image) {
         sy: 0,
         sWidth: image.width,
         sHeight: image.height,
-        dx: 0,
-        dy: 0,
-        dWidth: effectCanvas.width,
-        dHeight: effectCanvas.height,
     };
     if (image.height > image.width) {
-        effectCanvas.width = format.vertical.width;
-        formatter.dWidth = format.vertical.width;
         formatter.sx = (image.width - (image.height * 9 / 16)) / 2;
         formatter.sWidth = image.height * 9 / 16;
+        effectCanvas.style.width = format.vertical.width + 'px';
     } else {
-        effectCanvas.width = format.horizontal.width;
-        formatter.dWidth = format.horizontal.width;
         formatter.sy = (image.height - (image.width * 9 / 16)) / 2;
         formatter.sHeight = image.width * 9 / 16;
+        effectCanvas.style.width = format.horizontal.width + 'px';
     }
     return formatter;
 }
@@ -194,6 +184,8 @@ const imagePreview = function drawImageOnDisplay(preImage) {
     originContext.drawImage(preImage, 0, 0, originCanvas.width, originCanvas.width);
 
     const formatter = formatImage(preImage);
+    effectCanvas.width = formatter.sWidth;
+    effectCanvas.height = formatter.sHeight;
 
     effectContext.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
 
@@ -203,13 +195,10 @@ const imagePreview = function drawImageOnDisplay(preImage) {
         formatter.sy,
         formatter.sWidth,
         formatter.sHeight,
-        formatter.dx,
-        formatter.dy,
-        formatter.dWidth,
-        formatter.dHeight);
-        // TODO: style.width != canvas.width и т.д.
-        dropArea.style.width = effectCanvas.width + 'px';
-    // void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+        0,
+        0,
+        effectCanvas.width,
+        effectCanvas.height);
 };
 /**
  */
@@ -219,11 +208,12 @@ function enableCheckbox() {
         checkbox.removeAttribute('disabled');
     }));
 }
+const noImageText = document.getElementById('no-image-text');
 /**
  * @param {DragEvent} event
  */
 const handleFiles = function handleFilesFromForm(event) {
-    document.getElementById('no-image-text').parentElement.style.display = 'none';
+    noImageText.parentElement.style.display = 'none';
     effectCanvas.style.display = 'block';
     bg.enable();
     /**
@@ -263,5 +253,11 @@ const handleFiles = function handleFilesFromForm(event) {
 };
 
 dropArea.addEventListener('drop', handleFiles, false);
+// window.addEventListener('resize', function() {
+//     // 298.4
+//     noImageText.parentElement.style.width = window.devicePixelRatio * 298.4 + 'px';
+//     noImageText.parentElement.style.height = window.devicePixelRatio * 298.4 + 'px';
+//     console.log(this.window.devicePixelRatio);
+// });
 window.ImageEffects.loadModule({enginePath: './effects-core/deploy/engine/'});
 
