@@ -1,0 +1,63 @@
+{
+    "baseUrl": "",
+    "guid": "asc.{3BD06062-F8EB-47E4-AC45-4860549C2B57}",
+    "version": "1.0",
+    "minVersion": "6.3.0",
+    "help": "",
+    "name": "Image Effects",
+    "nameLocale": {
+        "fr": "french plugin name",
+        "es": "spanish plugin name"
+    },
+    "variations": [
+        {
+            "buttons": [
+                { 
+                    "text": "Cancel",
+                    "primary": false,
+                    "isviewer": false,
+                    "textLocale": {
+                        "fr": "Annuler",
+                        "es": "Cancelar"
+                    }
+                }
+            ],
+            "description": "plugin description",
+            "descriptionLocale": {
+                "fr": "french plugin description",
+                "es": "spanish plugin description"
+            },
+            "EditorsSupport": ["word", "cell", "slide"],
+            "icons": [
+                {
+                    "100%": { "normal": "icon.png" },
+                    "125%": { "normal": "icon@1.25.png" },
+                    "150%": { "normal": "icon@1.5x.png" },
+                    "175%": { "normal": "icon@1.75.png" },
+                    "200%": { "normal": "icon@2x.png" }
+                },
+                {
+                    "style" : "dark"
+                }
+            ],
+            "initData": "",
+            "initDataType": "ole",
+            "initOnSelectionChanged": true,
+            "cryptoMode": "1",
+            "isDisplayedInViewer": true,
+            "isInsideMode": false,
+            "isModal": true,
+            "isCustomWindow": true,
+            "isSystem": false,
+            "isUpdateOleOnResize": true,
+            "isViewer": true,
+            "isVisual": false,
+            "url": "index.html",
+            "size": [600, 700],
+            "events": ["onClick"],
+            "cryptoDisabledForInternalCloud": "true",
+            "cryptoDisabledForExternalCloud": "true",
+            "cryptoDisabledOnStart": "true"
+        }
+    ]
+}
