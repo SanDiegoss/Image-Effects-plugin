@@ -227,7 +227,6 @@
     const imagePreview = function drawImageOnDisplay(preImage) {
         window.ImageEffects.originContext.clearRect(0, 0, originCanvas.width, originCanvas.height);
         window.ImageEffects.originContext.drawImage(preImage, 0, 0, originCanvas.width, originCanvas.height);
-        console.log(preImage.width, preImage.height);
         const formatter = formatImage(preImage);
         effectCanvas.width = formatter.sWidth;
         effectCanvas.height = formatter.sHeight;
@@ -235,7 +234,7 @@
 
         resize();
         window.ImageEffects.effectContext.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
-        console.log(effectCanvas, formatter.sx,
+        console.log(formatter.sx,
             formatter.sy,
             formatter.sWidth,
             formatter.sHeight);
