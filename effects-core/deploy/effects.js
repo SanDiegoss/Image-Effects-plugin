@@ -46,10 +46,16 @@
             const worker = new Worker(url);
             let isSent = false;
             let backup = null;
+            let isOrigin = false;
             /**
              * @param {Message} message
              */
-            function ApplyEffect(message){
+            function ApplyEffect(message, _isOrigin){
+                isOrigin = _isOrigin;
+                if (isOrigin) {
+                    worker.postMessage(message);
+                    return;
+                }
                 if (isSent) {
                     backup = {
                         effects: message.effects,
@@ -67,6 +73,12 @@
                     ImageEffects.onLoadModule({ApplyEffect: ApplyEffect});
                     console.log((useWasm ? 'wasm' : 'asmjs') + ' module will be used');
                     worker.onmessage = function(e){
+                        if (isOrigin) {
+                            window.ImageEffects.originImageData.data.set(e.data.data);
+                            window.ImageEffects.originContext.putImageData(window.ImageEffects.originImageData, 0, 0);
+                            window.ImageEffects.onExit();
+                            return;
+                        }
                         window.ImageEffects.effectImageData.data.set(e.data.data);
                         window.ImageEffects.effectContext.putImageData(window.ImageEffects.effectImageData, 0, 0);
                         isSent = false;

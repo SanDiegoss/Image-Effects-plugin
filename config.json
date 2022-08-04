@@ -28,7 +28,23 @@
             "initDataType"        : "html",
             "initData"            : "",
             "isUpdateOleOnResize" : false,
-            "buttons"             : []
+            "buttons": [
+                {
+                    "text": "Ok",
+                    "primary": true
+                },
+				{
+                    "text": "Cancel",
+                    "primary": false,
+                    "isViewer": false,
+                    "textLocale": {
+                        "ru": "Отмена",
+                        "fr": "Annuler",
+                        "es": "Cancelar",
+                        "de": "Abbrechen"
+                    }
+                }
+            ]
         }
     ]
 }

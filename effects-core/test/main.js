@@ -32,7 +32,7 @@
 
             this.changeValue = function() {
                 this.valueText.textContent = this.slider.parent.getAttribute('value');
-                setEffect();
+                setEffect(false);
             };
             this.getValue = function() {
                 return +this.slider.parent.getAttribute('value');
@@ -50,7 +50,7 @@
                     this.slider.disable();
                 }
             }
-            setEffect();
+            setEffect(false);
         }
         this.checkbox.addEventListener('click', changeCheckbox.bind(this), false);
     }
@@ -72,18 +72,13 @@
      * @type {HTMLCanvasElement}
      */
     const originCanvas = document.createElement('canvas');
-    const originContext = originCanvas.getContext('2d');
+    window.ImageEffects.originContext = originCanvas.getContext('2d');
     /**
      * @type {HTMLCanvasElement}
      */
     const effectCanvas = document.getElementById('previewEffect');
     window.ImageEffects.effectContext = effectCanvas.getContext('2d');
     const bg = new CBackground(effectCanvas);
-    /**
-     * @type {ImageData}
-     */
-    // eslint-disable-next-line no-unused-vars
-    let originImageData;
     /**
      * @type {ImageData}
      */
@@ -104,8 +99,9 @@
         dropArea.addEventListener(eventName, preventDefaults, false);
     });
     /**
+     * @param {Boolean} isOrigin
      */
-    function setEffect() {
+    function setEffect(isOrigin) {
         if (window.ImageEffects.effectImageData) {
             window.ImageEffects.effectImageData.data.set(middlewareImageData.data);
             // Формируем пачку эффектов и отдаем ее
@@ -125,9 +121,17 @@
                     }
                 }
             });
-            window.ImageEffects.Apply({effects: effects, data: window.ImageEffects.effectImageData});
-            if (!window.ImageEffects.isWorker) {
-                window.ImageEffects.effectContext.putImageData(window.ImageEffects.effectImageData, 0, 0);
+            if (isOrigin) {
+                window.ImageEffects.Apply({effects: effects, data: window.ImageEffects.originImageData}, true);
+                if (!window.ImageEffects.isWorker) {
+                    window.ImageEffects.originContext.putImageData(window.ImageEffects.originImageData, 0, 0);
+                    window.ImageEffects.onExit();
+                }
+            } else {
+                window.ImageEffects.Apply({effects: effects, data: window.ImageEffects.effectImageData}, false);
+                if (!window.ImageEffects.isWorker) {
+                    window.ImageEffects.effectContext.putImageData(window.ImageEffects.effectImageData, 0, 0);
+                }
             }
         } else {
             throw new Error('No Image!');
@@ -173,6 +177,7 @@
                 formatter.sWidth = image.height * 16 / 9;
             }
         }
+        console.log(formatter);
         return formatter;
     }
     /**
@@ -220,17 +225,20 @@
      * @param {HTMLImageElement} preImage
      */
     const imagePreview = function drawImageOnDisplay(preImage) {
-        originContext.clearRect(0, 0, originCanvas.width, originCanvas.height);
-        originContext.drawImage(preImage, 0, 0, originCanvas.width, originCanvas.width);
-
+        window.ImageEffects.originContext.clearRect(0, 0, originCanvas.width, originCanvas.height);
+        window.ImageEffects.originContext.drawImage(preImage, 0, 0, originCanvas.width, originCanvas.height);
+        console.log(preImage.width, preImage.height);
         const formatter = formatImage(preImage);
-
         effectCanvas.width = formatter.sWidth;
         effectCanvas.height = formatter.sHeight;
+        console.log(effectCanvas);
 
         resize();
         window.ImageEffects.effectContext.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
-
+        console.log(effectCanvas, formatter.sx,
+            formatter.sy,
+            formatter.sWidth,
+            formatter.sHeight);
         window.ImageEffects.effectContext.drawImage(
             formatter.image,
             formatter.sx,
@@ -273,7 +281,7 @@
 
             imagePreview(image);
 
-            originImageData = originContext.getImageData(0, 0, originCanvas.width, originCanvas.height);
+            window.ImageEffects.originImageData = window.ImageEffects.originContext.getImageData(0, 0, originCanvas.width, originCanvas.height);
             window.ImageEffects.effectImageData = window.ImageEffects.effectContext.getImageData(0, 0, effectCanvas.width, effectCanvas.height);
 
             middlewareImageData = window.ImageEffects.effectContext.createImageData(window.ImageEffects.effectImageData);
@@ -296,6 +304,37 @@
         }
         handleFiles(wrapper.querySelector('img'));
     };
+    window.Asc.plugin.button = function (id) {
+        if (id == 0) {
+            saveImage();
+        } else {
+            this.executeCommand("close", "");
+        }
+    };
+    window.ImageEffects.onExit = function (){
+        window.Asc.scope.dataURL = originCanvas.toDataURL();
+        console.log(originCanvas.width, originCanvas.height);
+        window.Asc.scope.width = (originCanvas.width * 9525);
+        window.Asc.scope.height = (originCanvas.height * 9525);
+
+        switch (window.Asc.plugin.info.editorType) {
+            case 'word': {
+                window.Asc.plugin.callCommand(function () {
+                    let oDocument = Api.GetDocument();
+                    let oParagraph = Api.CreateParagraph();
+                    let arrResult = [];
+                    arrResult.push(oParagraph);
+                    let oImage = Api.CreateImage(Asc.scope.dataURL, Asc.scope.width, Asc.scope.height)
+                    oParagraph.AddDrawing(oImage);
+                    oDocument.InsertContent(arrResult)
+                }, true)
+                break;
+            }
+        }
+     };
+    function saveImage() {
+        setEffect(true);
+    }
     window.addEventListener('resize', resize);
     window.ImageEffects.loadModule({enginePath: './effects-core/deploy/engine/'});
 })(window, undefined);
