@@ -42,7 +42,7 @@
         }
         url += (useWasm ? 'effects.js' : 'effects_ie.js');
         // eslint-disable-next-line no-var
-        if (isWorker){
+        if (window.ImageEffects.isWorker){
             const worker = new Worker(url);
             let isSent = false;
             let backup = null;
@@ -53,7 +53,7 @@
                 if (isSent) {
                     backup = {
                         effects: message.effects,
-                        data: effectContext.createImageData(message.data),
+                        data: window.ImageEffects.effectContext.createImageData(message.data),
                     };
                     backup.data.data.set(message.data.data);
                     return;
@@ -67,8 +67,8 @@
                     ImageEffects.onLoadModule({ApplyEffect: ApplyEffect});
                     console.log((useWasm ? 'wasm' : 'asmjs') + ' module will be used');
                     worker.onmessage = function(e){
-                        effectImageData.data.set(e.data.data);
-                        effectContext.putImageData(effectImageData, 0, 0);
+                        window.ImageEffects.effectImageData.data.set(e.data.data);
+                        window.ImageEffects.effectContext.putImageData(window.ImageEffects.effectImageData, 0, 0);
                         isSent = false;
                         if (backup) {
                             isSent = true;

@@ -94,4 +94,4 @@
             document.head.appendChild(script);
         }
     };
-})(window);
+})(self);

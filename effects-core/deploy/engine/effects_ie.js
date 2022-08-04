@@ -25,6 +25,57 @@
 
     /* Working with Module */
 
+    // correct fetch for desktop application
+
+var printErr = undefined;
+var print    = undefined;
+
+var fetch = self.fetch;
+var getBinaryPromise = null;
+
+function internal_isLocal()
+{
+	if (window.navigator && window.navigator.userAgent.toLowerCase().indexOf("ascdesktopeditor") < 0)
+		return false;
+	if (window.location && window.location.protocol == "file:")
+		return true;
+	if (window.document && window.document.currentScript && 0 == window.document.currentScript.src.indexOf("file:///"))
+		return true;
+	return false;
+}
+
+if (internal_isLocal())
+{
+	fetch = undefined; // fetch not support file:/// scheme
+	getBinaryPromise = function()
+	{
+		var wasmPath = "ascdesktop://fonts/" + wasmBinaryFile.substr(8);
+		return new Promise(function (resolve, reject)
+		{
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', wasmPath, true);
+			xhr.responseType = 'arraybuffer';
+
+			if (xhr.overrideMimeType)
+				xhr.overrideMimeType('text/plain; charset=x-user-defined');
+			else
+				xhr.setRequestHeader('Accept-Charset', 'x-user-defined');
+
+			xhr.onload = function ()
+			{
+				if (this.status == 200)
+					resolve(new Uint8Array(this.response));
+			};
+			xhr.send(null);
+		});
+	}
+}
+else
+{
+	getBinaryPromise = function() { return getBinaryPromise2(); }
+}
+
+
     var ob;function pb(h){var f=0;return function(){return f<h.length?{done:!1,value:h[f++]}:{done:!0}}}function qb(h){var f="undefined"!=typeof Symbol&&Symbol.iterator&&h[Symbol.iterator];return f?f.call(h):{next:pb(h)}}var dd="undefined"!=typeof window&&window===this?this:"undefined"!=typeof global&&null!=global?global:this,Fd="function"==typeof Object.defineProperties?Object.defineProperty:function(h,f,Ka){h!=Array.prototype&&h!=Object.prototype&&(h[f]=Ka.value)};if(!dd)dd=self;
 function Gd(h,f){if(f){var Ka=dd;h=h.split(".");for(var Za=0;Za<h.length-1;Za++){var bb=h[Za];bb in Ka||(Ka[bb]={});Ka=Ka[bb]}h=h[h.length-1];Za=Ka[h];f=f(Za);f!=Za&&null!=f&&Fd(Ka,h,{configurable:!0,writable:!0,value:f})}}
 Gd("Promise",function(h){function f(f){this.MQf=0;this.Cug=void 0;this.Qie=[];var h=this.slg();try{f(h.resolve,h.reject)}catch(Tb){h.reject(Tb)}}function Ka(){this.FAd=null}function Za(h){return h instanceof f?h:new f(function(f){f(h)})}if(h)return h;Ka.prototype.nJg=function(f){if(null==this.FAd){this.FAd=[];var h=this;this.oJg(function(){h.Ihh()})}this.FAd.push(f)};var bb=dd.setTimeout;Ka.prototype.oJg=function(f){bb(f,0)};Ka.prototype.Ihh=function(){for(;this.FAd&&this.FAd.length;){var f=this.FAd;
