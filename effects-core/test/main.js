@@ -224,10 +224,10 @@
         originContext.drawImage(preImage, 0, 0, originCanvas.width, originCanvas.width);
 
         const formatter = formatImage(preImage);
-        console.log(formatter.sx, formatter.sy, formatter.sWidth, formatter.sHeight);
+
         effectCanvas.width = formatter.sWidth;
         effectCanvas.height = formatter.sHeight;
-        console.log(effectCanvas.width, effectCanvas.height);
+
         resize();
         window.ImageEffects.effectContext.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
 
@@ -252,9 +252,9 @@
     }
     const noImageText = document.getElementById('no-image-text');
     /**
-     * @param {DragEvent} event
+     * @param {HTMLImageElement} file
      */
-    const handleFiles = function handleFilesFromForm(event) {
+    function handleFiles(file) {
         noImageText.parentElement.style.display = 'none';
         effectCanvas.style.display = 'block';
         /**
@@ -262,39 +262,39 @@
          * @param {String} mimeType
          * @return {String}
          */
-        function typedArrayToURL(typedArray, mimeType) {
-            return URL.createObjectURL(new Blob([typedArray], {type: mimeType}));
-        }
-        const files = event.dataTransfer.files;
-        if (files.length > 1) {
-            throw new Error('Only 1 file, please.');
-        }
-        const file = files.item(0);
-        const reader = new FileReader();
-        reader.readAsArrayBuffer(file);
-        reader.onloadend = function() {
-            const url = typedArrayToURL(reader.result, file.type);
-            const image = new Image();
-            image.src = url;
+        const url = file.src;
+        const image = new Image();
+        image.src = url;
 
-            image.onload = function() {
-                isImageLoaded = true;
-                originCanvas.width = image.width;
-                originCanvas.height = image.height;
+        image.onload = function() {
+            isImageLoaded = true;
+            originCanvas.width = image.width;
+            originCanvas.height = image.height;
 
-                imagePreview(image);
+            imagePreview(image);
 
-                originImageData = originContext.getImageData(0, 0, originCanvas.width, originCanvas.height);
-                window.ImageEffects.effectImageData = window.ImageEffects.effectContext.getImageData(0, 0, effectCanvas.width, effectCanvas.height);
+            originImageData = originContext.getImageData(0, 0, originCanvas.width, originCanvas.height);
+            window.ImageEffects.effectImageData = window.ImageEffects.effectContext.getImageData(0, 0, effectCanvas.width, effectCanvas.height);
 
-                middlewareImageData = window.ImageEffects.effectContext.createImageData(window.ImageEffects.effectImageData);
-                middlewareImageData.data.set(window.ImageEffects.effectImageData.data);
-                enableCheckbox();
-                bg.enable();
-            };
+            middlewareImageData = window.ImageEffects.effectContext.createImageData(window.ImageEffects.effectImageData);
+            middlewareImageData.data.set(window.ImageEffects.effectImageData.data);
+            enableCheckbox();
+            bg.enable();
         };
     };
+    window.Asc.plugin.init = function (iHtml) {
+        const wrapper = document.createElement('span');
+        wrapper.innerHTML = iHtml;
+        if (wrapper.querySelector('img') == null) {
+            console.log('There must be image file');
+            return;
+        }
+        if (wrapper.querySelectorAll('img').length > 1) {
+            console.log('There must be only one file');
+            return;
+        }
+        handleFiles(wrapper.querySelector('img'));
+    };
     window.addEventListener('resize', resize);
-    dropArea.addEventListener('drop', handleFiles, false);
     window.ImageEffects.loadModule({enginePath: './effects-core/deploy/engine/'});
 })(window, undefined);

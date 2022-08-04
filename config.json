@@ -1,10 +1,23 @@
 {
-    "name"       : "hello world",
+    "name": "Photo Editor",
+    "nameLocale": {
+        "ru": "Фоторедактор",
+        "fr": "Photo Editor",
+        "es": "Editor de Fotos",
+        "de": "Foto-Editor"
+    },
     "guid"       : "asc.{3BD06062-F8EB-47E4-AC45-4860549C2B57}",
+    "version"    : "1.0",
     "baseUrl"    : "",
     "variations" : [
         {
-            "description"         : "hello world",
+            "description": "Photo Editor",
+            "descriptionLocale": {
+                "ru": "Фоторедактор",
+                "fr": "Photo Editor",
+                "es": "Editor de Fotos",
+                "de": "Foto-Editor"
+            },
             "url"                 : "index.html",
             "icons"               : ["resources/img/icon.png", "resources/img/icon@2x.png"],
             "isViewer"            : false,
@@ -12,9 +25,9 @@
             "isVisual"            : true,
             "isModal"             : true,
             "isInsideMode"        : false,
-            "initDataType"        : "none",
+            "initDataType"        : "html",
             "initData"            : "",
-            "isUpdateOleOnResize" : true,
+            "isUpdateOleOnResize" : false,
             "buttons"             : []
         }
     ]
