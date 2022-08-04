@@ -285,6 +285,7 @@
     window.Asc.plugin.init = function (iHtml) {
         const wrapper = document.createElement('span');
         wrapper.innerHTML = iHtml;
+        console.log(wrapper);
         if (wrapper.querySelector('img') == null) {
             console.log('There must be image file');
             return;
