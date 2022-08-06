@@ -334,6 +334,19 @@
     function saveImage() {
         setEffect(true);
     }
+    // for debug in browser
+    dropArea.addEventListener('drop', dropInput, false);
+    function dropInput(event) {
+        const files = event.dataTransfer.files;
+        const file = files.item(0);
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = function() {
+            const img = document.createElement('img');
+            img.src = reader.result;
+            handleFiles(img);
+        }
+    }
     window.addEventListener('resize', resize);
     window.ImageEffects.loadModule({enginePath: './effects-core/deploy/engine/'});
 })(window, undefined);
