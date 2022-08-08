@@ -4,7 +4,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable max-len */
 
-(function(window, undefined){
+(function(window, undefined) {
     window.ImageEffects.isWorker = true;
     let isImageLoaded = false;
     const format = {
@@ -289,7 +289,7 @@
             bg.enable();
         };
     };
-    window.Asc.plugin.init = function (iHtml) {
+    window.Asc.plugin.init = function(iHtml) {
         const wrapper = document.createElement('span');
         wrapper.innerHTML = iHtml;
         console.log(wrapper);
@@ -303,14 +303,14 @@
         }
         handleFiles(wrapper.querySelector('img'));
     };
-    window.Asc.plugin.button = function (id) {
+    window.Asc.plugin.button = function(id) {
         if (id == 0) {
             saveImage();
         } else {
-            this.executeCommand("close", "");
+            this.executeCommand('close', '');
         }
     };
-    window.ImageEffects.onExit = function (){
+    window.ImageEffects.onExit = function() {
         window.Asc.scope.dataURL = originCanvas.toDataURL();
         console.log(originCanvas.width, originCanvas.height);
         window.Asc.scope.width = (originCanvas.width * 9525);
@@ -318,33 +318,35 @@
 
         switch (window.Asc.plugin.info.editorType) {
             case 'word': {
-                window.Asc.plugin.callCommand(function () {
+                window.Asc.plugin.callCommand(function() {
                     const oDocument = Api.GetDocument();
                     const oParagraph = Api.CreateParagraph();
                     const arrResult = [];
                     arrResult.push(oParagraph);
-                    const oImage = Api.CreateImage(Asc.scope.dataURL, Asc.scope.width, Asc.scope.height)
+                    const oImage = Api.CreateImage(Asc.scope.dataURL, Asc.scope.width, Asc.scope.height);
                     oParagraph.AddDrawing(oImage);
-                    oDocument.InsertContent(arrResult)
-                }, true)
+                    oDocument.InsertContent(arrResult);
+                }, true);
                 break;
             }
             case 'cell': {
-                window.Asc.plugin.callCommand(function () {
+                window.Asc.plugin.callCommand(function() {
                     const oWorksheet = Api.GetActiveSheet();
                     oWorksheet.ReplaceCurrentImage(Asc.scope.dataURL, Asc.scope.width, Asc.scope.height);
                 }, true);
                 break;
             }
             case 'slide': {
-                window.Asc.plugin.callCommand(function () {
+                window.Asc.plugin.callCommand(function() {
                     const oPresentation = Api.GetPresentation();
                     oPresentation.ReplaceCurrentImage(Asc.scope.dataURL, Asc.scope.width, Asc.scope.height);
                 }, true);
             break;
             }
         };
-    }
+    };
+    /**
+     */
     function saveImage() {
         setEffect(true);
     }
