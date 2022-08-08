@@ -319,34 +319,48 @@
         switch (window.Asc.plugin.info.editorType) {
             case 'word': {
                 window.Asc.plugin.callCommand(function () {
-                    let oDocument = Api.GetDocument();
-                    let oParagraph = Api.CreateParagraph();
-                    let arrResult = [];
+                    const oDocument = Api.GetDocument();
+                    const oParagraph = Api.CreateParagraph();
+                    const arrResult = [];
                     arrResult.push(oParagraph);
-                    let oImage = Api.CreateImage(Asc.scope.dataURL, Asc.scope.width, Asc.scope.height)
+                    const oImage = Api.CreateImage(Asc.scope.dataURL, Asc.scope.width, Asc.scope.height)
                     oParagraph.AddDrawing(oImage);
                     oDocument.InsertContent(arrResult)
                 }, true)
                 break;
             }
-        }
-     };
+            case 'cell': {
+                window.Asc.plugin.callCommand(function () {
+                    const oWorksheet = Api.GetActiveSheet();
+                    oWorksheet.ReplaceCurrentImage(Asc.scope.dataURL, Asc.scope.width, Asc.scope.height);
+                }, true);
+                break;
+            }
+            case 'slide': {
+                window.Asc.plugin.callCommand(function () {
+                    const oPresentation = Api.GetPresentation();
+                    oPresentation.ReplaceCurrentImage(Asc.scope.dataURL, Asc.scope.width, Asc.scope.height);
+                }, true);
+            break;
+            }
+        };
+    }
     function saveImage() {
         setEffect(true);
     }
     // for debug in browser
-    dropArea.addEventListener('drop', dropInput, false);
-    function dropInput(event) {
-        const files = event.dataTransfer.files;
-        const file = files.item(0);
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function() {
-            const img = document.createElement('img');
-            img.src = reader.result;
-            handleFiles(img);
-        }
-    }
+    // dropArea.addEventListener('drop', dropInput, false);
+    // function dropInput(event) {
+    //     const files = event.dataTransfer.files;
+    //     const file = files.item(0);
+    //     const reader = new FileReader();
+    //     reader.readAsDataURL(file);
+    //     reader.onloadend = function() {
+    //         const img = document.createElement('img');
+    //         img.src = reader.result;
+    //         handleFiles(img);
+    //     }
+    // }
     window.addEventListener('resize', resize);
     window.ImageEffects.loadModule({enginePath: './effects-core/deploy/engine/'});
 })(window, undefined);
