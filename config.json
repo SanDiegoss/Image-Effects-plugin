@@ -1,22 +1,22 @@
 {
-    "name": "Photo Editor",
+    "name": "Image Effects",
     "nameLocale": {
-        "ru": "Фоторедактор",
-        "fr": "Photo Editor",
-        "es": "Editor de Fotos",
-        "de": "Foto-Editor"
+        "ru": "Эффекты изображеия",
+        "fr": "Effets d'images",
+        "es": "Efectos de imagen",
+        "de": "Bildeffekte"
     },
     "guid"       : "asc.{3BD06062-F8EB-47E4-AC45-4860549C2B57}",
     "version"    : "1.0",
     "baseUrl"    : "",
     "variations" : [
         {
-            "description": "Photo Editor",
+            "description": "Image Effects",
             "descriptionLocale": {
-                "ru": "Фоторедактор",
-                "fr": "Photo Editor",
-                "es": "Editor de Fotos",
-                "de": "Foto-Editor"
+                "ru": "Эффекты изображеия",
+                "fr": "Effets d'images",
+                "es": "Efectos de imagen",
+                "de": "Bildeffekte"
             },
             "url"                 : "index.html",
             "icons"               : ["resources/img/icon.png", "resources/img/icon@2x.png"],
