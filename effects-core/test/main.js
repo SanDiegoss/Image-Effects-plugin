@@ -299,14 +299,12 @@
         const wrapper = document.createElement('span');
         wrapper.innerHTML = iHtml;
         console.log(wrapper);
-        if (wrapper.querySelector('img') == null) {
-            console.log('There must be image file');
+        if (wrapper.querySelector('img') == null || wrapper.querySelectorAll('img').length > 1) {
+            this.resizeWindow(800, 413, 800, 413, 800, 413);
             return;
         }
-        if (wrapper.querySelectorAll('img').length > 1) {
-            console.log('There must be only one file');
-            return;
-        }
+        document.getElementById('effects-content').style.display = 'flex';
+        this.resizeWindow(800, 800, 300, 700, 1920, 1080);
         handleFiles(wrapper.querySelector('img'));
     };
     window.Asc.plugin.button = function(id) {
