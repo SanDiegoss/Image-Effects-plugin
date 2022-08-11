@@ -310,7 +310,7 @@
         handleFiles(wrapper.querySelector('img'));
     };
     window.Asc.plugin.button = function(id) {
-        if (id == 0) {
+        if (id == 0 && typeof window.ImageEffects.effectImageData !== 'undefined') {
             saveImage();
         } else {
             this.executeCommand('close', '');
