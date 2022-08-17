@@ -183,7 +183,6 @@
                 formatter.sWidth = image.height * 16 / 9;
             }
         }
-        console.log(formatter);
         return formatter;
     }
     /**
@@ -236,14 +235,9 @@
         const formatter = formatImage(preImage);
         effectCanvas.width = formatter.sWidth;
         effectCanvas.height = formatter.sHeight;
-        console.log(effectCanvas);
 
         resize();
         window.ImageEffects.effectContext.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
-        console.log(formatter.sx,
-            formatter.sy,
-            formatter.sWidth,
-            formatter.sHeight);
         window.ImageEffects.effectContext.drawImage(
             formatter.image,
             formatter.sx,
@@ -305,7 +299,22 @@
         }
         document.getElementById('effects-content').style.display = 'flex';
         this.resizeWindow(800, 800, 300, 700, 1920, 1080);
-        handleFiles(wrapper.querySelector('img'));
+        window.Asc.plugin.executeMethod("GetVersion", [], function(version) {
+            const ver = version.split('.');
+            if (+ver[0] <= 7 && +ver[1] < 2) {
+                handleFiles(wrapper.querySelector('img'));
+            } else {
+                window.Asc.plugin.executeMethod("GetImageDataFromSelection", [], function(data) {
+                    const img = document.createElement('img');
+                    img.src = data.src;
+                    window.Asc.scope.width = data.width;
+                    window.Asc.scope.height = data.height;
+                    img.onload = function() {
+                        handleFiles(img);
+                    }
+                });
+            }
+        })
     };
     window.Asc.plugin.button = function(id) {
         if (id == 0 && typeof window.ImageEffects.effectImageData !== 'undefined') {
@@ -317,37 +326,50 @@
     window.ImageEffects.onExit = function() {
         window.Asc.scope.dataURL = originCanvas.toDataURL();
         console.log(originCanvas.width, originCanvas.height);
-        window.Asc.scope.width = (originCanvas.width * 9525);
-        window.Asc.scope.height = (originCanvas.height * 9525);
-
-        switch (window.Asc.plugin.info.editorType) {
-            case 'word': {
-                window.Asc.plugin.callCommand(function() {
-                    const oDocument = Api.GetDocument();
-                    const oParagraph = Api.CreateParagraph();
-                    const arrResult = [];
-                    arrResult.push(oParagraph);
-                    const oImage = Api.CreateImage(Asc.scope.dataURL, Asc.scope.width, Asc.scope.height);
-                    oParagraph.AddDrawing(oImage);
-                    oDocument.InsertContent(arrResult);
-                }, true);
-                break;
+        window.Asc.plugin.executeMethod("GetVersion", [], function(version) {
+            const ver = version.split('.');
+            if (+ver[0] <= 7 && +ver[1] < 2) {
+                window.Asc.scope.width = (originCanvas.width * 9525);
+                window.Asc.scope.height = (originCanvas.height * 9525);
+                switch (window.Asc.plugin.info.editorType) {
+                    case 'word': {
+                        window.Asc.plugin.callCommand(function() {
+                            const oDocument = Api.GetDocument();
+                            const oParagraph = Api.CreateParagraph();
+                            const arrResult = [];
+                            arrResult.push(oParagraph);
+                            const oImage = Api.CreateImage(Asc.scope.dataURL, Asc.scope.width, Asc.scope.height);
+                            oParagraph.AddDrawing(oImage);
+                            oDocument.InsertContent(arrResult);
+                        }, true);
+                        break;
+                    }
+                    case 'cell': {
+                        window.Asc.plugin.callCommand(function() {
+                            const oWorksheet = Api.GetActiveSheet();
+                            oWorksheet.ReplaceCurrentImage(Asc.scope.dataURL, Asc.scope.width, Asc.scope.height);
+                        }, true);
+                        break;
+                    }
+                    case 'slide': {
+                        window.Asc.plugin.callCommand(function() {
+                            const oPresentation = Api.GetPresentation();
+                            oPresentation.ReplaceCurrentImage(Asc.scope.dataURL, Asc.scope.width, Asc.scope.height);
+                        }, true);
+                    break;
+                    }
+                };
+            } else {
+                console.log('keka');
+                window.Asc.plugin.executeMethod("PutImageDataFromSelection", [
+                    {src: window.Asc.scope.dataURL,
+                    width: window.Asc.scope.width,
+                    height: window.Asc.scope.height}],
+                    function() {
+                        window.Asc.plugin.executeCommand('close', '');
+                });
             }
-            case 'cell': {
-                window.Asc.plugin.callCommand(function() {
-                    const oWorksheet = Api.GetActiveSheet();
-                    oWorksheet.ReplaceCurrentImage(Asc.scope.dataURL, Asc.scope.width, Asc.scope.height);
-                }, true);
-                break;
-            }
-            case 'slide': {
-                window.Asc.plugin.callCommand(function() {
-                    const oPresentation = Api.GetPresentation();
-                    oPresentation.ReplaceCurrentImage(Asc.scope.dataURL, Asc.scope.width, Asc.scope.height);
-                }, true);
-            break;
-            }
-        };
+        }); 
     };
     /**
      */
