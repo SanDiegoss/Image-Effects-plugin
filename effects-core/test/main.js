@@ -290,6 +290,7 @@
         };
     };
     window.Asc.plugin.init = function(iHtml) {
+        window.ImageEffects.useOld = false;
         const wrapper = document.createElement('span');
         wrapper.innerHTML = iHtml;
         console.log(wrapper);
@@ -301,10 +302,16 @@
         this.resizeWindow(800, 800, 300, 700, 1920, 1080);
         window.Asc.plugin.executeMethod("GetVersion", [], function(version) {
             const ver = version.split('.');
-            if (+ver[0] <= 7 && +ver[1] < 2) {
+            if (+ver[0]*10 + +ver[1] < 72) {
+                window.ImageEffects.useOld = true;
                 handleFiles(wrapper.querySelector('img'));
             } else {
                 window.Asc.plugin.executeMethod("GetImageDataFromSelection", [], function(data) {
+                    if (data === undefined) {
+                        window.ImageEffects.useOld = true;
+                        handleFiles(wrapper.querySelector('img'));
+                        return;
+                    }
                     const img = document.createElement('img');
                     img.src = data.src;
                     window.Asc.scope.width = data.width;
@@ -328,7 +335,7 @@
         console.log(originCanvas.width, originCanvas.height);
         window.Asc.plugin.executeMethod("GetVersion", [], function(version) {
             const ver = version.split('.');
-            if (+ver[0] <= 7 && +ver[1] < 2) {
+            if (+ver[0]*10 + +ver[1] < 72 || window.ImageEffects.useOld) {
                 window.Asc.scope.width = (originCanvas.width * 9525);
                 window.Asc.scope.height = (originCanvas.height * 9525);
                 switch (window.Asc.plugin.info.editorType) {
@@ -360,8 +367,7 @@
                     }
                 };
             } else {
-                console.log('keka');
-                window.Asc.plugin.executeMethod("PutImageDataFromSelection", [
+                window.Asc.plugin.executeMethod("PutImageDataToSelection", [
                     {src: window.Asc.scope.dataURL,
                     width: window.Asc.scope.width,
                     height: window.Asc.scope.height}],
